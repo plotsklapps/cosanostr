@@ -102,7 +102,7 @@ class _CreatePostFABState extends State<CreatePostFAB> {
                     ),
                     const SizedBox(height: 24),
                     widget.isNotePublishing
-                        ? const CenteredCircularProgressIndicator()
+                        ? const Center(child: CircularProgressIndicator())
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [

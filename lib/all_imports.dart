@@ -1,6 +1,5 @@
 export 'dart:convert';
 
-export 'package:cosanostr/components/centered_circular_progress_indicator.dart';
 export 'package:cosanostr/components/cosanostr_appbar.dart';
 export 'package:cosanostr/components/cosanostr_card.dart';
 export 'package:cosanostr/components/create_post_fab.dart';
