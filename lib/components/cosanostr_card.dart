@@ -52,23 +52,25 @@ class CosaNostrCard extends StatelessWidget {
                 Text(nost.content, style: const TextStyle(color: Colors.white)),
           ),
           if (imageLinks != null && imageLinks.isNotEmpty)
-            Center(
-              child: Stack(
-                children: [
-                  const Placeholder(
-                    fallbackHeight: 200,
-                    color: Colors.transparent,
-                  ),
-                  Center(
-                    child: FadeInImage(
-                      placeholder: const NetworkImage(
-                        'https://i.ibb.co/D9jqXgR/58038897-167f0280-7ae6-11e9-94eb-88e880a25f0f.gif',
-                      ),
-                      image: NetworkImage(imageLinks.first),
-                      fit: BoxFit.cover,
+            Card(
+              child: Center(
+                child: Stack(
+                  children: [
+                    const Placeholder(
+                      fallbackHeight: 200,
+                      color: Colors.transparent,
                     ),
-                  ),
-                ],
+                    Center(
+                      child: FadeInImage(
+                        placeholder: const NetworkImage(
+                          'https://i.ibb.co/D9jqXgR/58038897-167f0280-7ae6-11e9-94eb-88e880a25f0f.gif',
+                        ),
+                        image: NetworkImage(imageLinks.first),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
         ],
