@@ -25,3 +25,7 @@ final StateProvider<String> privateKeyProvider = StateProvider<String>((ref) {
 final StateProvider<String> publicKeyProvider = StateProvider<String>((ref) {
   return '';
 });
+
+final StateProvider<bool> keysExistProvider = StateProvider<bool>((ref) {
+  return false;
+});

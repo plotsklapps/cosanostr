@@ -17,8 +17,6 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   // Initialize an instance of FlutterSecureStorage
   final secureStorage = const FlutterSecureStorage();
-  // Initialize a boolean variable to track whether keys exist or not
-  bool _keysExist = false;
 
   // Declare and initialize instances of TextEditingController, GlobalKey,
   // KeyApi, and Nip19
@@ -49,11 +47,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     // the widget.
     ref.read(privateKeyProvider.notifier).state = privateKeyHex;
     ref.read(publicKeyProvider.notifier).state = publicKeyHex;
-    setState(() {
-      _keysExist = true;
-    });
+    ref.read(keysExistProvider.notifier).state = true;
 
-    return _keysExist;
+    return ref.watch(keysExistProvider);
   }
 
   // Implement the _generateNewKeys() method to generate new keys and add them
@@ -85,9 +81,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     if (storedPrivateKey != null && storedPublicKey != null) {
       ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
       ref.read(publicKeyProvider.notifier).state = storedPublicKey;
-      setState(() {
-        _keysExist = true;
-      });
+      ref.read(keysExistProvider.notifier).state = true;
     }
   }
 
@@ -102,13 +96,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     ]);
 
     // 2 We're updating the state variables privateKeyProvider,
-    // publicKeyProvider and _keysExist to reset the values after deleting the
-    // keys from the storage.
+    // publicKeyProvider and keysExistProvider to reset the values after
+    // deleting the keys from the storage.
     ref.read(privateKeyProvider.notifier).state = '';
     ref.read(publicKeyProvider.notifier).state = '';
-    setState(() {
-      _keysExist = false;
-    });
+    ref.read(keysExistProvider.notifier).state = false;
   }
 
   Future<Stream<Event>> _connectToRelay() async {
@@ -258,9 +250,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       //   keysDialog: IconButton(
       //       icon: const Icon(Icons.key),
       //       onPressed: () {
-      //         // 1 The updated NoostAppBar widget checks if _keysExist is true,
+      //         // 1 The updated NoostAppBar widget checks if keysExistProvider is true,
       //         // indicating that keys already exist.
-      //         _keysExist
+      //         ref.watch(keysExistProvider)
       //             ?
       //             // 2 If so, it calls the keysExistDialog() function with the
       //             // appropriate arguments.
@@ -274,11 +266,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       //             modalBottomSheet();
       //       }),
       //   // Implement deleteKeysDialog parameter
-      //   // In this code, we're checking if _keysExist is true, then only
+      //   // In this code, we're checking if keysExistProvider is true, then only
       //   // we're showing the deleteKeysDialog() as an IconButton with a delete
       //   // icon in the top right of the appbar. Otherwise, we're displaying
       //   // an empty container.
-      //   deleteKeysDialog: _keysExist
+      //   deleteKeysDialog: ref.watch(keysExistProvider)
       //       ? IconButton(
       //           icon: const Icon(Icons.delete),
       //           onPressed: () => deleteKeysDialog(),
@@ -336,10 +328,10 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
       // Implement the CreatePostFAB widget to enable users to create new
       // Noosts.
-      // 1 If _keysExist is true, the floatingActionButton is built using the
+      // 1 If keysExistProvider is true, the floatingActionButton is built using the
       // CreatePostFAB widget. This custom widget represents a FAB with
       // specific decoration and widgets for publishing a note.
-      floatingActionButton: _keysExist
+      floatingActionButton: ref.watch(keysExistProvider)
           ?
           // 2 The CreatePostFAB widget is configured with two properties:
           // publishNote and isNotePublishing. We will implement the publish
@@ -427,7 +419,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               isNotePublishing: _isNotePublishing,
             )
           :
-          // 3 If _keysExist is false, an empty Container() widget is
+          // 3 If keysExistProvider is false, an empty Container() widget is
           // displayed, meaning that the FAB will not be visible.
           Container(),
     );
@@ -601,12 +593,12 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           onYesPressed: () {
             // In this code, we're calling _deleteKeysFromStorage() method
             // when the "Yes" button is pressed in the deleteKeysDialog.
-            // After deleting the keys, if _keysExist is false, we're
+            // After deleting the keys, if keysExistProvider is false, we're
             // displaying a snackbar with a success message, and then closing
             // the dialog using Navigator.pop(context).
             final currentContext = context;
             _deleteKeysFromStorage().then((_) {
-              if (!_keysExist) {
+              if (!ref.watch(keysExistProvider)) {
                 ScaffoldMessenger.of(currentContext).showSnackBar(
                   NoostSnackBar(
                     label: 'Keys successfully deleted!',
