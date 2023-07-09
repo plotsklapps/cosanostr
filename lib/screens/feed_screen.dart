@@ -1,16 +1,17 @@
+import 'dart:async';
+
 import 'package:cosanostr/all_imports.dart';
 
-class CosaNostrFeedScreen extends StatefulWidget {
-  const CosaNostrFeedScreen({super.key});
+class FeedScreen extends ConsumerStatefulWidget {
+  const FeedScreen({super.key});
 
   @override
-  State<CosaNostrFeedScreen> createState() {
-    return _CosaNostrFeedScreenState();
+  ConsumerState<FeedScreen> createState() {
+    return FeedScreenState();
   }
 }
 
-class _CosaNostrFeedScreenState extends State<CosaNostrFeedScreen> {
-  bool _isConnected = false;
+class FeedScreenState extends ConsumerState<FeedScreen> {
   final _relay = RelayApi(relayUrl: 'wss://relay.damus.io');
   final List<Event> _events = [];
   final Map<String, Metadata> _metaDatas = {};
@@ -120,9 +121,9 @@ class _CosaNostrFeedScreenState extends State<CosaNostrFeedScreen> {
 
     _relay.on((event) {
       if (event == RelayEvent.connect) {
-        setState(() => _isConnected = true);
+        ref.read(isConnectedProvider.notifier).state = true;
       } else if (event == RelayEvent.error) {
-        setState(() => _isConnected = false);
+        ref.read(isConnectedProvider.notifier).state = false;
       }
     });
 
@@ -190,39 +191,105 @@ class _CosaNostrFeedScreenState extends State<CosaNostrFeedScreen> {
     return Scaffold(
       //Update the NoostAppBar widget with appropriate keysDialog, and
       // deleteKeysDialog parameters.
-      appBar: CosaNostrAppBar(
-        title: 'Noost',
-        isConnected: _isConnected,
-        keysDialog: IconButton(
-            icon: const Icon(Icons.key),
-            onPressed: () {
-              // 1 The updated NoostAppBar widget checks if _keysExist is true,
-              // indicating that keys already exist.
-              _keysExist
-                  ?
-                  // 2 If so, it calls the keysExistDialog() function with the
-                  // appropriate arguments.
-                  keysExistDialog(
-                      _nip19.npubEncode(_publicKey),
-                      _nip19.nsecEncode(_privateKey),
-                    )
-                  :
-                  // 3 Otherwise, it calls the modalBottomSheet() function to
-                  // generate new keys if keys do not exist.
-                  modalBottomSheet();
-            }),
-        // Implement deleteKeysDialog parameter
-        // In this code, we're checking if _keysExist is true, then only
-        // we're showing the deleteKeysDialog() as an IconButton with a delete
-        // icon in the top right of the appbar. Otherwise, we're displaying
-        // an empty container.
-        deleteKeysDialog: _keysExist
-            ? IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => deleteKeysDialog(),
-              )
-            : Container(),
+      appBar: AppBar(
+        title: const Text(
+          'CosaNostr',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Icon(
+              ref.watch(isConnectedProvider)
+                  ? FontAwesomeIcons.solidCircleCheck
+                  : FontAwesomeIcons.circleMinus,
+              color: ref.watch(isConnectedProvider) ? Colors.green : Colors.red,
+            ),
+          ),
+        ],
       ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            const DrawerHeader(
+              child: Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'CosaNostr',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text('Version 0.0.1'),
+                ],
+              )),
+            ),
+            ListTile(
+                title: const Text('Thememode'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                trailing: Switch(
+                  value: ref.watch(isDarkThemeProvider),
+                  onChanged: (_) {
+                    ref.read(isDarkThemeProvider.notifier).state =
+                        !ref.watch(isDarkThemeProvider);
+                  },
+                )),
+            ListTile(
+              title: const Text('Themecolor'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('About'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
+      //
+      // CosaNostrAppBar(
+      //   title: 'CosaNostr',
+      //   isConnected: _isConnected,
+      //   keysDialog: IconButton(
+      //       icon: const Icon(Icons.key),
+      //       onPressed: () {
+      //         // 1 The updated NoostAppBar widget checks if _keysExist is true,
+      //         // indicating that keys already exist.
+      //         _keysExist
+      //             ?
+      //             // 2 If so, it calls the keysExistDialog() function with the
+      //             // appropriate arguments.
+      //             keysExistDialog(
+      //                 _nip19.npubEncode(_publicKey),
+      //                 _nip19.nsecEncode(_privateKey),
+      //               )
+      //             :
+      //             // 3 Otherwise, it calls the modalBottomSheet() function to
+      //             // generate new keys if keys do not exist.
+      //             modalBottomSheet();
+      //       }),
+      //   // Implement deleteKeysDialog parameter
+      //   // In this code, we're checking if _keysExist is true, then only
+      //   // we're showing the deleteKeysDialog() as an IconButton with a delete
+      //   // icon in the top right of the appbar. Otherwise, we're displaying
+      //   // an empty container.
+      //   deleteKeysDialog: _keysExist
+      //       ? IconButton(
+      //           icon: const Icon(Icons.delete),
+      //           onPressed: () => deleteKeysDialog(),
+      //         )
+      //       : Container(),
+      // ),
 
       // Implement the RefreshIndicator widget and its onRefresh callback
       // to handle refreshing of the page.

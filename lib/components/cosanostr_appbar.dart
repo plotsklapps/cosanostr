@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:cosanostr/all_imports.dart';
 
-class CosaNostrAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CosaNostrAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const CosaNostrAppBar({
     Key? key,
     required this.title,
@@ -22,7 +22,7 @@ class CosaNostrAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -48,10 +48,7 @@ class CosaNostrAppBar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(
           title,
           style: const TextStyle(
-            fontFamily: 'Pacifico',
-            fontSize: 25,
             fontWeight: FontWeight.bold,
-            letterSpacing: 1,
           ),
         ),
         centerTitle: true,
