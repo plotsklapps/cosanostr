@@ -16,7 +16,7 @@ class MainEntry extends StatelessWidget {
         fontFamily: 'Roboto',
         brightness: Brightness.dark,
       ),
-      home: const NoostFeedScreen(),
+      home: const CosaNostrFeedScreen(),
     );
   }
 }

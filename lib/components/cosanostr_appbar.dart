@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NoostAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const NoostAppBar({
+class CosaNostrAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const CosaNostrAppBar({
     Key? key,
     required this.title,
     this.keysDialog,
@@ -17,7 +17,9 @@ class NoostAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? deleteKeysDialog;
 
   @override
-  Size get preferredSize => const Size.fromHeight(60);
+  Size get preferredSize {
+    return const Size.fromHeight(60);
+  }
 
   @override
   Widget build(BuildContext context) {

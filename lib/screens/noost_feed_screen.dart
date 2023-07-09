@@ -1,13 +1,15 @@
 import 'package:cosanostr/all_imports.dart';
 
-class NoostFeedScreen extends StatefulWidget {
-  const NoostFeedScreen({super.key});
+class CosaNostrFeedScreen extends StatefulWidget {
+  const CosaNostrFeedScreen({super.key});
 
   @override
-  State<NoostFeedScreen> createState() => _NoostFeedScreenState();
+  State<CosaNostrFeedScreen> createState() {
+    return _CosaNostrFeedScreenState();
+  }
 }
 
-class _NoostFeedScreenState extends State<NoostFeedScreen> {
+class _CosaNostrFeedScreenState extends State<CosaNostrFeedScreen> {
   bool _isConnected = false;
   final _relay = RelayApi(relayUrl: 'wss://relay.damus.io');
   final List<Event> _events = [];
@@ -188,7 +190,7 @@ class _NoostFeedScreenState extends State<NoostFeedScreen> {
     return Scaffold(
       //Update the NoostAppBar widget with appropriate keysDialog, and
       // deleteKeysDialog parameters.
-      appBar: NoostAppBar(
+      appBar: CosaNostrAppBar(
         title: 'Noost',
         isConnected: _isConnected,
         keysDialog: IconButton(
