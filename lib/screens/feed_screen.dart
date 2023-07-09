@@ -12,17 +12,11 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class FeedScreenState extends ConsumerState<FeedScreen> {
-  final _relay = RelayApi(relayUrl: 'wss://relay.damus.io');
-  final List<Event> _events = [];
-  final Map<String, Metadata> _metaDatas = {};
   late Stream<Event> _stream;
   final _controller = StreamController<Event>();
 
   // Initialize an instance of FlutterSecureStorage
-  final _secureStorage = const FlutterSecureStorage();
-  // Initialize two empty String variables to hold the private and public keys
-  String _privateKey = '';
-  String _publicKey = '';
+  final secureStorage = const FlutterSecureStorage();
   // Initialize a boolean variable to track whether keys exist or not
   bool _keysExist = false;
 
@@ -47,15 +41,15 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   ) async {
     // 1 It uses Future.wait() to wait for both write operations to complete.
     Future.wait([
-      _secureStorage.write(key: 'privateKey', value: privateKeyHex),
-      _secureStorage.write(key: 'publicKey', value: publicKeyHex),
+      secureStorage.write(key: 'privateKey', value: privateKeyHex),
+      secureStorage.write(key: 'publicKey', value: publicKeyHex),
     ]);
 
     // 2 It then updates the state variables and triggering a rebuild of
     // the widget.
+    ref.read(privateKeyProvider.notifier).state = privateKeyHex;
+    ref.read(publicKeyProvider.notifier).state = publicKeyHex;
     setState(() {
-      _privateKey = privateKeyHex;
-      _publicKey = publicKeyHex;
       _keysExist = true;
     });
 
@@ -82,16 +76,16 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     // 1 We use the _secureStorage instance of FlutterSecureStorage to read
     // the values associated with the keys 'privateKey' and 'publicKey' from
     // the secure storage.
-    final storedPrivateKey = await _secureStorage.read(key: 'privateKey');
-    final storedPublicKey = await _secureStorage.read(key: 'publicKey');
+    final storedPrivateKey = await secureStorage.read(key: 'privateKey');
+    final storedPublicKey = await secureStorage.read(key: 'publicKey');
 
     // 2 Here we're checking if both storedPrivateKey and storedPublicKey are
     // not null, which indicates that both private and public keys are stored
     // in the secure storage and then we're updating the state variables.
     if (storedPrivateKey != null && storedPublicKey != null) {
+      ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
+      ref.read(publicKeyProvider.notifier).state = storedPublicKey;
       setState(() {
-        _privateKey = storedPrivateKey;
-        _publicKey = storedPublicKey;
         _keysExist = true;
       });
     }
@@ -103,23 +97,24 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     // 1 Here we're making calls to secure storage to delete the keys from
     // the storage.
     Future.wait([
-      _secureStorage.delete(key: 'privateKey'),
-      _secureStorage.delete(key: 'publicKey'),
+      secureStorage.delete(key: 'privateKey'),
+      secureStorage.delete(key: 'publicKey'),
     ]);
 
-    // 2 We're updating the state variables _privateKey, _publicKey and
-    // _keysExist to reset the values after deleting the keys from the storage.
+    // 2 We're updating the state variables privateKeyProvider,
+    // publicKeyProvider and _keysExist to reset the values after deleting the
+    // keys from the storage.
+    ref.read(privateKeyProvider.notifier).state = '';
+    ref.read(publicKeyProvider.notifier).state = '';
     setState(() {
-      _privateKey = '';
-      _publicKey = '';
       _keysExist = false;
     });
   }
 
   Future<Stream<Event>> _connectToRelay() async {
-    final stream = await _relay.connect();
+    final stream = await ref.read(relayApiProvider).connect();
 
-    _relay.on((event) {
+    ref.read(relayApiProvider).on((event) {
       if (event == RelayEvent.connect) {
         ref.read(isConnectedProvider.notifier).state = true;
       } else if (event == RelayEvent.error) {
@@ -127,7 +122,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       }
     });
 
-    _relay.sub([
+    ref.read(relayApiProvider).sub([
       Filter(
         kinds: [1],
         limit: 100,
@@ -135,9 +130,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       )
     ]);
 
-    return stream
-        .where((message) => message.type == 'EVENT')
-        .map((message) => message.message);
+    return stream.where((message) {
+      return message.type == 'EVENT';
+    }).map((message) {
+      return message.message;
+    });
   }
 
   void _initStream() async {
@@ -145,13 +142,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     _stream.listen((message) {
       final event = message;
       if (event.kind == 1) {
-        setState(() => _events.add(event));
-        _relay.sub([
+        ref.read(eventsProvider).add(event);
+        ref.read(relayApiProvider).sub([
           Filter(kinds: [0], authors: [event.pubkey])
         ]);
       } else if (event.kind == 0) {
         final metadata = Metadata.fromJson(jsonDecode(event.content));
-        setState(() => _metaDatas[event.pubkey] = metadata);
+        ref.read(metaDataProvider)[event.pubkey] = metadata;
       }
       _controller.add(event);
     });
@@ -159,15 +156,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   // Implement the `_resubscribeStream` method to initialize a stream.
   // In the above _resubscribeStream() method, after a delay of 1 second,
-  // we clear the _events and _metaDatas collections. Then, we call
+  // we clear the eventsProvider and metaDataProvider collections. Then, we call
   // _initStream() method, which is responsible for initializing and
   // subscribing to a stream, to reconnect and resubscribe to the filter.
   Future<void> _resubscribeStream() async {
     await Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _events.clear();
-        _metaDatas.clear();
-      });
+      ref.read(eventsProvider).clear();
+      ref.read(metaDataProvider).clear();
       _initStream(); // Reconnect and resubscribe to the filter
     });
   }
@@ -182,7 +177,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   void dispose() {
-    _relay.close();
+    ref.read(relayApiProvider).close();
     super.dispose();
   }
 
@@ -270,8 +265,8 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       //             // 2 If so, it calls the keysExistDialog() function with the
       //             // appropriate arguments.
       //             keysExistDialog(
-      //                 _nip19.npubEncode(_publicKey),
-      //                 _nip19.nsecEncode(_privateKey),
+      //                 _nip19.npubEncode(ref.watch(publicKeyProvider),),
+      //                 _nip19.nsecEncode(ref.watch(privateKeyProvider),),
       //               )
       //             :
       //             // 3 Otherwise, it calls the modalBottomSheet() function to
@@ -311,10 +306,10 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                itemCount: _events.length,
+                itemCount: ref.watch(eventsProvider).length,
                 itemBuilder: (context, index) {
-                  final event = _events[index];
-                  final metadata = _metaDatas[event.pubkey];
+                  final event = ref.watch(eventsProvider)[index];
+                  final metadata = ref.watch(metaDataProvider)[event.pubkey];
                   final noost = Noost(
                     noteId: event.id,
                     avatarUrl: metadata?.picture ??
@@ -363,9 +358,10 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 // defined in the nostr_tools package.
                 final eventApi = EventApi();
                 // 3 The finishEvent method of the EventApi class is called
-                // with the Event object and the _privateKey variable.
+                // with the Event object and the privateKeyProvider variable.
                 // finishEvent will set the id of the event with the event
-                // hash and will sign the event with the given _privateKey.
+                // hash and will sign the event with the given
+                // privateKeyProvider.
                 final event = eventApi.finishEvent(
                   // 4 Here, we're creating a new instance of the Event class
                   // with specific properties such as:
@@ -395,7 +391,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                     content: note!,
                     created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
                   ),
-                  _privateKey,
+                  ref.watch(privateKeyProvider),
                 );
 
                 // 5 The verifySignature method of the EventApi class is
@@ -405,7 +401,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                   try {
                     // 6 If the signature is verified, the publish method is
                     // called on the _relay object to publish the event.
-                    _relay.publish(event);
+                    ref.read(relayApiProvider).publish(event);
                     // 7 After publishing the event, the _resubscribeStream
                     // method is called, likely to refresh the stream or
                     // subscription to reflect the newly published event.
@@ -587,8 +583,8 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           npubEncoded: npubEncode,
           nsecEncoded: nsecEncode,
           // Replace hexPriv and hexPub values
-          hexPriv: _privateKey,
-          hexPub: _publicKey,
+          hexPriv: ref.watch(privateKeyProvider),
+          hexPub: ref.watch(publicKeyProvider),
         );
       }),
     );

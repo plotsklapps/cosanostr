@@ -15,7 +15,7 @@ export 'package:cosanostr/components/noost_text_form_field.dart';
 export 'package:cosanostr/components/paste_private_key_dialog.dart';
 export 'package:cosanostr/models/noost.dart';
 export 'package:cosanostr/models/timeago.dart';
-export 'package:cosanostr/providers/isconnected_providers.dart';
+export 'package:cosanostr/providers/feedscreen_providers.dart';
 export 'package:cosanostr/providers/theme_providers.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/screens/home_screen.dart';
