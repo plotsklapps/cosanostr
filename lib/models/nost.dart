@@ -1,4 +1,4 @@
-class Noost {
+class Nost {
   final String noteId;
   final String avatarUrl;
   final String name;
@@ -8,7 +8,7 @@ class Noost {
   final String pubkey;
   final String? imageUrl;
 
-  Noost({
+  Nost({
     required this.noteId,
     required this.avatarUrl,
     required this.name,

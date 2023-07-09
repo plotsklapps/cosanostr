@@ -302,7 +302,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 itemBuilder: (context, index) {
                   final event = ref.watch(eventsProvider)[index];
                   final metadata = ref.watch(metaDataProvider)[event.pubkey];
-                  final noost = Noost(
+                  final noost = Nost(
                     noteId: event.id,
                     avatarUrl: metadata?.picture ??
                         'https://robohash.org/${event.pubkey}',
@@ -313,7 +313,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                     content: event.content,
                     pubkey: event.pubkey,
                   );
-                  return NoostCard(noost: noost);
+                  return CosaNostrCard(nost: noost);
                 },
               );
             } else if (snapshot.connectionState == ConnectionState.waiting) {
