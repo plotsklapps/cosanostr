@@ -10,11 +10,12 @@ class MainEntry extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'CosaNostr',
       theme: ref.watch(lightThemeProvider),
       darkTheme: ref.watch(darkThemeProvider),
       themeMode: ref.watch(themeModeProvider),
-      home: const HomeScreen(),
+      home: const FeedScreen(),
     );
   }
 }

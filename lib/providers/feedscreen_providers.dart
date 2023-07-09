@@ -29,3 +29,7 @@ final StateProvider<String> publicKeyProvider = StateProvider<String>((ref) {
 final StateProvider<bool> keysExistProvider = StateProvider<bool>((ref) {
   return false;
 });
+
+final StateProvider<bool> isNotePublishingProvider = StateProvider<bool>((ref) {
+  return false;
+});

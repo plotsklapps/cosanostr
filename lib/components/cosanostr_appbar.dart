@@ -23,32 +23,15 @@ class CosaNostrAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            isConnected ? Colors.indigoAccent : Colors.redAccent,
-            Colors.deepPurpleAccent
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: AppBar(
-        backgroundColor: Colors.transparent,
+    return AppBar(
         elevation: 0,
         title: Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: ref.watch(isConnectedProvider)
+                ? Colors.green
+                : Colors.red,
           ),
         ),
         centerTitle: true,
@@ -57,7 +40,6 @@ class CosaNostrAppBar extends ConsumerWidget implements PreferredSizeWidget {
           deleteKeysDialog ?? Container(),
         ],
         leading: keysDialog,
-      ),
-    );
+      );
   }
 }
