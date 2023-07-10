@@ -1,10 +1,5 @@
 import 'package:cosanostr/all_imports.dart';
 
-final StateProvider<int> currentPageIndexProvider =
-    StateProvider<int>((StateProviderRef<int> ref) {
-  return 0;
-});
-
 class ScaffoldScreen extends ConsumerStatefulWidget {
   const ScaffoldScreen({super.key});
 
@@ -67,7 +62,14 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
           ],
         ),
       ),
-      body: const ResponsiveLayout(),
+      body: PageView(
+        controller: pageController,
+        children: const [
+          FeedScreen(),
+          Placeholder(),
+          Placeholder(),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {},
           label: const Row(

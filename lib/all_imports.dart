@@ -17,6 +17,7 @@ export 'package:cosanostr/components/phone_container.dart';
 export 'package:cosanostr/models/nost.dart';
 export 'package:cosanostr/models/timeago.dart';
 export 'package:cosanostr/providers/feedscreen_providers.dart';
+export 'package:cosanostr/providers/pageindex_providers.dart';
 export 'package:cosanostr/providers/theme_providers.dart';
 export 'package:cosanostr/responsive_layout.dart';
 export 'package:cosanostr/screens/feed_screen.dart';

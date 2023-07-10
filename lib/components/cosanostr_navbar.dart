@@ -29,22 +29,22 @@ class CosaNostrNavBar extends ConsumerWidget {
       destinations: <Widget>[
         // Icons animate on tap and receive a checkmark.
         NavigationDestination(
-          icon: Icon(FontAwesomeIcons.house),
-          selectedIcon: Icon(FontAwesomeIcons.houseCircleCheck)
+          icon: const Icon(FontAwesomeIcons.house),
+          selectedIcon: const Icon(FontAwesomeIcons.houseCircleCheck)
               .animate()
               .flip(duration: const Duration(milliseconds: 1000)),
           label: 'Feed',
         ),
         NavigationDestination(
-          icon: Icon(FontAwesomeIcons.solidHeart),
-          selectedIcon: Icon(FontAwesomeIcons.heartCircleCheck)
+          icon: const Icon(FontAwesomeIcons.solidHeart),
+          selectedIcon: const Icon(FontAwesomeIcons.heartCircleCheck)
               .animate()
               .flip(duration: const Duration(milliseconds: 1000)),
           label: 'Stats',
         ),
         NavigationDestination(
-          icon: Icon(FontAwesomeIcons.solidEnvelope),
-          selectedIcon: Icon(FontAwesomeIcons.envelopeCircleCheck)
+          icon: const Icon(FontAwesomeIcons.solidEnvelope),
+          selectedIcon: const Icon(FontAwesomeIcons.envelopeCircleCheck)
               .animate()
               .flip(duration: const Duration(milliseconds: 1000)),
           label: 'Messages',
