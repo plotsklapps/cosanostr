@@ -1,7 +1,12 @@
 import 'package:cosanostr/all_imports.dart';
 
 void main() {
-  runApp(const ProviderScope(child: MainEntry()));
+  runApp(
+    // ProviderScope is mandatory for Riverpod to work.
+    const ProviderScope(
+      child: MainEntry(),
+    ),
+  );
 }
 
 class MainEntry extends ConsumerWidget {
@@ -12,9 +17,11 @@ class MainEntry extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'CosaNostr',
+      // Use Riverpod Providers to get the current theme and theme mode.
       theme: ref.watch(lightThemeProvider),
       darkTheme: ref.watch(darkThemeProvider),
       themeMode: ref.watch(themeModeProvider),
+      // This is a first draft for responsiveness. Will be improved later.
       home: const ResponsiveLayout(),
     );
   }
