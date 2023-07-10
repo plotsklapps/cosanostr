@@ -15,7 +15,7 @@ class ScaffoldAppBar extends ConsumerWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 8.0),
+          padding: const EdgeInsets.only(right: 16.0),
           child: Icon(
             ref.watch(isConnectedProvider)
                 ? FontAwesomeIcons.solidCircleCheck

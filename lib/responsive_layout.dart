@@ -10,11 +10,11 @@ class ResponsiveLayout extends StatelessWidget {
         if (constraints.maxWidth >= 720) {
           return const Scaffold(
             body: PhoneContainer(
-              child: FeedScreen(),
+              child: ScaffoldScreen(),
             ),
           );
         } else {
-          return const FeedScreen();
+          return const ScaffoldScreen();
         }
       },
     );
