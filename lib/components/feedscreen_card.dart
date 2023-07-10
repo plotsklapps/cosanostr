@@ -1,7 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
-class CosaNostrCard extends StatelessWidget {
-  const CosaNostrCard({
+class FeedScreenCard extends StatelessWidget {
+  const FeedScreenCard({
     super.key,
     required this.nost,
   });
