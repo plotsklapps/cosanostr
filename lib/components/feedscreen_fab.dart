@@ -1,7 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
-class CreatePostFAB extends StatefulWidget {
-  const CreatePostFAB({
+class FeedScreenFAB extends StatefulWidget {
+  const FeedScreenFAB({
     Key? key,
     required this.publishNote,
     required this.isNotePublishing,
@@ -11,12 +11,12 @@ class CreatePostFAB extends StatefulWidget {
   final bool isNotePublishing;
 
   @override
-  State<CreatePostFAB> createState() {
-    return CreatePostFABState();
+  State<FeedScreenFAB> createState() {
+    return FeedScreenFABState();
   }
 }
 
-class CreatePostFABState extends State<CreatePostFAB> {
+class FeedScreenFABState extends State<FeedScreenFAB> {
   final noteController = TextEditingController();
   final GlobalKey<FormFieldState> formKey = GlobalKey<FormFieldState>();
 

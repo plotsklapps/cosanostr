@@ -207,10 +207,14 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               )
             : Container(),
       ),
+      // Pull to refresh, aaahhh!
       body: RefreshIndicator(
         onRefresh: () async {
           await resubscribeStream();
         },
+        // This is used to provide better scrolling experience on web.
+        // It disables the scrollbar and enables more input devices then
+        // just the damn scroll wheel.
         child: ScrollConfiguration(
           behavior: const ScrollBehavior().copyWith(
             scrollbars: false,
@@ -294,7 +298,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         ),
       ),
       floatingActionButton: ref.watch(keysExistProvider)
-          ? CreatePostFAB(
+          ? FeedScreenFAB(
               publishNote: (note) {
                 ref.read(isNotePublishingProvider.notifier).state = true;
 
