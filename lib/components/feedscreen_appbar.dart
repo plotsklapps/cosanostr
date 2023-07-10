@@ -24,22 +24,15 @@ class CosaNostrAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
-        elevation: 0,
-        title: Text(
-          title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: ref.watch(isConnectedProvider)
-                ? Colors.green
-                : Colors.red,
-          ),
-        ),
-        centerTitle: true,
-        actions: [
-          popupMenu ?? Container(),
-          deleteKeysDialog ?? Container(),
-        ],
-        leading: keysDialog,
-      );
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: Text(title),
+      centerTitle: true,
+      actions: [
+        popupMenu ?? Container(),
+        deleteKeysDialog ?? Container(),
+      ],
+      leading: keysDialog,
+    );
   }
 }

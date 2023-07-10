@@ -32,10 +32,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CosaNostrAppBar(
-        title: 'CosaNostr',
-        isConnected: ref.watch(isConnectedProvider),
-      ),
+      appBar: const ScaffoldAppBar(),
       drawer: CosaNostrDrawer(ref: ref),
       body: PageView(
         controller: pageController,

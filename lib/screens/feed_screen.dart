@@ -136,7 +136,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
     return Scaffold(
       appBar: CosaNostrAppBar(
-        title: 'CosaNostr',
+        title: '',
         isConnected: ref.watch(isConnectedProvider),
         keysDialog: IconButton(
             icon: const Icon(Icons.key),
