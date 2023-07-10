@@ -13,21 +13,21 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class FeedScreenState extends ConsumerState<FeedScreen> {
-  late Stream<Event> _stream;
-  final _controller = StreamController<Event>();
+  late Stream<Event> stream;
+  final streamController = StreamController<Event>();
 
-  final _secureStorage = const FlutterSecureStorage();
+  final secureStorage = const FlutterSecureStorage();
 
-  final _keyController = TextEditingController();
-  final _formKey = GlobalKey<FormFieldState>();
-  final _keyGenerator = KeyApi();
-  final _nip19 = Nip19();
+  final keyController = TextEditingController();
+  final formKey = GlobalKey<FormFieldState>();
+  final keyGenerator = KeyApi();
+  final nip19 = Nip19();
 
   @override
   void initState() {
     super.initState();
-    _getKeysFromStorage();
-    _initStream();
+    getKeysFromStorage();
+    initStream();
   }
 
   @override
@@ -36,9 +36,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     super.dispose();
   }
 
-  Future<void> _getKeysFromStorage() async {
-    final storedPrivateKey = await _secureStorage.read(key: 'privateKey');
-    final storedPublicKey = await _secureStorage.read(key: 'publicKey');
+  Future<void> getKeysFromStorage() async {
+    final storedPrivateKey = await secureStorage.read(key: 'privateKey');
+    final storedPublicKey = await secureStorage.read(key: 'publicKey');
 
     if (storedPrivateKey != null && storedPublicKey != null) {
       ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
@@ -47,13 +47,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     }
   }
 
-  Future<bool> _addKeysToStorage(
+  Future<bool> addKeysToStorage(
     String privateKeyHex,
     String publicKeyHex,
   ) async {
     Future.wait([
-      _secureStorage.write(key: 'privateKey', value: privateKeyHex),
-      _secureStorage.write(key: 'publicKey', value: publicKeyHex),
+      secureStorage.write(key: 'privateKey', value: privateKeyHex),
+      secureStorage.write(key: 'publicKey', value: publicKeyHex),
     ]);
     ref.read(privateKeyProvider.notifier).state = privateKeyHex;
     ref.read(publicKeyProvider.notifier).state = publicKeyHex;
@@ -62,10 +62,10 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     return ref.watch(keysExistProvider);
   }
 
-  Future<void> _deleteKeysFromStorage() async {
+  Future<void> deleteKeysFromStorage() async {
     Future.wait([
-      _secureStorage.delete(key: 'privateKey'),
-      _secureStorage.delete(key: 'publicKey'),
+      secureStorage.delete(key: 'privateKey'),
+      secureStorage.delete(key: 'publicKey'),
     ]);
     ref.read(privateKeyProvider.notifier).state = '';
     ref.read(publicKeyProvider.notifier).state = '';
@@ -73,13 +73,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<bool> generateNewKeys() async {
-    final newPrivateKey = _keyGenerator.generatePrivateKey();
-    final newPublicKey = _keyGenerator.getPublicKey(newPrivateKey);
+    final newPrivateKey = keyGenerator.generatePrivateKey();
+    final newPublicKey = keyGenerator.getPublicKey(newPrivateKey);
 
-    return await _addKeysToStorage(newPrivateKey, newPublicKey);
+    return await addKeysToStorage(newPrivateKey, newPublicKey);
   }
 
-  Future<Stream<Event>> _connectToRelay() async {
+  Future<Stream<Event>> connectToRelay() async {
     final stream = await ref.read(relayApiProvider).connect();
 
     ref.read(relayApiProvider).on((event) {
@@ -103,9 +103,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         .map((message) => message.message);
   }
 
-  void _initStream() async {
-    _stream = await _connectToRelay();
-    _stream.listen((message) {
+  void initStream() async {
+    stream = await connectToRelay();
+    stream.listen((message) {
       final event = message;
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
@@ -116,17 +116,17 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         final metadata = Metadata.fromJson(jsonDecode(event.content));
         ref.read(metaDataProvider)[event.pubkey] = metadata;
       }
-      _controller.add(event);
+      streamController.add(event);
     });
   }
 
-  Future<void> _resubscribeStream() async {
+  Future<void> resubscribeStream() async {
     await Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         ref.read(eventsProvider).clear();
         ref.read(metaDataProvider).clear();
       });
-      _initStream(); // Reconnect and resubscribe to the filter
+      initStream(); // Reconnect and resubscribe to the filter
     });
   }
 
@@ -156,7 +156,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          await _resubscribeStream();
+          await resubscribeStream();
         },
         child: ScrollConfiguration(
           behavior: const ScrollBehavior().copyWith(
@@ -169,7 +169,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             },
           ),
           child: StreamBuilder(
-            stream: _controller.stream,
+            stream: streamController.stream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return ListView.builder(
@@ -224,7 +224,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 if (eventApi.verifySignature(event)) {
                   try {
                     ref.read(relayApiProvider).publish(event);
-                    _resubscribeStream();
+                    resubscribeStream();
                     ScaffoldMessenger.of(context).showSnackBar(
                       NoostSnackBar(label: 'Congratulations! Noost Published!'),
                     );
@@ -261,7 +261,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           },
           inputPrivateKeyPressed: () {
             Navigator.pop(context);
-            _keyController.clear();
+            keyController.clear();
             pastePrivateKeyDialog();
           },
         );
@@ -274,17 +274,17 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       context: context,
       builder: (BuildContext context) {
         return PastePrivateKeyDialog(
-          keyController: _keyController,
-          formKey: _formKey,
+          keyController: keyController,
+          formKey: formKey,
           keyValidator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your private key.';
             }
 
             try {
-              bool isValidHexKey = _keyGenerator.isValidPrivateKey(value);
+              bool isValidHexKey = keyGenerator.isValidPrivateKey(value);
               bool isValidNsec = value.trim().startsWith('nsec') &&
-                  _keyGenerator.isValidPrivateKey(_nip19.decode(value)['data']);
+                  keyGenerator.isValidPrivateKey(nip19.decode(value)['data']);
 
               if (!(isValidHexKey || isValidNsec)) {
                 return 'Your private key is not valid.';
@@ -298,21 +298,21 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             return null;
           },
           onOKPressed: () {
-            if (_formKey.currentState!.validate()) {
-              String privateKeyHex = _keyController.text.trim();
+            if (formKey.currentState!.validate()) {
+              String privateKeyHex = keyController.text.trim();
               String publicKeyHex;
 
               if (privateKeyHex.startsWith('nsec')) {
-                final decoded = _nip19.decode(privateKeyHex);
+                final decoded = nip19.decode(privateKeyHex);
                 privateKeyHex = decoded['data'];
-                publicKeyHex = _keyGenerator.getPublicKey(privateKeyHex);
+                publicKeyHex = keyGenerator.getPublicKey(privateKeyHex);
               } else {
-                publicKeyHex = _keyGenerator.getPublicKey(privateKeyHex);
+                publicKeyHex = keyGenerator.getPublicKey(privateKeyHex);
               }
 
-              _addKeysToStorage(privateKeyHex, publicKeyHex).then((keysAdded) {
+              addKeysToStorage(privateKeyHex, publicKeyHex).then((keysAdded) {
                 if (keysAdded) {
-                  _keyController.clear();
+                  keyController.clear();
                   ScaffoldMessenger.of(context).showSnackBar(
                     NoostSnackBar(label: 'Congratulations! Keys Stored!'),
                   );
@@ -321,7 +321,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
               Navigator.pop(context);
             } else {
-              _formKey.currentState?.setState(() {});
+              formKey.currentState?.setState(() {});
             }
           },
           onCancelPressed: () {
@@ -356,7 +356,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           },
           onYesPressed: () {
             final currentContext = context;
-            _deleteKeysFromStorage().then((_) {
+            deleteKeysFromStorage().then((_) {
               if (!ref.watch(keysExistProvider)) {
                 ScaffoldMessenger.of(currentContext).showSnackBar(
                   NoostSnackBar(

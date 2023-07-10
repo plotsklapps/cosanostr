@@ -41,11 +41,7 @@ class _CreatePostFABState extends State<CreatePostFAB> {
               ),
             ),
           ),
-          Image.asset(
-            'assets/nostr.png',
-            width: 35,
-            height: 35,
-          )
+          const Icon(FontAwesomeIcons.featherPointed),
         ],
       ),
       onPressed: () async {
