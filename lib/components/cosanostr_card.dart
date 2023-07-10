@@ -35,8 +35,7 @@ class CosaNostrCard extends StatelessWidget {
           ListTile(
             leading: CircleAvatar(
               backgroundImage: FadeInImage(
-                placeholder:
-                    const NetworkImage('https://i.ibb.co/mJkxDkb/satoshi.png'),
+                placeholder: const AssetImage('assets/images/spinner.png'),
                 image: NetworkImage(nost.avatarUrl),
               ).image,
             ),
