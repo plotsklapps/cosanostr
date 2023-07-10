@@ -39,16 +39,14 @@ class CosaNostrCard extends StatelessWidget {
                 image: NetworkImage(nost.avatarUrl),
               ).image,
             ),
-            title: Text(nost.name, style: const TextStyle(color: Colors.white)),
-            subtitle: Text('@${nost.username.toLowerCase()} • ${nost.time}',
-                style: TextStyle(color: Colors.grey.shade400)),
-            trailing: const Icon(Icons.more_vert, color: Colors.grey),
+            title: Text(nost.name),
+            subtitle: Text('@${nost.username.toLowerCase()} • ${nost.time}'),
+            trailing: const Icon(Icons.more_vert),
           ),
-          Divider(height: 1, color: Colors.grey.shade400),
+          const Divider(height: 1),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child:
-                Text(nost.content, style: const TextStyle(color: Colors.white)),
+            child: Text(nost.content),
           ),
           if (imageLinks != null && imageLinks.isNotEmpty)
             Card(
