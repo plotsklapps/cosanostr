@@ -1,7 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
-class CosaNostrDrawer extends StatelessWidget {
-  const CosaNostrDrawer({
+class ScaffoldDrawer extends StatelessWidget {
+  const ScaffoldDrawer({
     super.key,
     required this.ref,
   });

@@ -23,22 +23,8 @@ class NoostTextFormField extends StatelessWidget {
       key: formKey,
       validator: validator,
       maxLines: maxLines,
-      style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.black54),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.black54),
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.black54),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: const BorderSide(color: Colors.indigo),
-        ),
       ),
     );
   }

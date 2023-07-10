@@ -33,7 +33,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const ScaffoldAppBar(),
-      drawer: CosaNostrDrawer(ref: ref),
+      drawer: ScaffoldDrawer(ref: ref),
       body: PageView(
         controller: pageController,
         children: const [
@@ -42,16 +42,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
           Placeholder(),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {},
-          label: const Row(
-            children: [
-              Text('NEW'),
-              SizedBox(width: 8.0),
-              Icon(FontAwesomeIcons.featherPointed),
-            ],
-          )),
-      bottomNavigationBar: CosaNostrNavBar(pageController),
+      bottomNavigationBar: ScaffoldNavBar(pageController),
     );
   }
 }

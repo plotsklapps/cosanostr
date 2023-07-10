@@ -135,7 +135,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     final nip19 = Nip19();
 
     return Scaffold(
-      appBar: CosaNostrAppBar(
+      appBar: FeedScreenAppBar(
         title: '',
         isConnected: ref.watch(isConnectedProvider),
         keysDialog: IconButton(

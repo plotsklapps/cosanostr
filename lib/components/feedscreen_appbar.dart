@@ -1,7 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
-class CosaNostrAppBar extends ConsumerWidget implements PreferredSizeWidget {
-  const CosaNostrAppBar({
+class FeedScreenAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  const FeedScreenAppBar({
     Key? key,
     required this.title,
     this.keysDialog,

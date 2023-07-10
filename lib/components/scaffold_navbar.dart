@@ -1,8 +1,8 @@
 import 'package:cosanostr/all_imports.dart';
 
-class CosaNostrNavBar extends ConsumerWidget {
+class ScaffoldNavBar extends ConsumerWidget {
   final PageController pageController;
-  const CosaNostrNavBar(
+  const ScaffoldNavBar(
     this.pageController, {
     super.key,
   });
