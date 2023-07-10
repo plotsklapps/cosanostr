@@ -1,5 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
+// Reason to make this a custom widget is to be able to add new features
+// later on. More is not always better though, so keep this minimal.
 class ScaffoldNavBar extends ConsumerWidget {
   final PageController pageController;
   const ScaffoldNavBar(
