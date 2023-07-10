@@ -13,6 +13,11 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class FeedScreenState extends ConsumerState<FeedScreen> {
+  // Some variables that could've been here were moved to their respective
+  // providers. This is because they will soon be used in other screens as
+  // well. Next step is setting up a StreamProvider to handle the stream
+  // from the relay.
+  // TODO: Set up StreamProvider so it can be used throughout the app.
   late Stream<Event> stream;
   final streamController = StreamController<Event>();
 
@@ -82,7 +87,12 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   Future<Stream<Event>> connectToRelay() async {
     final stream = await ref.read(relayApiProvider).connect();
 
+    // This sets up an event listener for relayApiProvider, which will be
+    // triggered whenever relayApiProvider emits a RelayEvent.
     ref.read(relayApiProvider).on((event) {
+      // This code block checks the type of the emitted RelayEvent.
+      // If it is a connect event, isConnectedProvider is set to true.
+      // If it is an error event, isConnectedProvider is set to false.
       if (event == RelayEvent.connect) {
         ref.read(isConnectedProvider.notifier).state = true;
       } else if (event == RelayEvent.error) {
@@ -90,6 +100,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       }
     });
 
+    // This code subscribes to nostr relay and specifies that we only want
+    // to receive events with a kind value of 1 which is registered for short
+    // text note. We also set a limit of 100 events and a tag of nostr.
+    // This tag helps us filter out unwanted events and only receive the ones
+    // that has the "nostr" tag.
     ref.read(relayApiProvider).sub([
       Filter(
         kinds: [1],
