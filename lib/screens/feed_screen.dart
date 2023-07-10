@@ -17,9 +17,6 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   final _controller = StreamController<Event>();
 
   final _secureStorage = const FlutterSecureStorage();
-  String _privateKey = '';
-  String _publicKey = '';
-  bool _keysExist = false;
 
   final _keyController = TextEditingController();
   final _formKey = GlobalKey<FormFieldState>();
@@ -44,11 +41,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     final storedPublicKey = await _secureStorage.read(key: 'publicKey');
 
     if (storedPrivateKey != null && storedPublicKey != null) {
-      setState(() {
-        _privateKey = storedPrivateKey;
-        _publicKey = storedPublicKey;
-        _keysExist = true;
-      });
+      ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
+      ref.read(publicKeyProvider.notifier).state = storedPublicKey;
+      ref.read(keysExistProvider.notifier).state = true;
     }
   }
 
@@ -60,14 +55,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       _secureStorage.write(key: 'privateKey', value: privateKeyHex),
       _secureStorage.write(key: 'publicKey', value: publicKeyHex),
     ]);
+    ref.read(privateKeyProvider.notifier).state = privateKeyHex;
+    ref.read(publicKeyProvider.notifier).state = publicKeyHex;
+    ref.read(keysExistProvider.notifier).state = true;
 
-    setState(() {
-      _privateKey = privateKeyHex;
-      _publicKey = publicKeyHex;
-      _keysExist = true;
-    });
-
-    return _keysExist;
+    return ref.watch(keysExistProvider);
   }
 
   Future<void> _deleteKeysFromStorage() async {
@@ -75,12 +67,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       _secureStorage.delete(key: 'privateKey'),
       _secureStorage.delete(key: 'publicKey'),
     ]);
-
-    setState(() {
-      _privateKey = '';
-      _publicKey = '';
-      _keysExist = false;
-    });
+    ref.read(privateKeyProvider.notifier).state = '';
+    ref.read(publicKeyProvider.notifier).state = '';
+    ref.read(keysExistProvider.notifier).state = false;
   }
 
   Future<bool> generateNewKeys() async {
@@ -152,14 +141,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         keysDialog: IconButton(
             icon: const Icon(Icons.key),
             onPressed: () {
-              _keysExist
+              ref.watch(keysExistProvider)
                   ? keysExistDialog(
-                      nip19.npubEncode(_publicKey),
-                      nip19.nsecEncode(_privateKey),
-                    )
+                      nip19.npubEncode(ref.watch(publicKeyProvider)),
+                      nip19.nsecEncode(ref.watch(privateKeyProvider)))
                   : modalBottomSheet();
             }),
-        deleteKeysDialog: _keysExist
+        deleteKeysDialog: ref.watch(keysExistProvider)
             ? IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () => deleteKeysDialog(),
@@ -215,7 +203,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           ),
         ),
       ),
-      floatingActionButton: _keysExist
+      floatingActionButton: ref.watch(keysExistProvider)
           ? CreatePostFAB(
               publishNote: (note) {
                 ref.read(isNotePublishingProvider.notifier).state = true;
@@ -230,7 +218,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                     content: note!,
                     created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
                   ),
-                  _privateKey,
+                  ref.watch(privateKeyProvider),
                 );
 
                 if (eventApi.verifySignature(event)) {
@@ -351,8 +339,8 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         return KeysExistDialog(
           npubEncoded: npubEncode,
           nsecEncoded: nsecEncode,
-          hexPriv: _privateKey,
-          hexPub: _publicKey,
+          hexPriv: ref.watch(privateKeyProvider),
+          hexPub: ref.watch(publicKeyProvider),
         );
       }),
     );
@@ -369,7 +357,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           onYesPressed: () {
             final currentContext = context;
             _deleteKeysFromStorage().then((_) {
-              if (!_keysExist) {
+              if (!ref.watch(keysExistProvider)) {
                 ScaffoldMessenger.of(currentContext).showSnackBar(
                   NoostSnackBar(
                     label: 'Keys successfully deleted!',

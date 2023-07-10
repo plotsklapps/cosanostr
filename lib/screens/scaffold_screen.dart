@@ -36,32 +36,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
         title: 'CosaNostr',
         isConnected: ref.watch(isConnectedProvider),
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            const DrawerHeader(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('CosaNostr'),
-                Text('Version: 0.0.1'),
-              ],
-            )),
-            ListTile(
-              onTap: () {
-                ref.read(isDarkThemeProvider.notifier).state =
-                    !ref.watch(isDarkThemeProvider);
-              },
-              title: const Text('THEMEMODE'),
-              trailing: ref.watch(isDarkThemeProvider)
-                  ? const Icon(FontAwesomeIcons.ghost)
-                  : const Icon(FontAwesomeIcons.faceFlushed),
-            ),
-            const ListTile(),
-            const ListTile(),
-          ],
-        ),
-      ),
+      drawer: CosaNostrDrawer(ref: ref),
       body: PageView(
         controller: pageController,
         children: const [

@@ -2,6 +2,7 @@ export 'dart:convert';
 
 export 'package:cosanostr/components/cosanostr_appbar.dart';
 export 'package:cosanostr/components/cosanostr_card.dart';
+export 'package:cosanostr/components/cosanostr_drawer.dart';
 export 'package:cosanostr/components/cosanostr_navbar.dart';
 export 'package:cosanostr/components/create_post_fab.dart';
 export 'package:cosanostr/components/delete_keys_dialog.dart';
