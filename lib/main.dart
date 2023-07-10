@@ -15,7 +15,7 @@ class MainEntry extends ConsumerWidget {
       theme: ref.watch(lightThemeProvider),
       darkTheme: ref.watch(darkThemeProvider),
       themeMode: ref.watch(themeModeProvider),
-      home: const FeedScreen(),
+      home: const ResponsiveLayout(),
     );
   }
 }

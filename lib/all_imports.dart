@@ -17,6 +17,7 @@ export 'package:cosanostr/models/nost.dart';
 export 'package:cosanostr/models/timeago.dart';
 export 'package:cosanostr/providers/feedscreen_providers.dart';
 export 'package:cosanostr/providers/theme_providers.dart';
+export 'package:cosanostr/responsive_layout.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/theme.dart';
 export 'package:flex_color_scheme/flex_color_scheme.dart';

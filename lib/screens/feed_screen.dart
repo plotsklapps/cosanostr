@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
 
@@ -169,38 +170,49 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         onRefresh: () async {
           await _resubscribeStream();
         },
-        child: StreamBuilder(
-          stream: _controller.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: ref.watch(eventsProvider).length,
-                itemBuilder: (context, index) {
-                  final event = ref.watch(eventsProvider)[index];
-                  final metadata = ref.watch(metaDataProvider)[event.pubkey];
-                  final nost = Nost(
-                    noteId: event.id,
-                    avatarUrl: metadata?.picture ??
-                        'https://robohash.org/${event.pubkey}',
-                    name: metadata?.name ?? 'Anon',
-                    username: metadata?.displayName ??
-                        (metadata?.display_name ?? 'Anon'),
-                    time: TimeAgo.format(event.created_at),
-                    content: event.content,
-                    pubkey: event.pubkey,
-                  );
-                  return CosaNostrCard(nost: nost);
-                },
+        child: ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(
+            scrollbars: false,
+            dragDevices: <PointerDeviceKind>{
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.stylus,
+            },
+          ),
+          child: StreamBuilder(
+            stream: _controller.stream,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: ref.watch(eventsProvider).length,
+                  itemBuilder: (context, index) {
+                    final event = ref.watch(eventsProvider)[index];
+                    final metadata = ref.watch(metaDataProvider)[event.pubkey];
+                    final nost = Nost(
+                      noteId: event.id,
+                      avatarUrl: metadata?.picture ??
+                          'https://robohash.org/${event.pubkey}',
+                      name: metadata?.name ?? 'Anon',
+                      username: metadata?.displayName ??
+                          (metadata?.display_name ?? 'Anon'),
+                      time: TimeAgo.format(event.created_at),
+                      content: event.content,
+                      pubkey: event.pubkey,
+                    );
+                    return CosaNostrCard(nost: nost);
+                  },
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: Text('Loading....'));
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
               );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text('Loading....'));
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+            },
+          ),
         ),
       ),
       floatingActionButton: _keysExist
