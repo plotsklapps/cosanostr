@@ -28,3 +28,4 @@ export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:google_fonts/google_fonts.dart';
 export 'package:nostr_tools/nostr_tools.dart';
+export 'package:cosanostr/screens/scaffold_screen.dart';
