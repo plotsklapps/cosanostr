@@ -41,7 +41,16 @@ class ScaffoldDrawer extends StatelessWidget {
                 ? const Icon(FontAwesomeIcons.ghost)
                 : const Icon(FontAwesomeIcons.faceFlushed),
           ),
-          const ListTile(),
+          ListTile(
+            onTap: () {
+              ref.read(isThemeIndigoProvider.notifier).state =
+                  !ref.watch(isThemeIndigoProvider);
+            },
+            title: const Text('THEMECOLOR'),
+            trailing: ref.watch(isThemeIndigoProvider)
+                ? const Icon(FontAwesomeIcons.droplet)
+                : const Icon(FontAwesomeIcons.moneyBill),
+          ),
           const ListTile(),
         ],
       ),

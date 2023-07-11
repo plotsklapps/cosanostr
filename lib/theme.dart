@@ -2,7 +2,8 @@ import 'package:cosanostr/all_imports.dart';
 
 class ColorUtils {
   // Light and dark ColorSchemes made by FlexColorScheme v7.1.2.
-// These ColorScheme objects require Flutter 3.7 or later.
+  // These ColorScheme objects require Flutter 3.7 or later.
+  // This is INDIGO NIGHTS colorscheme.
   static const ColorScheme flexSchemeLight = ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xff303f9f),

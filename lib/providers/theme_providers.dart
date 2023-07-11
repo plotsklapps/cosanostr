@@ -6,6 +6,20 @@ final StateProvider<bool> isDarkThemeProvider =
   return true;
 });
 
+final StateProvider<bool> isThemeIndigoProvider =
+    StateProvider<bool>((StateProviderRef<bool> ref) {
+  return true;
+});
+
+final StateProvider<FlexScheme> flexSchemeProvider =
+    StateProvider<FlexScheme>((StateProviderRef<FlexScheme> ref) {
+  if (ref.watch(isThemeIndigoProvider)) {
+    return FlexScheme.indigo;
+  } else {
+    return FlexScheme.money;
+  }
+});
+
 // ThemeMode provider for light/dark theme based on isThemeLightProvider
 final StateProvider<ThemeMode> themeModeProvider =
     StateProvider<ThemeMode>((StateProviderRef<ThemeMode> ref) {
@@ -20,7 +34,7 @@ final StateProvider<ThemeMode> themeModeProvider =
 final StateProvider<ThemeData> lightThemeProvider =
     StateProvider<ThemeData>((StateProviderRef<ThemeData> ref) {
   return FlexThemeData.light(
-    scheme: FlexScheme.indigo,
+    scheme: ref.watch(flexSchemeProvider),
     surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
     blendLevel: 7,
     subThemesData: const FlexSubThemesData(
@@ -87,7 +101,7 @@ final StateProvider<ThemeData> lightThemeProvider =
 final StateProvider<ThemeData> darkThemeProvider =
     StateProvider<ThemeData>((StateProviderRef<ThemeData> ref) {
   return FlexThemeData.dark(
-    scheme: FlexScheme.indigo,
+    scheme: ref.watch(flexSchemeProvider),
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,
     blendLevel: 20,
     subThemesData: const FlexSubThemesData(

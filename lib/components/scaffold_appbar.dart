@@ -19,12 +19,12 @@ class ScaffoldAppBar extends ConsumerWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: Icon(
-            // Use the isConnectedProvider to get the current connection
-            // status and display the appropriate icon.
+            // Use the isConnectedProvider and isDarkThemeProvider to get
+            // the current connection status and themeMode to
+            // display the appropriate icon.
             ref.watch(isConnectedProvider)
                 ? FontAwesomeIcons.solidCircleCheck
                 : FontAwesomeIcons.circleMinus,
-            color: FlexColor.deepPurpleDarkPrimary,
           ),
         ),
       ],
