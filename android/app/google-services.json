@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "505671824716",
+    "project_id": "cosanostr",
+    "storage_bucket": "cosanostr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505671824716:android:e363b64efb1198b1bc0be9",
+        "android_client_info": {
+          "package_name": "dev.plotsklapps.cosanostr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505671824716-0svb4t3vi1j743vmn29b5uf0teur386p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSviI-ef-2QCszPGjjh32lFcQAXnbVeZw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505671824716-0svb4t3vi1j743vmn29b5uf0teur386p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

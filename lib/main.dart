@@ -1,6 +1,12 @@
 import 'package:cosanostr/all_imports.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     // ProviderScope is mandatory for Riverpod to work.
     const ProviderScope(

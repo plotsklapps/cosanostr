@@ -21,6 +21,8 @@ export 'package:cosanostr/responsive_layout.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/screens/scaffold_screen.dart';
 export 'package:cosanostr/theme.dart';
+export 'package:firebase_analytics/firebase_analytics.dart';
+export 'package:firebase_core/firebase_core.dart';
 export 'package:flex_color_scheme/flex_color_scheme.dart';
 export 'package:flutter/material.dart';
 export 'package:flutter_animate/flutter_animate.dart';
