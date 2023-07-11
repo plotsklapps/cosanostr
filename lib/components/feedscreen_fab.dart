@@ -2,12 +2,12 @@ import 'package:cosanostr/all_imports.dart';
 
 class FeedScreenFAB extends StatefulWidget {
   const FeedScreenFAB({
-    Key? key,
+    super.key,
     required this.publishNote,
     required this.isNotePublishing,
-  }) : super(key: key);
+  });
 
-  final Function(String?) publishNote;
+  final void Function(String?) publishNote;
   final bool isNotePublishing;
 
   @override
@@ -17,8 +17,9 @@ class FeedScreenFAB extends StatefulWidget {
 }
 
 class FeedScreenFABState extends State<FeedScreenFAB> {
-  final noteController = TextEditingController();
-  final GlobalKey<FormFieldState> formKey = GlobalKey<FormFieldState>();
+  final TextEditingController noteController = TextEditingController();
+  final GlobalKey<FormFieldState<dynamic>> formKey =
+      GlobalKey<FormFieldState<dynamic>>();
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class FeedScreenFABState extends State<FeedScreenFAB> {
       tooltip: 'Create a new Nost',
       label: const Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           Text('NEW'),
           SizedBox(width: 8.0),
           Icon(FontAwesomeIcons.featherPointed),
@@ -34,56 +35,58 @@ class FeedScreenFABState extends State<FeedScreenFAB> {
       ),
       onPressed: () async {
         noteController.clear();
-        await showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: ((context) {
-              return AlertDialog(
-                icon: const Icon(FontAwesomeIcons.featherPointed),
-                title: const Text('Create a Nost'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                        controller: noteController,
-                        key: formKey,
-                        maxLines: 5,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return 'Please enter your nost';
-                          }
-                          return null;
-                        }),
-                    const SizedBox(height: 16.0),
-                    widget.isNotePublishing
-                        ? const Center(child: CircularProgressIndicator())
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Cancel'),
-                              ),
-                              const SizedBox(width: 16),
-                              ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    widget.publishNote(
-                                        noteController.text.trim());
-                                  } else {
-                                    formKey.currentState?.setState(() {});
-                                  }
-                                },
-                                child: const Text('NOST!'),
-                              ),
-                            ],
-                          )
-                  ],
-                ),
-              );
-            }));
+        await showDialog<void>(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              icon: const Icon(FontAwesomeIcons.featherPointed),
+              title: const Text('Create a Nost'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextFormField(
+                    controller: noteController,
+                    key: formKey,
+                    maxLines: 5,
+                    validator: (String? value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Please enter your nost';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  if (widget.isNotePublishing)
+                    const Center(child: CircularProgressIndicator())
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Cancel'),
+                        ),
+                        const SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              widget.publishNote(noteController.text.trim());
+                            } else {
+                              formKey.currentState?.setState(() {});
+                            }
+                          },
+                          child: const Text('NOST!'),
+                        ),
+                      ],
+                    )
+                ],
+              ),
+            );
+          },
+        );
       },
     );
   }

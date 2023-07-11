@@ -6,7 +6,7 @@ class ResponsiveLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (context, constraints) {
+      builder: (BuildContext context, BoxConstraints constraints) {
         // Pretty basic, just show a Scaffold with a PhoneContainer in the
         // center containing the entire application as a form of
         // responsiveness for bigger screens.

@@ -1,17 +1,12 @@
 export 'dart:convert';
 
-export 'package:cosanostr/components/delete_keys_dialog.dart';
+export 'package:cosanostr/components/deletekeys_dialog.dart';
 export 'package:cosanostr/components/feedscreen_appbar.dart';
 export 'package:cosanostr/components/feedscreen_card.dart';
 export 'package:cosanostr/components/feedscreen_fab.dart';
-export 'package:cosanostr/components/keys_exist_dialog.dart';
-export 'package:cosanostr/components/keys_option_modal_bottom_sheet.dart';
-export 'package:cosanostr/components/noost_curve_button.dart';
-export 'package:cosanostr/components/noost_ok_button.dart';
-export 'package:cosanostr/components/noost_snackbar.dart';
-export 'package:cosanostr/components/noost_text_button.dart';
-export 'package:cosanostr/components/noost_text_form_field.dart';
-export 'package:cosanostr/components/paste_private_key_dialog.dart';
+export 'package:cosanostr/components/keysexist_dialog.dart';
+export 'package:cosanostr/components/keysoption_bottomsheet.dart';
+export 'package:cosanostr/components/pasteprivatekey_dialog.dart';
 export 'package:cosanostr/components/phone_container.dart';
 export 'package:cosanostr/components/scaffold_appbar.dart';
 export 'package:cosanostr/components/scaffold_drawer.dart';

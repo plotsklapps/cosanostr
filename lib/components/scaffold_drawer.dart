@@ -16,16 +16,18 @@ class ScaffoldDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
-        children: [
+        children: <Widget>[
           const DrawerHeader(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('CosaNostr'),
-              // Bump this version every time something insanely cool is added.
-              Text('Version: 0.0.1'),
-            ],
-          )),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text('CosaNostr'),
+                // Bump this version every time something insanely cool is
+                // added.
+                Text('Version: 0.0.1'),
+              ],
+            ),
+          ),
           ListTile(
             onTap: () {
               // Riverpod's way of toggling a bool (I think).

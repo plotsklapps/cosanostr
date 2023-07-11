@@ -10,14 +10,14 @@ class FeedScreenCard extends StatelessWidget {
 
   List<String>? extractImage(String text) {
     final RegExp exp = RegExp(
-      r"(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)",
+      r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)',
       caseSensitive: false,
       multiLine: true,
     );
 
     final Iterable<Match> matches = exp.allMatches(text);
 
-    final List<String> imageLinks = matches.map((match) {
+    final List<String> imageLinks = matches.map((Match match) {
       return match.group(0)!;
     }).toList();
 
@@ -31,7 +31,7 @@ class FeedScreenCard extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           ListTile(
             leading: CircleAvatar(
               backgroundImage: FadeInImage(
@@ -52,7 +52,7 @@ class FeedScreenCard extends StatelessWidget {
             Card(
               child: Center(
                 child: Stack(
-                  children: [
+                  children: <Widget>[
                     const Placeholder(
                       fallbackHeight: 200,
                       color: Colors.transparent,

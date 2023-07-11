@@ -15,7 +15,7 @@ class ScaffoldAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return AppBar(
       title: const Text('CosaNostr'),
       centerTitle: true,
-      actions: [
+      actions: <Widget>[
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: Icon(

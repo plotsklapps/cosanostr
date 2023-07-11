@@ -18,7 +18,7 @@ final StateProvider<ThemeMode> themeModeProvider =
 });
 
 final StateProvider<ThemeData> lightThemeProvider =
-    StateProvider<ThemeData>((ref) {
+    StateProvider<ThemeData>((StateProviderRef<ThemeData> ref) {
   return FlexThemeData.light(
     scheme: FlexScheme.indigo,
     surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
@@ -85,7 +85,7 @@ final StateProvider<ThemeData> lightThemeProvider =
 });
 
 final StateProvider<ThemeData> darkThemeProvider =
-    StateProvider<ThemeData>((ref) {
+    StateProvider<ThemeData>((StateProviderRef<ThemeData> ref) {
   return FlexThemeData.dark(
     scheme: FlexScheme.indigo,
     surfaceMode: FlexSurfaceMode.highScaffoldLowSurface,

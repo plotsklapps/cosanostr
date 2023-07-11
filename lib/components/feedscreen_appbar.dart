@@ -2,13 +2,13 @@ import 'package:cosanostr/all_imports.dart';
 
 class FeedScreenAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const FeedScreenAppBar({
-    Key? key,
+    super.key,
     required this.title,
     this.keysDialog,
     this.popupMenu,
     required this.isConnected,
     this.deleteKeysDialog,
-  }) : super(key: key);
+  });
 
   final String title;
   final Widget? keysDialog;
@@ -28,7 +28,7 @@ class FeedScreenAppBar extends ConsumerWidget implements PreferredSizeWidget {
       elevation: 0,
       title: Text(title),
       centerTitle: true,
-      actions: [
+      actions: <Widget>[
         popupMenu ?? Container(),
         deleteKeysDialog ?? Container(),
       ],

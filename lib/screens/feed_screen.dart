@@ -17,22 +17,26 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   // providers. This is because they will soon be used in other screens as
   // well. Next step is setting up a StreamProvider to handle the stream
   // from the relay.
-  // TODO: Set up StreamProvider so it can be used throughout the app.
+  // TODO(plotsklapps): Set up StreamProvider so it can be used throughout
+  //  the app.
   late Stream<Event> stream;
-  final streamController = StreamController<Event>();
+  final StreamController<Event> streamController = StreamController<Event>();
 
-  final secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  final keyController = TextEditingController();
-  final formKey = GlobalKey<FormFieldState>();
-  final keyGenerator = KeyApi();
-  final nip19 = Nip19();
+  final TextEditingController keyController = TextEditingController();
+  final GlobalKey<FormFieldState<dynamic>> formKey =
+      GlobalKey<FormFieldState<dynamic>>();
+  final KeyApi keyGenerator = KeyApi();
+  final Nip19 nip19 = Nip19();
 
   @override
   void initState() {
     super.initState();
-    getKeysFromStorage();
-    initStream();
+    Future<void>.delayed(Duration.zero, () async {
+      await getKeysFromStorage();
+      await initStream();
+    });
   }
 
   @override
@@ -42,8 +46,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> getKeysFromStorage() async {
-    final storedPrivateKey = await secureStorage.read(key: 'privateKey');
-    final storedPublicKey = await secureStorage.read(key: 'publicKey');
+    final String? storedPrivateKey =
+        await secureStorage.read(key: 'privateKey');
+    final String? storedPublicKey = await secureStorage.read(key: 'publicKey');
 
     if (storedPrivateKey != null && storedPublicKey != null) {
       ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
@@ -56,7 +61,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     String privateKeyHex,
     String publicKeyHex,
   ) async {
-    Future.wait([
+    await Future.wait(<Future<void>>[
       secureStorage.write(key: 'privateKey', value: privateKeyHex),
       secureStorage.write(key: 'publicKey', value: publicKeyHex),
     ]);
@@ -68,7 +73,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> deleteKeysFromStorage() async {
-    Future.wait([
+    await Future.wait(<Future<void>>[
       secureStorage.delete(key: 'privateKey'),
       secureStorage.delete(key: 'publicKey'),
     ]);
@@ -78,18 +83,18 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<bool> generateNewKeys() async {
-    final newPrivateKey = keyGenerator.generatePrivateKey();
-    final newPublicKey = keyGenerator.getPublicKey(newPrivateKey);
+    final String newPrivateKey = keyGenerator.generatePrivateKey();
+    final String newPublicKey = keyGenerator.getPublicKey(newPrivateKey);
 
-    return await addKeysToStorage(newPrivateKey, newPublicKey);
+    return addKeysToStorage(newPrivateKey, newPublicKey);
   }
 
   Future<Stream<Event>> connectToRelay() async {
-    final stream = await ref.read(relayApiProvider).connect();
+    final Stream<Message> stream = await ref.read(relayApiProvider).connect();
 
     // This sets up an event listener for relayApiProvider, which will be
     // triggered whenever relayApiProvider emits a RelayEvent.
-    ref.read(relayApiProvider).on((event) {
+    ref.read(relayApiProvider).on((RelayEvent event) {
       // This code block checks the type of the emitted RelayEvent.
       // If it is a connect event, isConnectedProvider is set to true.
       // If it is an error event, isConnectedProvider is set to false.
@@ -105,22 +110,20 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     // text note. We also set a limit of 100 events and a tag of nostr.
     // This tag helps us filter out unwanted events and only receive the ones
     // that has the "nostr" tag.
-    ref.read(relayApiProvider).sub([
+    ref.read(relayApiProvider).sub(<Filter>[
       Filter(
-        kinds: [1],
+        kinds: <int>[1],
         limit: 100,
-        t: ["nostr"],
+        t: <String>['nostr'],
       )
     ]);
 
-    return stream.where((message) {
-      return message.type == 'EVENT';
-    }).map((message) {
-      return message.message;
-    });
+    return stream
+        .where((Message message) => message.type == 'EVENT')
+        .map((Message message) => message.message as Event);
   }
 
-  void initStream() async {
+  Future<void> initStream() async {
     // This line sets up a loop that listens for events from the stream object.
     // The await for construct allows the loop to be asynchronous, meaning
     // that it can listen for incoming events while continuing to run other
@@ -130,11 +133,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     // message, the code inside the if block is executed. There are other
     // types of messages that can be received as well, such as "REQ", "CLOSE",
     // "NOTICE", and "OK", but we're only interested in events for now.
-    stream.listen((message) {
+    stream.listen((Event message) {
       // This line extracts the message object from the incoming message and
       // assigns it to the event variable. This event object contains all of
       // the information we need about the incoming event.
-      final event = message;
+      final Event event = message;
       // If the kind of the event is 1, the event object is added to the
       // eventProvider list. Then, a new subscription is created to receive
       // messages from the event.pubkey of the author with a kind value of 0.
@@ -154,8 +157,8 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       // can associate each note with its corresponding user metadata.
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
-        ref.read(relayApiProvider).sub([
-          Filter(kinds: [0], authors: [event.pubkey])
+        ref.read(relayApiProvider).sub(<Filter>[
+          Filter(kinds: <int>[0], authors: <String>[event.pubkey])
         ]);
         // If the kind of the event is 0, the content of the event is decoded
         // from JSON and assigned to a metadata variable. This metadata is
@@ -163,7 +166,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         // metaDataProvider map. This allows us to keep track of the metadata
         // for each user who creates a note.
       } else if (event.kind == 0) {
-        final metadata = Metadata.fromJson(jsonDecode(event.content));
+        final Metadata metadata = Metadata.fromJson(
+          jsonDecode(event.content) as Map<String, dynamic>,
+        );
         ref.read(metaDataProvider)[event.pubkey] = metadata;
       }
       // Finally, the incoming message is added to the StreamController.
@@ -174,36 +179,36 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> resubscribeStream() async {
-    await Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        ref.read(eventsProvider).clear();
-        ref.read(metaDataProvider).clear();
-      });
+    await Future<void>.delayed(const Duration(seconds: 1), () {
+      ref.read(eventsProvider).clear();
+      ref.read(metaDataProvider).clear();
       initStream(); // Reconnect and resubscribe to the filter
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final nip19 = Nip19();
+    final Nip19 nip19 = Nip19();
 
     return Scaffold(
       appBar: FeedScreenAppBar(
         title: '',
         isConnected: ref.watch(isConnectedProvider),
         keysDialog: IconButton(
-            icon: const Icon(Icons.key),
-            onPressed: () {
-              ref.watch(keysExistProvider)
-                  ? keysExistDialog(
-                      nip19.npubEncode(ref.watch(publicKeyProvider)),
-                      nip19.nsecEncode(ref.watch(privateKeyProvider)))
-                  : modalBottomSheet();
-            }),
+          icon: const Icon(Icons.key),
+          onPressed: () async {
+            await ref.watch(keysExistProvider)
+                ? await keysExistDialog(
+                    nip19.npubEncode(ref.watch(publicKeyProvider)),
+                    nip19.nsecEncode(ref.watch(privateKeyProvider)),
+                  )
+                : modalBottomSheet();
+          },
+        ),
         deleteKeysDialog: ref.watch(keysExistProvider)
             ? IconButton(
                 icon: const Icon(Icons.delete),
-                onPressed: () => deleteKeysDialog(),
+                onPressed: deleteKeysDialog,
               )
             : Container(),
       ),
@@ -227,11 +232,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           ),
           // StreamBuilder is a widget that listens to the streamController
           // and returns a widget tree based on the state of the stream.
-          child: StreamBuilder(
+          child: StreamBuilder<Event>(
             stream: streamController.stream,
             // The builder callback is called whenever a new event is
             // emitted from the stream.
-            builder: (context, snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
               if (snapshot.hasData) {
                 // Inside the builder callback, the snapshot object
                 // contains the latest event from the stream.
@@ -242,16 +247,17 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                   // The itemCount property of the ListView.builder is set
                   // to eventProvider list length.
                   itemCount: ref.watch(eventsProvider).length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (BuildContext context, int index) {
                     // For each event, we create a Nost object that
                     // encapsulates the details of the event, including the
                     // id, avatarUrl, name, username, time, content, and
                     // pubkey. Here is the power of the metaDataProvider map
                     // as we're able to map the event pubkey with the
                     // metadata of the author.
-                    final event = ref.watch(eventsProvider)[index];
-                    final metadata = ref.watch(metaDataProvider)[event.pubkey];
-                    final nost = Nost(
+                    final Event event = ref.watch(eventsProvider)[index];
+                    final Metadata? metadata =
+                        ref.watch(metaDataProvider)[event.pubkey];
+                    final Nost nost = Nost(
                       noteId: event.id,
                       avatarUrl: metadata?.picture ??
                           'https://robohash.org/${event.pubkey}',
@@ -271,13 +277,14 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 // If snapshot.connectionState is ConnectionState.waiting,
                 // we display a loading indicator.
                 return const Center(
-                    child: Column(
-                  children: [
-                    Text('LOADING...'),
-                    SizedBox(height: 8.0),
-                    CircularProgressIndicator(),
-                  ],
-                ));
+                  child: Column(
+                    children: <Widget>[
+                      Text('LOADING...'),
+                      SizedBox(height: 8.0),
+                      CircularProgressIndicator(),
+                    ],
+                  ),
+                );
               } else if (snapshot.hasError) {
                 // If snapshot.hasError is true, we display an error message.
                 return Center(child: Text('Error: ${snapshot.error}'));
@@ -286,7 +293,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               // loading indicator.
               return const Center(
                 child: Column(
-                  children: [
+                  children: <Widget>[
                     Text('LOADING...'),
                     SizedBox(height: 8.0),
                     CircularProgressIndicator(),
@@ -299,15 +306,15 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       ),
       floatingActionButton: ref.watch(keysExistProvider)
           ? FeedScreenFAB(
-              publishNote: (note) {
+              publishNote: (String? note) async {
                 ref.read(isNotePublishingProvider.notifier).state = true;
 
-                final eventApi = EventApi();
-                final event = eventApi.finishEvent(
+                final EventApi eventApi = EventApi();
+                final Event event = eventApi.finishEvent(
                   Event(
                     kind: 1,
-                    tags: [
-                      ['t', 'nostr']
+                    tags: <List<String>>[
+                      <String>['t', 'nostr']
                     ],
                     content: note!,
                     created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
@@ -318,19 +325,39 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 if (eventApi.verifySignature(event)) {
                   try {
                     ref.read(relayApiProvider).publish(event);
-                    resubscribeStream();
+                    await resubscribeStream().then((_) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Yay! Nost Published!'),
+                          action: SnackBarAction(
+                            label: 'OK',
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    });
+                  } catch (error) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      NoostSnackBar(label: 'Congratulations! Noost Published!'),
+                      SnackBar(
+                        content: Text('Oops: $error'),
+                        action: SnackBarAction(
+                          label: 'OK',
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        behavior: SnackBarBehavior.floating,
+                      ),
                     );
-                  } catch (_) {
-                    ScaffoldMessenger.of(context).showSnackBar(NoostSnackBar(
-                      label: 'Oops! Something went wrong!',
-                      isWarning: true,
-                    ));
                   }
                 }
                 ref.read(isNotePublishingProvider.notifier).state = false;
-                Navigator.pop(context);
+                if (mounted) {
+                  Navigator.pop(context);
+                }
               },
               isNotePublishing: ref.watch(isNotePublishingProvider),
             )
@@ -338,17 +365,41 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  void modalBottomSheet() {
-    showModalBottomSheet(
+  Future<void> modalBottomSheet() async {
+    await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return KeysOptionModalBottomSheet(
+        return KeysOptionBottomSheet(
           generateNewKeyPressed: () {
-            final currentContext = context;
-            generateNewKeys().then((keysGenerated) {
+            final BuildContext currentContext = context;
+            generateNewKeys().then((bool keysGenerated) {
               if (keysGenerated) {
                 ScaffoldMessenger.of(currentContext).showSnackBar(
-                    NoostSnackBar(label: 'Congratulations! Keys Generated!'));
+                  SnackBar(
+                    content:
+                        const Text('Welcome to CosaNostr! Keys generated!'),
+                    action: SnackBarAction(
+                      label: 'OK',
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              } else {
+                ScaffoldMessenger.of(currentContext).showSnackBar(
+                  SnackBar(
+                    content: const Text('Something went wrong...'),
+                    action: SnackBarAction(
+                      label: 'OK',
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
               }
             });
             Navigator.pop(context);
@@ -363,22 +414,23 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  void pastePrivateKeyDialog() {
-    showDialog(
+  Future<void> pastePrivateKeyDialog() async {
+    await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return PastePrivateKeyDialog(
           keyController: keyController,
           formKey: formKey,
-          keyValidator: (value) {
+          keyValidator: (String? value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your private key.';
             }
 
             try {
-              bool isValidHexKey = keyGenerator.isValidPrivateKey(value);
-              bool isValidNsec = value.trim().startsWith('nsec') &&
-                  keyGenerator.isValidPrivateKey(nip19.decode(value)['data']);
+              final bool isValidHexKey = keyGenerator.isValidPrivateKey(value);
+              final bool isValidNsec = value.trim().startsWith('nsec') &&
+                  keyGenerator
+                      .isValidPrivateKey(nip19.decode(value)['data'] as String);
 
               if (!(isValidHexKey || isValidNsec)) {
                 return 'Your private key is not valid.';
@@ -397,18 +449,29 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               String publicKeyHex;
 
               if (privateKeyHex.startsWith('nsec')) {
-                final decoded = nip19.decode(privateKeyHex);
-                privateKeyHex = decoded['data'];
+                final Map<String, dynamic> decoded =
+                    nip19.decode(privateKeyHex);
+                privateKeyHex = decoded['data'] as String;
                 publicKeyHex = keyGenerator.getPublicKey(privateKeyHex);
               } else {
                 publicKeyHex = keyGenerator.getPublicKey(privateKeyHex);
               }
 
-              addKeysToStorage(privateKeyHex, publicKeyHex).then((keysAdded) {
+              addKeysToStorage(privateKeyHex, publicKeyHex)
+                  .then((bool keysAdded) {
                 if (keysAdded) {
                   keyController.clear();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    NoostSnackBar(label: 'Congratulations! Keys Stored!'),
+                    SnackBar(
+                      content: const Text('Keys successfully deleted!'),
+                      action: SnackBarAction(
+                        label: 'OK',
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                    ),
                   );
                 }
               });
@@ -426,36 +489,41 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  void keysExistDialog(String npubEncode, String nsecEncode) async {
-    await showDialog(
+  Future<void> keysExistDialog(String npubEncode, String nsecEncode) async {
+    await showDialog<void>(
       context: context,
-      builder: ((context) {
+      builder: (BuildContext context) {
         return KeysExistDialog(
-          npubEncoded: npubEncode,
-          nsecEncoded: nsecEncode,
-          hexPriv: ref.watch(privateKeyProvider),
-          hexPub: ref.watch(publicKeyProvider),
+          npubEncode,
+          nsecEncode,
+          ref.watch(privateKeyProvider),
+          ref.watch(publicKeyProvider),
         );
-      }),
+      },
     );
   }
 
-  void deleteKeysDialog() async {
-    await showDialog(
+  Future<void> deleteKeysDialog() async {
+    await showDialog<void>(
       context: context,
-      builder: ((context) {
+      builder: (BuildContext context) {
         return DeleteKeysDialog(
           onNoPressed: () {
             Navigator.pop(context);
           },
           onYesPressed: () {
-            final currentContext = context;
             deleteKeysFromStorage().then((_) {
               if (!ref.watch(keysExistProvider)) {
-                ScaffoldMessenger.of(currentContext).showSnackBar(
-                  NoostSnackBar(
-                    label: 'Keys successfully deleted!',
-                    isWarning: true,
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Keys successfully deleted!'),
+                    action: SnackBarAction(
+                      label: 'OK',
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                    behavior: SnackBarBehavior.floating,
                   ),
                 );
               }
@@ -463,7 +531,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             Navigator.pop(context);
           },
         );
-      }),
+      },
     );
   }
 }
