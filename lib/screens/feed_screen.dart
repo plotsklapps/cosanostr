@@ -202,7 +202,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                     nip19.npubEncode(ref.watch(publicKeyProvider)),
                     nip19.nsecEncode(ref.watch(privateKeyProvider)),
                   )
-                : modalBottomSheet();
+                : keysOptionDialog();
           },
         ),
         deleteKeysDialog: ref.watch(keysExistProvider)
@@ -353,11 +353,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  Future<void> modalBottomSheet() async {
+  Future<void> keysOptionDialog() async {
     await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return KeysOptionBottomSheet(
+        return KeysOptionDialog(
           generateNewKeyPressed: () {
             generateNewKeys().then((bool keysGenerated) {
               if (keysGenerated) {
