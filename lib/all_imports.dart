@@ -11,6 +11,7 @@ export 'package:cosanostr/components/phone_container.dart';
 export 'package:cosanostr/components/scaffold_appbar.dart';
 export 'package:cosanostr/components/scaffold_drawer.dart';
 export 'package:cosanostr/components/scaffold_navbar.dart';
+export 'package:cosanostr/components/scaffold_snackbar.dart';
 export 'package:cosanostr/models/nost.dart';
 export 'package:cosanostr/models/timeago.dart';
 export 'package:cosanostr/providers/feedscreen_providers.dart';

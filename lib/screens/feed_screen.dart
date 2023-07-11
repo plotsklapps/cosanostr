@@ -327,29 +327,17 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                     ref.read(relayApiProvider).publish(event);
                     await resubscribeStream().then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Yay! Nost Published!'),
-                          action: SnackBarAction(
-                            label: 'OK',
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                          behavior: SnackBarBehavior.floating,
+                        ScaffoldSnackBar(
+                          context: context,
+                          content: const Text('Yay! Nost published!'),
                         ),
                       );
                     });
                   } catch (error) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
+                      ScaffoldSnackBar(
+                        context: context,
                         content: Text('Oops: $error'),
-                        action: SnackBarAction(
-                          label: 'OK',
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        behavior: SnackBarBehavior.floating,
                       ),
                     );
                   }
@@ -371,33 +359,19 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       builder: (BuildContext context) {
         return KeysOptionBottomSheet(
           generateNewKeyPressed: () {
-            final BuildContext currentContext = context;
             generateNewKeys().then((bool keysGenerated) {
               if (keysGenerated) {
-                ScaffoldMessenger.of(currentContext).showSnackBar(
-                  SnackBar(
-                    content:
-                        const Text('Welcome to CosaNostr! Keys generated!'),
-                    action: SnackBarAction(
-                      label: 'OK',
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    behavior: SnackBarBehavior.floating,
+                ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldSnackBar(
+                    context: context,
+                    content: const Text('Congratulations! New keys generated!'),
                   ),
                 );
               } else {
-                ScaffoldMessenger.of(currentContext).showSnackBar(
-                  SnackBar(
-                    content: const Text('Something went wrong...'),
-                    action: SnackBarAction(
-                      label: 'OK',
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    behavior: SnackBarBehavior.floating,
+                ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldSnackBar(
+                    context: context,
+                    content: const Text('Oops! Something went wrong!'),
                   ),
                 );
               }
@@ -462,15 +436,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 if (keysAdded) {
                   keyController.clear();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Keys successfully deleted!'),
-                      action: SnackBarAction(
-                        label: 'OK',
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                    ScaffoldSnackBar(
+                      context: context,
+                      content: const Text(
+                        'Congratulations! Private keys securely stored!',
                       ),
-                      behavior: SnackBarBehavior.floating,
                     ),
                   );
                 }
@@ -515,15 +485,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             deleteKeysFromStorage().then((_) {
               if (!ref.watch(keysExistProvider)) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                  ScaffoldSnackBar(
+                    context: context,
                     content: const Text('Keys successfully deleted!'),
-                    action: SnackBarAction(
-                      label: 'OK',
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                    behavior: SnackBarBehavior.floating,
                   ),
                 );
               }
