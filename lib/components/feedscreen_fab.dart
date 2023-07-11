@@ -51,7 +51,7 @@ class FeedScreenFABState extends State<FeedScreenFAB> {
                     maxLines: 5,
                     validator: (String? value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your nost';
+                        return 'Nost appears to be empty';
                       }
                       return null;
                     },

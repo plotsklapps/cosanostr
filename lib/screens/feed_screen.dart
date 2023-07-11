@@ -195,7 +195,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         title: '',
         isConnected: ref.watch(isConnectedProvider),
         keysDialog: IconButton(
-          icon: const Icon(Icons.key),
+          icon: const Icon(FontAwesomeIcons.key),
           onPressed: () async {
             await ref.watch(keysExistProvider)
                 ? await keysExistDialog(
@@ -207,7 +207,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         ),
         deleteKeysDialog: ref.watch(keysExistProvider)
             ? IconButton(
-                icon: const Icon(Icons.delete),
+                icon: const Icon(FontAwesomeIcons.solidTrashCan),
                 onPressed: deleteKeysDialog,
               )
             : Container(),
@@ -354,7 +354,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> keysOptionDialog() async {
-    await showModalBottomSheet<void>(
+    await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
         return KeysOptionDialog(

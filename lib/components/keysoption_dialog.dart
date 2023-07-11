@@ -26,16 +26,16 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
           Divider(),
           Text(
             'Please choose your poison:',
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.end,
           ),
         ],
       ),
       actions: <Widget>[
-        TextButton(
+        ElevatedButton(
           onPressed: generateNewKeyPressed,
           child: const Text('GENERATE NEW KEYS'),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: inputPrivateKeyPressed,
           child: const Text('USE YOUR PRIVATE KEY'),
         ),

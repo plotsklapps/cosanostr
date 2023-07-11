@@ -5,7 +5,7 @@ export 'package:cosanostr/components/feedscreen_appbar.dart';
 export 'package:cosanostr/components/feedscreen_card.dart';
 export 'package:cosanostr/components/feedscreen_fab.dart';
 export 'package:cosanostr/components/keysexist_dialog.dart';
-export 'package:cosanostr/components/keysoption_bottomsheet.dart';
+export 'package:cosanostr/components/keysoption_dialog.dart';
 export 'package:cosanostr/components/pasteprivatekey_dialog.dart';
 export 'package:cosanostr/components/phone_container.dart';
 export 'package:cosanostr/components/scaffold_appbar.dart';

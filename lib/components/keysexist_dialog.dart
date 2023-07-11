@@ -43,6 +43,7 @@ class KeysExistDialog extends ConsumerWidget {
           SelectableText(
             ref.watch(isHexProvider) ? hexPub : npubEncoded,
           ),
+          const SizedBox(height: 16.0),
           const Text(
             'Private Key',
             style: TextStyle(
