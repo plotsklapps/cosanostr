@@ -3,6 +3,22 @@ import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
 
+class FeedScreenLogic {
+  Future<void> getKeysFromStorage(WidgetRef ref) async {
+    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
+
+    final String? storedPrivateKey =
+        await secureStorage.read(key: 'privateKey');
+    final String? storedPublicKey = await secureStorage.read(key: 'publicKey');
+
+    if (storedPrivateKey != null && storedPublicKey != null) {
+      ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
+      ref.read(publicKeyProvider.notifier).state = storedPublicKey;
+      ref.read(keysExistProvider.notifier).state = true;
+    }
+  }
+}
+
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
@@ -27,7 +43,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   void initState() {
     super.initState();
     Future<void>.delayed(Duration.zero, () async {
-      await getKeysFromStorage();
+      await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
     });
   }
@@ -37,20 +53,6 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     ref.read(relayApiProvider).close();
     keyController.dispose();
     super.dispose();
-  }
-
-  Future<void> getKeysFromStorage() async {
-    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
-
-    final String? storedPrivateKey =
-        await secureStorage.read(key: 'privateKey');
-    final String? storedPublicKey = await secureStorage.read(key: 'publicKey');
-
-    if (storedPrivateKey != null && storedPublicKey != null) {
-      ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
-      ref.read(publicKeyProvider.notifier).state = storedPublicKey;
-      ref.read(keysExistProvider.notifier).state = true;
-    }
   }
 
   Future<bool> addKeysToStorage(
