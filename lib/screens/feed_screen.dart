@@ -3,22 +3,6 @@ import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
 
-class FeedScreenLogic {
-  Future<void> getKeysFromStorage(WidgetRef ref) async {
-    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
-
-    final String? storedPrivateKey =
-        await secureStorage.read(key: 'privateKey');
-    final String? storedPublicKey = await secureStorage.read(key: 'publicKey');
-
-    if (storedPrivateKey != null && storedPublicKey != null) {
-      ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
-      ref.read(publicKeyProvider.notifier).state = storedPublicKey;
-      ref.read(keysExistProvider.notifier).state = true;
-    }
-  }
-}
-
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
@@ -55,81 +39,12 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     super.dispose();
   }
 
-  Future<bool> addKeysToStorage(
-    String privateKeyHex,
-    String publicKeyHex,
-  ) async {
-    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
-    await Future.wait(<Future<void>>[
-      secureStorage.write(key: 'privateKey', value: privateKeyHex),
-      secureStorage.write(key: 'publicKey', value: publicKeyHex),
-    ]);
-    ref.read(privateKeyProvider.notifier).state = privateKeyHex;
-    ref.read(publicKeyProvider.notifier).state = publicKeyHex;
-    ref.read(keysExistProvider.notifier).state = true;
-
-    return ref.watch(keysExistProvider);
-  }
-
-  Future<void> deleteKeysFromStorage() async {
-    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
-    await Future.wait(<Future<void>>[
-      secureStorage.delete(key: 'privateKey'),
-      secureStorage.delete(key: 'publicKey'),
-    ]);
-    ref.read(privateKeyProvider.notifier).state = '';
-    ref.read(publicKeyProvider.notifier).state = '';
-    ref.read(keysExistProvider.notifier).state = false;
-  }
-
-  Future<bool> generateNewKeys() async {
-    final String newPrivateKey = ref.watch(keyApiProvider).generatePrivateKey();
-    final String newPublicKey =
-        ref.watch(keyApiProvider).getPublicKey(newPrivateKey);
-
-    return addKeysToStorage(newPrivateKey, newPublicKey);
-  }
-
-  Future<Stream<Event>> connectToRelay() async {
-    final Stream<Message> stream = await ref.read(relayApiProvider).connect();
-
-    // This sets up an event listener for relayApiProvider, which will be
-    // triggered whenever relayApiProvider emits a RelayEvent.
-    ref.read(relayApiProvider).on((RelayEvent event) {
-      // This code block checks the type of the emitted RelayEvent.
-      // If it is a connect event, isConnectedProvider is set to true.
-      // If it is an error event, isConnectedProvider is set to false.
-      if (event == RelayEvent.connect) {
-        ref.read(isConnectedProvider.notifier).state = true;
-      } else if (event == RelayEvent.error) {
-        ref.read(isConnectedProvider.notifier).state = false;
-      }
-    });
-
-    // This code subscribes to nostr relay and specifies that we only want
-    // to receive events with a kind value of 1 which is registered for short
-    // text note. We also set a limit of 100 events and a tag of nostr.
-    // This tag helps us filter out unwanted events and only receive the ones
-    // that has the "nostr" tag.
-    ref.read(relayApiProvider).sub(<Filter>[
-      Filter(
-        kinds: <int>[1],
-        limit: 100,
-        t: <String>['nostr'],
-      )
-    ]);
-
-    return stream
-        .where((Message message) => message.type == 'EVENT')
-        .map((Message message) => message.message as Event);
-  }
-
   Future<void> initStream() async {
     // This line sets up a loop that listens for events from the stream object.
     // The await for construct allows the loop to be asynchronous, meaning
     // that it can listen for incoming events while continuing to run other
     // parts of the program.
-    stream = await connectToRelay();
+    stream = await FeedScreenLogic().connectToRelay(ref);
     // This line checks the type of the incoming message. If it is an event
     // message, the code inside the if block is executed. There are other
     // types of messages that can be received as well, such as "REQ", "CLOSE",
@@ -179,17 +94,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     });
   }
 
-  Future<void> resubscribeStream() async {
-    await Future<void>.delayed(const Duration(seconds: 1), () {
-      ref.read(eventsProvider).clear();
-      ref.read(metaDataProvider).clear();
-      initStream(); // Reconnect and resubscribe to the filter
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Nip19 nip19 = Nip19();
+    final Nip19 nip19 = ref.watch(nip19Provider);
 
     return Scaffold(
       appBar: FeedScreenAppBar(
@@ -216,7 +123,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       // Pull to refresh, aaahhh!
       body: RefreshIndicator(
         onRefresh: () async {
-          await resubscribeStream();
+          await FeedScreenLogic().resubscribeStream(ref);
         },
         // This is used to provide better scrolling experience on web.
         // It disables the scrollbar and enables more input devices then
@@ -326,7 +233,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 if (eventApi.verifySignature(event)) {
                   try {
                     ref.read(relayApiProvider).publish(event);
-                    await resubscribeStream().then((_) {
+                    await FeedScreenLogic().resubscribeStream(ref).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(
                           context: context,
@@ -360,7 +267,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       builder: (BuildContext context) {
         return KeysOptionDialog(
           generateNewKeyPressed: () {
-            generateNewKeys().then((bool keysGenerated) {
+            FeedScreenLogic().generateNewKeys(ref).then((bool keysGenerated) {
               if (keysGenerated) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   ScaffoldSnackBar(
@@ -437,7 +344,12 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                     ref.watch(keyApiProvider).getPublicKey(privateKeyHex);
               }
 
-              addKeysToStorage(privateKeyHex, publicKeyHex)
+              FeedScreenLogic()
+                  .addKeysToStorage(
+                ref,
+                privateKeyHex,
+                publicKeyHex,
+              )
                   .then((bool keysAdded) {
                 if (keysAdded) {
                   keyController.clear();
@@ -488,7 +400,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             Navigator.pop(context);
           },
           onYesPressed: () {
-            deleteKeysFromStorage().then((_) {
+            FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
               if (!ref.watch(keysExistProvider)) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   ScaffoldSnackBar(
