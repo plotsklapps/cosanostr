@@ -52,6 +52,7 @@ class ScaffoldNavBar extends ConsumerWidget {
           label: 'Messages',
         ),
       ],
+      labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
     );
   }
 }
