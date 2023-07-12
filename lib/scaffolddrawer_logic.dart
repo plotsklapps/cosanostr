@@ -20,7 +20,10 @@ class ScaffoldDrawerLogic {
     );
   }
 
-  Future<void> keysOptionDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> keysOptionDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -140,7 +143,10 @@ class ScaffoldDrawerLogic {
     );
   }
 
-  Future<void> deleteKeysDialog(BuildContext context, WidgetRef ref) async {
+  Future<void> deleteKeysDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) {

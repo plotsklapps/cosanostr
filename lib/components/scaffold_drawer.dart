@@ -2,8 +2,7 @@ import 'package:cosanostr/all_imports.dart';
 
 // Reason to make this a custom widget is to be able to add new features
 // later on. Thinking of adding a settingsscreen and profilescreen for
-// example. Also, the generateKeys() function should be moved here in a
-// later stage.
+// example.
 class ScaffoldDrawer extends StatelessWidget {
   const ScaffoldDrawer({
     super.key,
@@ -53,19 +52,25 @@ class ScaffoldDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () async {
-              await ref.watch(keysExistProvider)
-                  ? await ScaffoldDrawerLogic().keysExistDialog(
-                      context,
-                      ref,
-                      ref
-                          .watch(nip19Provider)
-                          .npubEncode(ref.watch(publicKeyProvider)),
-                      ref
-                          .watch(nip19Provider)
-                          .nsecEncode(ref.watch(privateKeyProvider)),
-                    )
-                  : ScaffoldDrawerLogic().keysOptionDialog(context, ref);
+              // Check if keys are already generated and display the
+              // appropriate dialog.
+              if (ref.watch(keysExistProvider)) {
+                await ScaffoldDrawerLogic().keysExistDialog(
+                  context,
+                  ref,
+                  ref
+                      .watch(nip19Provider)
+                      .npubEncode(ref.watch(publicKeyProvider)),
+                  ref
+                      .watch(nip19Provider)
+                      .nsecEncode(ref.watch(privateKeyProvider)),
+                );
+              } else {
+                await ScaffoldDrawerLogic().keysOptionDialog(context, ref);
+              }
             },
+            // Check if keys are already generated and display the
+            // appropriate title and icon.
             title: ref.watch(keysExistProvider)
                 ? const Text('SHOW YOUR KEYS')
                 : const Text('GENERATE NEW KEYS'),
@@ -73,6 +78,8 @@ class ScaffoldDrawer extends StatelessWidget {
                 ? const Icon(FontAwesomeIcons.check)
                 : const Icon(FontAwesomeIcons.plus),
           ),
+          // Check if keys are already generated and display this ListTile
+          // only if they are.
           if (ref.watch(keysExistProvider))
             ListTile(
               onTap: () async {
