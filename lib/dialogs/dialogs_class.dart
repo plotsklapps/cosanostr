@@ -139,7 +139,7 @@ class Dialogs {
 
               Navigator.pop(context);
             } else {
-              ref.watch(formKeyProvider).currentState?.setState(() {});
+              ref.watch(formKeyProvider).currentState?.dispose();
             }
           },
           onCancelPressed: () {
