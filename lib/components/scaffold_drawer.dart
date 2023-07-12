@@ -55,7 +55,7 @@ class ScaffoldDrawer extends StatelessWidget {
               // Check if keys are already generated and display the
               // appropriate dialog.
               if (ref.watch(keysExistProvider)) {
-                await ScaffoldDrawerLogic().keysExistDialog(
+                await Dialogs().keysExistDialog(
                   context,
                   ref,
                   ref
@@ -66,7 +66,7 @@ class ScaffoldDrawer extends StatelessWidget {
                       .nsecEncode(ref.watch(privateKeyProvider)),
                 );
               } else {
-                await ScaffoldDrawerLogic().keysOptionDialog(context, ref);
+                await Dialogs().keysOptionDialog(context, ref);
               }
             },
             // Check if keys are already generated and display the
@@ -84,7 +84,7 @@ class ScaffoldDrawer extends StatelessWidget {
             ListTile(
               onTap: () async {
                 Navigator.pop(context);
-                await ScaffoldDrawerLogic().deleteKeysDialog(context, ref);
+                await Dialogs().deleteKeysDialog(context, ref);
               },
               title: const Text('DELETE YOUR KEYS'),
               trailing: const Icon(

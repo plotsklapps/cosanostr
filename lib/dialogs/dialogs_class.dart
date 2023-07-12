@@ -1,6 +1,8 @@
 import 'package:cosanostr/all_imports.dart';
 
-class ScaffoldDrawerLogic {
+class Dialogs {
+  // Show a dialog to user when keys already exists. Takes in context, ref,
+  // and two Strings that are the encoded keys to display to user.
   Future<void> keysExistDialog(
     BuildContext context,
     WidgetRef ref,
@@ -20,6 +22,8 @@ class ScaffoldDrawerLogic {
     );
   }
 
+  // Show a dialog to user when keys don't exist. Takes in context and ref.
+  // Provides choice to user to generate new keys or input a private key.
   Future<void> keysOptionDialog(
     BuildContext context,
     WidgetRef ref,
@@ -58,6 +62,9 @@ class ScaffoldDrawerLogic {
     );
   }
 
+  // When user chooses to use his/her private key, show this dialog.
+  // Takes in context and ref. Snackbars don't seem to be working properly
+  // here on all devices, have to check.
   Future<void> pastePrivateKeyDialog(
     BuildContext context,
     WidgetRef ref,
@@ -143,6 +150,9 @@ class ScaffoldDrawerLogic {
     );
   }
 
+  // Show a dialog to user when keys already exists. Takes in context and ref.
+  // When keys are deleted, it will delete them from the secure storage, which
+  // cannot be recovered.
   Future<void> deleteKeysDialog(
     BuildContext context,
     WidgetRef ref,
