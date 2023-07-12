@@ -1,8 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
-import 'firebase_options.dart';
-
 Future<void> main() async {
+  // Mandatory Firebase stuff. JUST FOR ANALYTICS, nothing else.
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

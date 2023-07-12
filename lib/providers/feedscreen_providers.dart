@@ -13,6 +13,24 @@ final StateProvider<RelayApi> relayApiProvider =
   return RelayApi(relayUrl: 'wss://relay.damus.io');
 });
 
+// keyApiProvider creates an instance of KeyApi, which is defined in
+// nostr_tools.
+final StateProvider<KeyApi> keyApiProvider =
+    StateProvider<KeyApi>((StateProviderRef<KeyApi> ref) {
+  return KeyApi();
+});
+
+final StateProvider<FlutterSecureStorage> secureStorageProvider =
+    StateProvider<FlutterSecureStorage>(
+        (StateProviderRef<FlutterSecureStorage> ref) {
+  return const FlutterSecureStorage();
+});
+
+final StateProvider<Nip19> nip19Provider =
+    StateProvider<Nip19>((StateProviderRef<Nip19> ref) {
+  return Nip19();
+});
+
 // eventsProvider is a list that will hold all the events that we'll get
 // from the relay after subscribing.
 final StateProvider<List<Event>> eventsProvider =
@@ -41,6 +59,11 @@ final StateProvider<String> publicKeyProvider =
 final StateProvider<bool> keysExistProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
   return false;
+});
+
+final StateProvider<GlobalKey<FormFieldState<dynamic>>> formKeyProvider =
+    StateProvider<GlobalKey<FormFieldState<dynamic>>>((_) {
+  return GlobalKey<FormFieldState<dynamic>>();
 });
 
 final StateProvider<bool> isNotePublishingProvider =

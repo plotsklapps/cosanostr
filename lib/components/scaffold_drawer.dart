@@ -51,7 +51,32 @@ class ScaffoldDrawer extends StatelessWidget {
                 ? const Icon(FontAwesomeIcons.droplet)
                 : const Icon(FontAwesomeIcons.moneyBill),
           ),
-          const ListTile(),
+          ListTile(
+            onTap: () async {
+              // Generate the keys.
+              await showDialog<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return KeysOptionDialog(
+                    generateNewKeyPressed: () {},
+                    inputPrivateKeyPressed: () {},
+                  );
+                },
+              );
+              // Show a snackbar to let the user know the keys are generated.
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Keys generated!'),
+                ),
+              );
+            },
+            title: const Text('GENERATE KEYS'),
+            // This is the only way I could get the button to work.
+            // I'm not sure if this is the best way to do it, but it works.
+            trailing: ref.watch(keysExistProvider)
+                ? const Icon(FontAwesomeIcons.check)
+                : const Icon(FontAwesomeIcons.key),
+          ),
         ],
       ),
     );

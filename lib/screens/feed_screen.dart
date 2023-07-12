@@ -21,14 +21,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   //  the app.
   late Stream<Event> stream;
   final StreamController<Event> streamController = StreamController<Event>();
-
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   final TextEditingController keyController = TextEditingController();
-  final GlobalKey<FormFieldState<dynamic>> formKey =
-      GlobalKey<FormFieldState<dynamic>>();
-  final KeyApi keyGenerator = KeyApi();
-  final Nip19 nip19 = Nip19();
 
   @override
   void initState() {
@@ -42,10 +35,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   void dispose() {
     ref.read(relayApiProvider).close();
+    keyController.dispose();
     super.dispose();
   }
 
   Future<void> getKeysFromStorage() async {
+    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
+
     final String? storedPrivateKey =
         await secureStorage.read(key: 'privateKey');
     final String? storedPublicKey = await secureStorage.read(key: 'publicKey');
@@ -61,6 +57,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     String privateKeyHex,
     String publicKeyHex,
   ) async {
+    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
     await Future.wait(<Future<void>>[
       secureStorage.write(key: 'privateKey', value: privateKeyHex),
       secureStorage.write(key: 'publicKey', value: publicKeyHex),
@@ -73,6 +70,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> deleteKeysFromStorage() async {
+    final FlutterSecureStorage secureStorage = ref.watch(secureStorageProvider);
     await Future.wait(<Future<void>>[
       secureStorage.delete(key: 'privateKey'),
       secureStorage.delete(key: 'publicKey'),
@@ -83,8 +81,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<bool> generateNewKeys() async {
-    final String newPrivateKey = keyGenerator.generatePrivateKey();
-    final String newPublicKey = keyGenerator.getPublicKey(newPrivateKey);
+    final String newPrivateKey = ref.watch(keyApiProvider).generatePrivateKey();
+    final String newPublicKey =
+        ref.watch(keyApiProvider).getPublicKey(newPrivateKey);
 
     return addKeysToStorage(newPrivateKey, newPublicKey);
   }
@@ -394,17 +393,20 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       builder: (BuildContext context) {
         return PastePrivateKeyDialog(
           keyController: keyController,
-          formKey: formKey,
+          formKey: ref.watch(formKeyProvider),
           keyValidator: (String? value) {
             if (value == null || value.isEmpty) {
               return 'Please enter your private key.';
             }
 
             try {
-              final bool isValidHexKey = keyGenerator.isValidPrivateKey(value);
+              final bool isValidHexKey =
+                  ref.watch(keyApiProvider).isValidPrivateKey(value);
               final bool isValidNsec = value.trim().startsWith('nsec') &&
-                  keyGenerator
-                      .isValidPrivateKey(nip19.decode(value)['data'] as String);
+                  ref.watch(keyApiProvider).isValidPrivateKey(
+                        ref.watch(nip19Provider).decode(value)['data']
+                            as String,
+                      );
 
               if (!(isValidHexKey || isValidNsec)) {
                 return 'Your private key is not valid.';
@@ -418,17 +420,19 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             return null;
           },
           onOKPressed: () {
-            if (formKey.currentState!.validate()) {
+            if (ref.watch(formKeyProvider).currentState!.validate()) {
               String privateKeyHex = keyController.text.trim();
               String publicKeyHex;
 
               if (privateKeyHex.startsWith('nsec')) {
                 final Map<String, dynamic> decoded =
-                    nip19.decode(privateKeyHex);
+                    ref.watch(nip19Provider).decode(privateKeyHex);
                 privateKeyHex = decoded['data'] as String;
-                publicKeyHex = keyGenerator.getPublicKey(privateKeyHex);
+                publicKeyHex =
+                    ref.watch(keyApiProvider).getPublicKey(privateKeyHex);
               } else {
-                publicKeyHex = keyGenerator.getPublicKey(privateKeyHex);
+                publicKeyHex =
+                    ref.watch(keyApiProvider).getPublicKey(privateKeyHex);
               }
 
               addKeysToStorage(privateKeyHex, publicKeyHex)
@@ -448,7 +452,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
               Navigator.pop(context);
             } else {
-              formKey.currentState?.setState(() {});
+              ref.watch(formKeyProvider).currentState?.setState(() {});
             }
           },
           onCancelPressed: () {
