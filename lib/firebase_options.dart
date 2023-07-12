@@ -2,7 +2,7 @@
 // ignore_for_file: lines_longer_than_80_chars, avoid_classes_with_only_static_members
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show TargetPlatform, defaultTargetPlatform, kIsWeb;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -36,6 +36,7 @@ class DefaultFirebaseOptions {
           'DefaultFirebaseOptions have not been configured for linux - '
           'you can reconfigure this by running the FlutterFire CLI again.',
         );
+      // ignore: no_default_cases
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
@@ -67,7 +68,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '505671824716',
     projectId: 'cosanostr',
     storageBucket: 'cosanostr.appspot.com',
-    iosClientId: '505671824716-ojp1skq17kqbls9e716nak2akvvp39om.apps.googleusercontent.com',
+    iosClientId:
+        '505671824716-ojp1skq17kqbls9e716nak2akvvp39om.apps.googleusercontent.com',
     iosBundleId: 'dev.plotsklapps.cosanostr',
   );
 
@@ -77,7 +79,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '505671824716',
     projectId: 'cosanostr',
     storageBucket: 'cosanostr.appspot.com',
-    iosClientId: '505671824716-290m9kscbdsju8fabf8pvaqc3c7rm8tg.apps.googleusercontent.com',
+    iosClientId:
+        '505671824716-290m9kscbdsju8fabf8pvaqc3c7rm8tg.apps.googleusercontent.com',
     iosBundleId: 'dev.plotsklapps.cosanostr.RunnerTests',
   );
 }

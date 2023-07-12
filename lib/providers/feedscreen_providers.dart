@@ -70,3 +70,11 @@ final StateProvider<bool> isNotePublishingProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
   return false;
 });
+
+// keyControllerProvider provides a TextEditingController for the
+// private key input field.
+final StateProvider<TextEditingController> keyControllerProvider =
+    StateProvider<TextEditingController>(
+        (StateProviderRef<TextEditingController> ref) {
+  return TextEditingController();
+});

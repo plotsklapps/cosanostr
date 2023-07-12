@@ -21,7 +21,6 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   //  the app.
   late Stream<Event> stream;
   final StreamController<Event> streamController = StreamController<Event>();
-  final TextEditingController keyController = TextEditingController();
 
   @override
   void initState() {
@@ -35,7 +34,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   void dispose() {
     ref.read(relayApiProvider).close();
-    keyController.dispose();
+    ref.read(keyControllerProvider).dispose();
     super.dispose();
   }
 
@@ -96,30 +95,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Nip19 nip19 = ref.watch(nip19Provider);
-
     return Scaffold(
-      appBar: FeedScreenAppBar(
-        title: '',
-        isConnected: ref.watch(isConnectedProvider),
-        keysDialog: IconButton(
-          icon: const Icon(FontAwesomeIcons.key),
-          onPressed: () async {
-            await ref.watch(keysExistProvider)
-                ? await keysExistDialog(
-                    nip19.npubEncode(ref.watch(publicKeyProvider)),
-                    nip19.nsecEncode(ref.watch(privateKeyProvider)),
-                  )
-                : keysOptionDialog();
-          },
-        ),
-        deleteKeysDialog: ref.watch(keysExistProvider)
-            ? IconButton(
-                icon: const Icon(FontAwesomeIcons.solidTrashCan),
-                onPressed: deleteKeysDialog,
-              )
-            : Container(),
-      ),
       // Pull to refresh, aaahhh!
       body: RefreshIndicator(
         onRefresh: () async {
@@ -258,162 +234,6 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               isNotePublishing: ref.watch(isNotePublishingProvider),
             )
           : Container(),
-    );
-  }
-
-  Future<void> keysOptionDialog() async {
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return KeysOptionDialog(
-          generateNewKeyPressed: () {
-            FeedScreenLogic().generateNewKeys(ref).then((bool keysGenerated) {
-              if (keysGenerated) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  ScaffoldSnackBar(
-                    context: context,
-                    content: const Text('Congratulations! New keys generated!'),
-                  ),
-                );
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  ScaffoldSnackBar(
-                    context: context,
-                    content: const Text('Oops! Something went wrong!'),
-                  ),
-                );
-              }
-            });
-            Navigator.pop(context);
-          },
-          inputPrivateKeyPressed: () {
-            Navigator.pop(context);
-            keyController.clear();
-            pastePrivateKeyDialog();
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> pastePrivateKeyDialog() async {
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return PastePrivateKeyDialog(
-          keyController: keyController,
-          formKey: ref.watch(formKeyProvider),
-          keyValidator: (String? value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your private key.';
-            }
-
-            try {
-              final bool isValidHexKey =
-                  ref.watch(keyApiProvider).isValidPrivateKey(value);
-              final bool isValidNsec = value.trim().startsWith('nsec') &&
-                  ref.watch(keyApiProvider).isValidPrivateKey(
-                        ref.watch(nip19Provider).decode(value)['data']
-                            as String,
-                      );
-
-              if (!(isValidHexKey || isValidNsec)) {
-                return 'Your private key is not valid.';
-              }
-            } on ChecksumVerificationException catch (e) {
-              return e.message;
-            } catch (e) {
-              return 'Error: $e';
-            }
-
-            return null;
-          },
-          onOKPressed: () {
-            if (ref.watch(formKeyProvider).currentState!.validate()) {
-              String privateKeyHex = keyController.text.trim();
-              String publicKeyHex;
-
-              if (privateKeyHex.startsWith('nsec')) {
-                final Map<String, dynamic> decoded =
-                    ref.watch(nip19Provider).decode(privateKeyHex);
-                privateKeyHex = decoded['data'] as String;
-                publicKeyHex =
-                    ref.watch(keyApiProvider).getPublicKey(privateKeyHex);
-              } else {
-                publicKeyHex =
-                    ref.watch(keyApiProvider).getPublicKey(privateKeyHex);
-              }
-
-              FeedScreenLogic()
-                  .addKeysToStorage(
-                ref,
-                privateKeyHex,
-                publicKeyHex,
-              )
-                  .then((bool keysAdded) {
-                if (keysAdded) {
-                  keyController.clear();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    ScaffoldSnackBar(
-                      context: context,
-                      content: const Text(
-                        'Congratulations! Private keys securely stored!',
-                      ),
-                    ),
-                  );
-                }
-              });
-
-              Navigator.pop(context);
-            } else {
-              ref.watch(formKeyProvider).currentState?.setState(() {});
-            }
-          },
-          onCancelPressed: () {
-            Navigator.pop(context);
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> keysExistDialog(String npubEncode, String nsecEncode) async {
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return KeysExistDialog(
-          npubEncode,
-          nsecEncode,
-          ref.watch(privateKeyProvider),
-          ref.watch(publicKeyProvider),
-        );
-      },
-    );
-  }
-
-  Future<void> deleteKeysDialog() async {
-    await showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteKeysDialog(
-          onNoPressed: () {
-            Navigator.pop(context);
-          },
-          onYesPressed: () {
-            FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
-              if (!ref.watch(keysExistProvider)) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  ScaffoldSnackBar(
-                    context: context,
-                    content: const Text('Keys successfully deleted!'),
-                  ),
-                );
-              }
-            });
-            Navigator.pop(context);
-          },
-        );
-      },
     );
   }
 }

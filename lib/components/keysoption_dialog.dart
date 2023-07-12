@@ -35,6 +35,7 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
           onPressed: generateNewKeyPressed,
           child: const Text('GENERATE NEW KEYS'),
         ),
+        const SizedBox(height: 16.0),
         ElevatedButton(
           onPressed: inputPrivateKeyPressed,
           child: const Text('USE YOUR PRIVATE KEY'),

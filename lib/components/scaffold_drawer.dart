@@ -53,30 +53,40 @@ class ScaffoldDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () async {
-              // Generate the keys.
-              await showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return KeysOptionDialog(
-                    generateNewKeyPressed: () {},
-                    inputPrivateKeyPressed: () {},
-                  );
-                },
-              );
-              // Show a snackbar to let the user know the keys are generated.
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Keys generated!'),
-                ),
-              );
+              await ref.watch(keysExistProvider)
+                  ? await ScaffoldDrawerLogic().keysExistDialog(
+                      context,
+                      ref,
+                      ref
+                          .watch(nip19Provider)
+                          .npubEncode(ref.watch(publicKeyProvider)),
+                      ref
+                          .watch(nip19Provider)
+                          .nsecEncode(ref.watch(privateKeyProvider)),
+                    )
+                  : ScaffoldDrawerLogic().keysOptionDialog(context, ref);
             },
-            title: const Text('GENERATE KEYS'),
-            // This is the only way I could get the button to work.
-            // I'm not sure if this is the best way to do it, but it works.
+            title: ref.watch(keysExistProvider)
+                ? const Text('SHOW YOUR KEYS')
+                : const Text('GENERATE NEW KEYS'),
             trailing: ref.watch(keysExistProvider)
                 ? const Icon(FontAwesomeIcons.check)
-                : const Icon(FontAwesomeIcons.key),
+                : const Icon(FontAwesomeIcons.plus),
           ),
+          if (ref.watch(keysExistProvider))
+            ListTile(
+              onTap: () async {
+                Navigator.pop(context);
+                await ScaffoldDrawerLogic().deleteKeysDialog(context, ref);
+              },
+              title: const Text('DELETE YOUR KEYS'),
+              trailing: const Icon(
+                FontAwesomeIcons.solidTrashCan,
+                color: Colors.red,
+              ),
+            )
+          else
+            const SizedBox(),
         ],
       ),
     );
