@@ -89,13 +89,4 @@ class FeedScreenLogic {
         .where((Message message) => message.type == 'EVENT')
         .map((Message message) => message.message as Event);
   }
-
-  // Reconnect and resubscribe to the stream
-  Future<void> resubscribeStream(WidgetRef ref) async {
-    await Future<void>.delayed(const Duration(seconds: 1), () {
-      ref.read(eventsProvider).clear();
-      ref.read(metaDataProvider).clear();
-      FeedScreenState().initStream();
-    });
-  }
 }

@@ -59,8 +59,8 @@ class FeedScreenCard extends StatelessWidget {
                     ),
                     Center(
                       child: FadeInImage(
-                        placeholder: const NetworkImage(
-                          'https://i.ibb.co/D9jqXgR/58038897-167f0280-7ae6-11e9-94eb-88e880a25f0f.gif',
+                        placeholder: const AssetImage(
+                          'assets/images/loading_fireworks.gif',
                         ),
                         image: NetworkImage(imageLinks.first),
                         fit: BoxFit.cover,

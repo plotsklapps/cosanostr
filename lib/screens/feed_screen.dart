@@ -93,13 +93,22 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     });
   }
 
+  // Reconnect and resubscribe to the stream
+  Future<void> resubscribeStream(WidgetRef ref) async {
+    await Future<void>.delayed(const Duration(seconds: 1), () {
+      ref.read(eventsProvider).clear();
+      ref.read(metaDataProvider).clear();
+      initStream();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // Pull to refresh, aaahhh!
       body: RefreshIndicator(
         onRefresh: () async {
-          await FeedScreenLogic().resubscribeStream(ref);
+          await resubscribeStream(ref);
         },
         // This is used to provide better scrolling experience on web.
         // It disables the scrollbar and enables more input devices then
@@ -209,7 +218,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                 if (eventApi.verifySignature(event)) {
                   try {
                     ref.read(relayApiProvider).publish(event);
-                    await FeedScreenLogic().resubscribeStream(ref).then((_) {
+                    await resubscribeStream(ref).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(
                           context: context,
