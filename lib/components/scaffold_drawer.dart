@@ -108,13 +108,19 @@ class ScaffoldDrawer extends StatelessWidget {
             const SizedBox(),
           ListTile(
             onTap: () async {
-              Navigator.pop(context);
-              await buildShowDonationsDialog(context);
+              await Navigator.push(
+                context,
+                MaterialPageRoute<Widget>(
+                  builder: (BuildContext context) {
+                    return const AboutScreen();
+                  },
+                ),
+              );
             },
-            title: const Text('DONATION'),
+            title: const Text('ABOUT'),
             // Check the current theme mode and display the appropriate icon.
             // Icons are up for debate, but I found these funny.
-            trailing: const Icon(FontAwesomeIcons.solidHeart),
+            trailing: const Icon(FontAwesomeIcons.circleInfo),
           ),
         ],
       ),
@@ -159,7 +165,7 @@ CosaNostr is proudly developed and maintained by a solo developer, committed to 
                 const Divider(),
                 ElevatedButton(
                   onPressed: () async {
-                    await launchOneTimeDonationStripe();
+                    await HttpUtils().launchOneTimeDonationStripe();
                   },
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -173,7 +179,7 @@ CosaNostr is proudly developed and maintained by a solo developer, committed to 
                 const SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () async {
-                    await launchMonthlySubscriptionStripe();
+                    await HttpUtils().launchMonthlySubscriptionStripe();
                   },
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,

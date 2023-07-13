@@ -20,6 +20,7 @@ export 'package:cosanostr/providers/feedscreen_providers.dart';
 export 'package:cosanostr/providers/pageindex_providers.dart';
 export 'package:cosanostr/providers/theme_providers.dart';
 export 'package:cosanostr/responsive_layout.dart';
+export 'package:cosanostr/screens/about_screen.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/screens/scaffold_screen.dart';
 export 'package:cosanostr/theme.dart';
