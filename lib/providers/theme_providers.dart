@@ -11,8 +11,6 @@ final StateProvider<bool> isThemeIndigoProvider =
   return true;
 });
 
-
-
 final StateProvider<FlexScheme> flexSchemeProvider =
     StateProvider<FlexScheme>((StateProviderRef<FlexScheme> ref) {
   if (ref.watch(isThemeIndigoProvider)) {
@@ -34,11 +32,12 @@ final StateProvider<ThemeMode> themeModeProvider =
 });
 
 final StateProvider<bool> isFontQuestrialProvider =
-StateProvider<bool>((StateProviderRef<bool> ref) {
+    StateProvider<bool>((StateProviderRef<bool> ref) {
   return true;
 });
 
-final StateProvider<String?> fontProvider = StateProvider<String?>((StateProviderRef<String?> ref) {
+final StateProvider<String?> fontProvider =
+    StateProvider<String?>((StateProviderRef<String?> ref) {
   if (ref.watch(isFontQuestrialProvider)) {
     return GoogleFonts.questrial().fontFamily;
   } else {
