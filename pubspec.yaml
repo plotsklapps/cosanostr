@@ -21,6 +21,7 @@ dependencies:
   font_awesome_flutter: ^10.5.0
   google_fonts: ^4.0.4
   nostr_tools: ^1.0.7
+  url_launcher: ^6.1.12
 
 dev_dependencies:
   flutter_test:

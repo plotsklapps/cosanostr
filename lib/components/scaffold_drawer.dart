@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cosanostr/all_imports.dart';
 
 // Reason to make this a custom widget is to be able to add new features
@@ -104,8 +106,129 @@ class ScaffoldDrawer extends StatelessWidget {
             )
           else
             const SizedBox(),
+          ListTile(
+            onTap: () async {
+              Navigator.pop(context);
+              await buildShowDonationsDialog(context);
+            },
+            title: const Text('DONATION'),
+            // Check the current theme mode and display the appropriate icon.
+            // Icons are up for debate, but I found these funny.
+            trailing: const Icon(FontAwesomeIcons.solidHeart),
+          ),
         ],
       ),
     );
   }
+}
+
+Future<void> buildShowDonationsDialog(BuildContext context) {
+  return showModalBottomSheet<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return Padding(
+        padding: const EdgeInsets.all(16),
+        child: ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(
+            scrollbars: false,
+            dragDevices: <PointerDeviceKind>{
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.stylus,
+            },
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Donations 💙',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Divider(),
+                const Text(
+                  """
+CosaNostr is proudly developed and maintained by a solo developer, committed to providing you a free and ad-free experience. That's a promise! Your support goes a long way in helping me keep this promise and continue to improve the app. If you find value in what I do, please consider making a donation. You can opt for a one-time donation or choose a recurring monthly membership. Your generosity is deeply appreciated. Thank you!""",
+                  textAlign: TextAlign.center,
+                ),
+                const Divider(),
+                ElevatedButton(
+                  onPressed: () async {
+                    await launchOneTimeDonationStripe();
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(FontAwesomeIcons.stripe),
+                      SizedBox(width: 16),
+                      Text('One-time donation (free amount)'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  onPressed: () async {
+                    await launchMonthlySubscriptionStripe();
+                  },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Icon(FontAwesomeIcons.stripe),
+                      SizedBox(width: 16),
+                      Text('Monthly subscription (€ 3.00)'),
+                    ],
+                  ),
+                ),
+                const Divider(),
+                const Text(
+                  '''
+You can also scan the QR-code with your mobile phone to make a donation''',
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text('One-time'),
+                        Image.asset(
+                          'assets/images/onetime_qr.png',
+                          height: MediaQuery.sizeOf(context).height * 0.2,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 16),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text('Monthly'),
+                        Image.asset(
+                          'assets/images/monthly_qr.png',
+                          height: MediaQuery.sizeOf(context).height * 0.2,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                TextButton(
+                  child: const Text('Not now'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }
