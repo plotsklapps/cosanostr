@@ -51,6 +51,16 @@ class ScaffoldDrawer extends StatelessWidget {
                 : const Icon(FontAwesomeIcons.moneyBill),
           ),
           ListTile(
+            onTap: () {
+              ref.read(isFontQuestrialProvider.notifier).state =
+                  !ref.watch(isFontQuestrialProvider);
+            },
+            title: const Text('THEMEFONT'),
+            trailing: ref.watch(isFontQuestrialProvider)
+                ? const Icon(FontAwesomeIcons.quora)
+                : const Icon(FontAwesomeIcons.bold),
+          ),
+          ListTile(
             onTap: () async {
               // Check if keys are already generated and display the
               // appropriate dialog.

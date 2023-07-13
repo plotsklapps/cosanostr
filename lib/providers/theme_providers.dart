@@ -11,6 +11,8 @@ final StateProvider<bool> isThemeIndigoProvider =
   return true;
 });
 
+
+
 final StateProvider<FlexScheme> flexSchemeProvider =
     StateProvider<FlexScheme>((StateProviderRef<FlexScheme> ref) {
   if (ref.watch(isThemeIndigoProvider)) {
@@ -28,6 +30,19 @@ final StateProvider<ThemeMode> themeModeProvider =
     return ThemeMode.light;
   } else {
     return ThemeMode.dark;
+  }
+});
+
+final StateProvider<bool> isFontQuestrialProvider =
+StateProvider<bool>((StateProviderRef<bool> ref) {
+  return true;
+});
+
+final StateProvider<String?> fontProvider = StateProvider<String?>((StateProviderRef<String?> ref) {
+  if (ref.watch(isFontQuestrialProvider)) {
+    return GoogleFonts.questrial().fontFamily;
+  } else {
+    return GoogleFonts.barlow().fontFamily;
   }
 });
 
@@ -93,8 +108,7 @@ final StateProvider<ThemeData> lightThemeProvider =
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     useMaterial3: true,
     swapLegacyOnMaterial3: true,
-// To use the Playground font, add GoogleFonts package and uncomment
-    fontFamily: GoogleFonts.questrial().fontFamily,
+    fontFamily: ref.watch(fontProvider),
   );
 });
 
@@ -159,7 +173,6 @@ final StateProvider<ThemeData> darkThemeProvider =
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     useMaterial3: true,
     swapLegacyOnMaterial3: true,
-// To use the Playground font, add GoogleFonts package and uncomment
-    fontFamily: GoogleFonts.questrial().fontFamily,
+    fontFamily: ref.watch(fontProvider),
   );
 });
