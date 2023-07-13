@@ -6,23 +6,24 @@ class StringUtils {
   static const String kWebsite = 'Developer Website';
   static const String kSourceCode = 'Source Code';
   static const String kDonate = 'Donate';
-  static const String kAbout = 'About';
+  static const String kCredits = 'Credits';
 
   // DonationsDialog Strings
   static const String kDonations = 'Donations 💙';
-  static const String kDonationsPlease = """
-Timelapps is proudly developed and maintained by a solo developer, committed to providing you a free and ad-free experience. That's a promise! Your support goes a long way in helping me keep this promise and continue to improve the app. If you find value in what I do, please consider making a donation. You can opt for a one-time donation or choose a recurring monthly membership. Your generosity is deeply appreciated. Thank you!""";
+  static const String kDonationsPlease =
+      "CosaNostr is proudly developed and maintained by a solo developer, committed to providing you a free and ad-free experience. That's a promise! Your support goes a long way in helping me keep this promise and continue to improve the app. If you find value in what I do, please consider making a donation. You can opt for a one-time donation or choose a recurring monthly membership. Your generosity is deeply appreciated. Thank you!";
   static const String kNotNow = 'Not now';
   static const String kOneTimeDonation = 'One-time donation (free amount)';
   static const String kMonthlySubscription = 'Monthly subscription (€ 3.00)';
   static const String kDonateViaPhone =
       'You can also scan the QR-code with your mobile phone to make a donation';
-  static const String kOneTimeQR = 'assets/onetime_qr.png';
-  static const String kMonthlyQR = 'assets/monthly_qr.png';
+  static const String kOneTimeQR = 'assets/images/onetime_qr.png';
+  static const String kMonthlyQR = 'assets/images/monthly_qr.png';
 
   // AboutDialog Strings
-  static const String kPackages = '''
-Timelapps was built with Flutter & Dart with help from the following packages:''';
+  static const String kPackages =
+      'CosaNostr was built with Flutter & Dart with help from the following packages:';
+  static const String kNostrTools = 'nostr_tools';
   static const String kRiverpod = 'flutter_riverpod';
   static const String kFlexColorScheme = 'flex_color_scheme';
   static const String kFlutterAnimate = 'flutter_animate';

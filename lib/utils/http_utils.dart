@@ -16,6 +16,7 @@ class HttpUtils {
   final Uri flutterAnimateURL =
       Uri.parse('https://pub.dev/packages/flutter_animate');
   final Uri justAudioURL = Uri.parse('https://pub.dev/packages/just_audio');
+  final Uri nostrToolsURL = Uri.parse('https://pub.dev/packages/nostr_tools');
 
   Future<void> launchWebsite() async {
     if (!await launchUrl(plotsklappsWebsiteURL)) {
@@ -62,6 +63,12 @@ class HttpUtils {
   Future<void> launchJustAudio() async {
     if (!await launchUrl(justAudioURL)) {
       throw Exception('Could not launch $justAudioURL');
+    }
+  }
+
+  Future<void> launchNostrTools() async {
+    if (!await launchUrl(nostrToolsURL)) {
+      throw Exception('Could not launch $nostrToolsURL');
     }
   }
 }
