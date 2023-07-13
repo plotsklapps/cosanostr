@@ -1,6 +1,5 @@
 export 'dart:convert';
 
-export 'package:cosanostr/components/feedscreen_appbar.dart';
 export 'package:cosanostr/components/feedscreen_card.dart';
 export 'package:cosanostr/components/feedscreen_fab.dart';
 export 'package:cosanostr/components/phone_container.dart';
