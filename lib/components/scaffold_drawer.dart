@@ -40,6 +40,7 @@ class ScaffoldDrawer extends ConsumerWidget {
               ],
             ),
           ),
+
           ListTile(
             onTap: () async {
               // Check if keys are already generated and display the
@@ -64,9 +65,33 @@ class ScaffoldDrawer extends ConsumerWidget {
             title: ref.watch(keysExistProvider)
                 ? const Text('SHOW YOUR KEYS')
                 : const Text('GENERATE NEW KEYS'),
+            subtitle: ref.watch(keysExistProvider)
+                ? const Text('Your keys are securely stored')
+                : const Text('Join the CosaNostr client'),
             trailing: ref.watch(keysExistProvider)
                 ? const Icon(FontAwesomeIcons.check)
                 : const Icon(FontAwesomeIcons.plus),
+          ),
+          ListTile(
+            onTap: () async {
+              // Create an alertdialog or bottomsheet with explanation
+              // about the Nostr protocol. Why and how, maybe embed
+              // the Youtube doc from deMarco?
+              // For now:
+              ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldSnackBar(
+                  context: context,
+                  content: const Text(
+                    'Coming soon!',
+                  ),
+                ),
+              );
+            },
+            // Check if keys are already generated and display the
+            // appropriate title and icon.
+            title: const Text('WTF IS NOSTR?'),
+            subtitle: const Text('About the Nostr protocol'),
+            trailing: const Icon(FontAwesomeIcons.solidCircleQuestion),
           ),
           // Check if keys are already generated and display this ListTile
           // only if they are.
@@ -77,6 +102,7 @@ class ScaffoldDrawer extends ConsumerWidget {
                 await Dialogs().deleteKeysDialog(context, ref);
               },
               title: const Text('DELETE YOUR KEYS'),
+              subtitle: const Text('Leave CosaNostr as your client'),
               trailing: const Icon(
                 FontAwesomeIcons.solidTrashCan,
                 color: Colors.red,
@@ -95,9 +121,8 @@ class ScaffoldDrawer extends ConsumerWidget {
                 ),
               );
             },
-            title: const Text('ABOUT'),
-            // Check the current theme mode and display the appropriate icon.
-            // Icons are up for debate, but I found these funny.
+            title: const Text('ABOUT COSANOSTR'),
+            subtitle: const Text('Developer info'),
             trailing: const Icon(FontAwesomeIcons.circleInfo),
           ),
           ListTile(
@@ -106,6 +131,7 @@ class ScaffoldDrawer extends ConsumerWidget {
               await Dialogs().settingsDialog(context, ref);
             },
             title: const Text('SETTINGS'),
+            subtitle: const Text('Change the app look and feel'),
             trailing: const Icon(FontAwesomeIcons.gear),
           ),
         ],

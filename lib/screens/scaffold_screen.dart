@@ -45,7 +45,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
         controller: pageController,
         children: const <Widget>[
           FeedScreen(),
-          Placeholder(),
+          ProfileScreen(),
           Placeholder(),
         ],
       ),

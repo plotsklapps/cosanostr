@@ -19,3 +19,17 @@ class Nost {
     this.imageUrl,
   });
 }
+
+class Profile {
+  final String pubkey;
+  final String avatarUrl;
+  final String name;
+  final String username;
+
+  Profile({
+    required this.pubkey,
+    required this.avatarUrl,
+    required this.name,
+    required this.username,
+  });
+}
