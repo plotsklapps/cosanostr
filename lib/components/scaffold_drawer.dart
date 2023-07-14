@@ -3,7 +3,7 @@ import 'package:cosanostr/all_imports.dart';
 // Reason to make this a custom widget is to be able to add new features
 // later on. Thinking of adding a settingsscreen and profilescreen for
 // example.
-class ScaffoldDrawer extends StatelessWidget {
+class ScaffoldDrawer extends ConsumerWidget {
   const ScaffoldDrawer({
     super.key,
     required this.ref,
@@ -12,7 +12,7 @@ class ScaffoldDrawer extends StatelessWidget {
   final WidgetRef ref;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -22,9 +22,9 @@ class ScaffoldDrawer extends StatelessWidget {
               children: <Widget>[
                 Flexible(
                   fit: FlexFit.tight,
-                  child: Image.asset(
-                    'assets/images/cosanostr_icon.png',
-                  ),
+                  child: ref.watch(isDarkThemeProvider)
+                      ? Image.asset('assets/images/cosanostr_white_icon.png')
+                      : Image.asset('assets/images/cosanostr_black_icon.png'),
                 ),
                 const SizedBox(height: 8.0),
                 const Text(
