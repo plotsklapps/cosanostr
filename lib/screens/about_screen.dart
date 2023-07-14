@@ -23,7 +23,7 @@ class AboutScreen extends StatelessWidget {
                 ),
               ),
               const Text(
-                StringUtils.kCosaNostraByPlotsklapps,
+                StringUtils.kCosaNostrByPlotsklapps,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

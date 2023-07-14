@@ -7,7 +7,7 @@ class ScaffoldAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize {
-    return const Size.fromHeight(50);
+    return const Size.fromHeight(40);
   }
 
   @override
