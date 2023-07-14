@@ -26,6 +26,7 @@ export 'package:cosanostr/providers/theme_providers.dart';
 export 'package:cosanostr/responsive_layout.dart';
 export 'package:cosanostr/screens/about_screen.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
+export 'package:cosanostr/screens/profile_screen.dart';
 export 'package:cosanostr/screens/scaffold_screen.dart';
 export 'package:cosanostr/theme.dart';
 export 'package:cosanostr/utils/http_utils.dart';

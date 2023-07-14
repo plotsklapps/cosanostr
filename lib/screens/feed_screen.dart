@@ -169,12 +169,18 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               } else if (snapshot.connectionState == ConnectionState.waiting) {
                 // If snapshot.connectionState is ConnectionState.waiting,
                 // we display a loading indicator.
-                return const Center(
+                return Center(
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      Text('LOADING...'),
-                      SizedBox(height: 8.0),
-                      CircularProgressIndicator(),
+                      const Text('HOLD ON A SECOND...'),
+                      const CircularProgressIndicator(),
+                      if (ref.watch(isDarkThemeProvider))
+                        Image.asset('assets/images/cosanostr_white_icon.png')
+                      else
+                        Image.asset(
+                          'assets/images/cosanostr_black_icon.png',
+                        ),
                     ],
                   ),
                 );
@@ -184,12 +190,19 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               }
               // If none of the above conditions are met, we display a
               // loading indicator.
-              return const Center(
+              return Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    Text('LOADING...'),
-                    SizedBox(height: 8.0),
-                    CircularProgressIndicator(),
+                    const Text('SOMETHING IS WRONG... TRY TO RESTART THE APP'),
+                    const CircularProgressIndicator(),
+                    if (ref.watch(isDarkThemeProvider))
+                      Image.asset('assets/images/cosanostr_white_icon.png')
+                    else
+                      Image.asset(
+                        'assets/images/cosanostr_black_icon.png',
+                      ),
                   ],
                 ),
               );
