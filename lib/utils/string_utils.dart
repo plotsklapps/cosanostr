@@ -1,6 +1,6 @@
 class StringUtils {
   // CustomDrawer Strings
-  static const String kCosaNostraByPlotsklapps = 'COSANOSTRA by PLOTSKLAPPS';
+  static const String kCosaNostrByPlotsklapps = 'COSANOSTR by PLOTSKLAPPS';
   static const String kEnjoyedMakingIt =
       'This app is made with Flutter & Dart and is 100% open source and free forever. I hope you enjoy using this app as much as I enjoyed making it!';
   static const String kWebsite = 'Developer Website';
