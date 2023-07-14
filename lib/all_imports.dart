@@ -14,6 +14,7 @@ export 'package:cosanostr/dialogs/donations_dialog.dart';
 export 'package:cosanostr/dialogs/keysexist_dialog.dart';
 export 'package:cosanostr/dialogs/keysoption_dialog.dart';
 export 'package:cosanostr/dialogs/pasteprivatekey_dialog.dart';
+export 'package:cosanostr/dialogs/settings_dialog.dart';
 export 'package:cosanostr/feedscreen_logic.dart';
 export 'package:cosanostr/firebase_options.dart';
 export 'package:cosanostr/models/nost.dart';

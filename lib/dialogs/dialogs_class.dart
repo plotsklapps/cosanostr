@@ -181,4 +181,16 @@ class Dialogs {
       },
     );
   }
+
+  Future<void> settingsDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    await showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return const SettingsDialog();
+      },
+    );
+  }
 }

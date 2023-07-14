@@ -28,39 +28,6 @@ class ScaffoldDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () {
-              // Riverpod's way of toggling a bool (I think).
-              ref.read(isDarkThemeProvider.notifier).state =
-                  !ref.watch(isDarkThemeProvider);
-            },
-            title: const Text('THEMEMODE'),
-            // Check the current theme mode and display the appropriate icon.
-            // Icons are up for debate, but I found these funny.
-            trailing: ref.watch(isDarkThemeProvider)
-                ? const Icon(FontAwesomeIcons.ghost)
-                : const Icon(FontAwesomeIcons.faceFlushed),
-          ),
-          ListTile(
-            onTap: () {
-              ref.read(isThemeIndigoProvider.notifier).state =
-                  !ref.watch(isThemeIndigoProvider);
-            },
-            title: const Text('THEMECOLOR'),
-            trailing: ref.watch(isThemeIndigoProvider)
-                ? const Icon(FontAwesomeIcons.droplet)
-                : const Icon(FontAwesomeIcons.moneyBill),
-          ),
-          ListTile(
-            onTap: () {
-              ref.read(isFontQuestrialProvider.notifier).state =
-                  !ref.watch(isFontQuestrialProvider);
-            },
-            title: const Text('THEMEFONT'),
-            trailing: ref.watch(isFontQuestrialProvider)
-                ? const Icon(FontAwesomeIcons.quora)
-                : const Icon(FontAwesomeIcons.bold),
-          ),
-          ListTile(
             onTap: () async {
               // Check if keys are already generated and display the
               // appropriate dialog.
@@ -119,6 +86,14 @@ class ScaffoldDrawer extends StatelessWidget {
             // Check the current theme mode and display the appropriate icon.
             // Icons are up for debate, but I found these funny.
             trailing: const Icon(FontAwesomeIcons.circleInfo),
+          ),
+          ListTile(
+            onTap: () async {
+              Navigator.pop(context);
+              await Dialogs().settingsDialog(context, ref);
+            },
+            title: const Text('SETTINGS'),
+            trailing: const Icon(FontAwesomeIcons.gear),
           ),
         ],
       ),
