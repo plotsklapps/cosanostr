@@ -16,14 +16,27 @@ class ScaffoldDrawer extends StatelessWidget {
     return Drawer(
       child: Column(
         children: <Widget>[
-          const DrawerHeader(
+          DrawerHeader(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text('CosaNostr'),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Image.asset(
+                    'assets/images/cosanostr_icon.png',
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                const Text(
+                  'CosaNostr',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8.0),
                 // Bump this version every time something insanely cool is
                 // added.
-                Text('Version: 0.0.1'),
+                const Text('Version: 0.0.1'),
               ],
             ),
           ),

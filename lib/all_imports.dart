@@ -2,6 +2,7 @@ export 'dart:convert';
 
 export 'package:cosanostr/components/feedscreen_card.dart';
 export 'package:cosanostr/components/feedscreen_fab.dart';
+export 'package:cosanostr/components/joincosanostr_fab.dart';
 export 'package:cosanostr/components/phone_container.dart';
 export 'package:cosanostr/components/scaffold_appbar.dart';
 export 'package:cosanostr/components/scaffold_drawer.dart';

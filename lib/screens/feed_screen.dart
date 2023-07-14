@@ -242,7 +242,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               },
               isNotePublishing: ref.watch(isNotePublishingProvider),
             )
-          : Container(),
+          : const JoinCosaNostrFAB(),
     );
   }
 }
