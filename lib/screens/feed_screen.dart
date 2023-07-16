@@ -17,15 +17,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   // providers. This is because they will soon be used in other screens as
   // well. Next step is setting up a StreamProvider to handle the stream
   // from the relay.
-  // TODO(plotsklapps): Set up StreamProvider so it can be used throughout
-  //  the app.
   late Stream<Event> stream;
-  final StreamController<Event> streamController = StreamController<Event>();
 
   @override
   void initState() {
     super.initState();
     Future<void>.delayed(Duration.zero, () async {
+      ref.read(streamControllerProvider);
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
     });
@@ -89,7 +87,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       // Finally, the incoming message is added to the StreamController.
       // This makes the message available to any other parts of the program
       // that are listening to the Stream.
-      streamController.add(event);
+      ref.read(streamControllerProvider).add(event);
     });
   }
 
@@ -126,7 +124,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           // StreamBuilder is a widget that listens to the streamController
           // and returns a widget tree based on the state of the stream.
           child: StreamBuilder<Event>(
-            stream: streamController.stream,
+            stream: ref.watch(streamControllerProvider).stream,
             // The builder callback is called whenever a new event is
             // emitted from the stream.
             builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {

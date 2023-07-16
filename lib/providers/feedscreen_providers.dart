@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cosanostr/all_imports.dart';
 
 // isConnectedProvider holds the status of our relay connection.
@@ -29,6 +31,13 @@ final StateProvider<FlutterSecureStorage> secureStorageProvider =
 final StateProvider<Nip19> nip19Provider =
     StateProvider<Nip19>((StateProviderRef<Nip19> ref) {
   return Nip19();
+});
+
+final Provider<StreamController<Event>> streamControllerProvider =
+    Provider<StreamController<Event>>(
+        (ProviderRef<StreamController<Event>> ref) {
+  // Create and return a new StreamController instance
+  return StreamController<Event>();
 });
 
 // eventsProvider is a list that will hold all the events that we'll get
