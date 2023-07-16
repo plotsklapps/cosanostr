@@ -18,12 +18,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   // well. Next step is setting up a StreamProvider to handle the stream
   // from the relay.
   late Stream<Event> stream;
+  late StreamController<Event> streamController;
 
   @override
   void initState() {
     super.initState();
+    streamController = ref.read(streamControllerProvider);
     Future<void>.delayed(Duration.zero, () async {
-      ref.read(streamControllerProvider);
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
     });
@@ -31,7 +32,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   void dispose() {
+    streamController.close();
     ref.read(relayApiProvider).close();
+    ref.read(relayPoolProvider).close();
     ref.read(keyControllerProvider).dispose();
     super.dispose();
   }
@@ -70,7 +73,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       // can associate each note with its corresponding user metadata.
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
-        ref.read(relayApiProvider).sub(<Filter>[
+        ref.read(relayPoolProvider).sub(<Filter>[
           Filter(kinds: <int>[0], authors: <String>[event.pubkey])
         ]);
         // If the kind of the event is 0, the content of the event is decoded
@@ -87,7 +90,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       // Finally, the incoming message is added to the StreamController.
       // This makes the message available to any other parts of the program
       // that are listening to the Stream.
-      ref.read(streamControllerProvider).add(event);
+      streamController.add(event);
     });
   }
 
@@ -124,7 +127,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
           // StreamBuilder is a widget that listens to the streamController
           // and returns a widget tree based on the state of the stream.
           child: StreamBuilder<Event>(
-            stream: ref.watch(streamControllerProvider).stream,
+            stream: streamController.stream,
             // The builder callback is called whenever a new event is
             // emitted from the stream.
             builder: (BuildContext context, AsyncSnapshot<Event> snapshot) {
@@ -185,25 +188,27 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               } else if (snapshot.hasError) {
                 // If snapshot.hasError is true, we display an error message.
                 return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                // If none of the above conditions are met, we display a
+                // loading indicator.
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      const Text(
+                          'SOMETHING IS WRONG... TRY TO RESTART THE APP'),
+                      const CircularProgressIndicator(),
+                      if (ref.watch(isDarkThemeProvider))
+                        Image.asset('assets/images/cosanostr_white_icon.png')
+                      else
+                        Image.asset(
+                          'assets/images/cosanostr_black_icon.png',
+                        ),
+                    ],
+                  ),
+                );
               }
-              // If none of the above conditions are met, we display a
-              // loading indicator.
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    const Text('SOMETHING IS WRONG... TRY TO RESTART THE APP'),
-                    const CircularProgressIndicator(),
-                    if (ref.watch(isDarkThemeProvider))
-                      Image.asset('assets/images/cosanostr_white_icon.png')
-                    else
-                      Image.asset(
-                        'assets/images/cosanostr_black_icon.png',
-                      ),
-                  ],
-                ),
-              );
             },
           ),
         ),
@@ -228,7 +233,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
                 if (eventApi.verifySignature(event)) {
                   try {
-                    ref.read(relayApiProvider).publish(event);
+                    ref.read(relayPoolProvider).publish(event);
                     await resubscribeStream(ref).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(

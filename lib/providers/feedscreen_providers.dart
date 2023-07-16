@@ -8,6 +8,21 @@ final StateProvider<bool> isConnectedProvider =
   return false;
 });
 
+final StateProvider<RelayPoolApi> relayPoolProvider =
+    StateProvider<RelayPoolApi>((StateProviderRef<RelayPoolApi> ref) {
+  final List<String> relaysList = <String>[
+    'wss://relay.damus.io',
+    'wss://relay.nostr.info',
+    'wss://eden.nostr.land',
+    'wss://nostr-pub.wellorder.net',
+    'wss://nos.lol',
+    'wss://relay.snort.social',
+    'wss://relay.current.fyi',
+    'wss://brb.io',
+  ];
+  return RelayPoolApi(relaysList: relaysList);
+});
+
 // relayApiProvider creates an instance of RelayApi, which is defined in
 // nostr_tools. It requires the relay URL as an argument.
 final StateProvider<RelayApi> relayApiProvider =
@@ -33,9 +48,9 @@ final StateProvider<Nip19> nip19Provider =
   return Nip19();
 });
 
-final Provider<StreamController<Event>> streamControllerProvider =
-    Provider<StreamController<Event>>(
-        (ProviderRef<StreamController<Event>> ref) {
+final AutoDisposeProvider<StreamController<Event>> streamControllerProvider =
+    Provider.autoDispose<StreamController<Event>>(
+        (AutoDisposeProviderRef<StreamController<Event>> ref) {
   // Create and return a new StreamController instance
   return StreamController<Event>();
 });

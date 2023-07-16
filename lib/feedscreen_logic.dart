@@ -88,11 +88,11 @@ class FeedScreenLogic {
   Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
     // Establishes a connection to the relay API and returns a stream of
     // messages.
-    final Stream<Message> stream = await ref.read(relayApiProvider).connect();
+    final Stream<Message> stream = await ref.read(relayPoolProvider).connect();
 
     // This sets up an event listener for relayApiProvider, which will be
     // triggered whenever relayApiProvider emits a RelayEvent.
-    ref.read(relayApiProvider).on((RelayEvent event) {
+    ref.read(relayPoolProvider).on((RelayEvent event) {
       // This code block checks the type of the emitted RelayEvent.
       // If it is a connect event, isConnectedProvider is set to true.
       // If it is an error event, isConnectedProvider is set to false.
@@ -108,7 +108,7 @@ class FeedScreenLogic {
     // text note. We also set a limit of 100 events and a tag of nostr.
     // This tag helps us filter out unwanted events and only receive the ones
     // that has the "nostr" tag.
-    ref.read(relayApiProvider).sub(<Filter>[
+    ref.read(relayPoolProvider).sub(<Filter>[
       Filter(
         kinds: <int>[1],
         limit: 100,
@@ -116,8 +116,10 @@ class FeedScreenLogic {
       )
     ]);
 
-    return stream
-        .where((Message message) => message.type == 'EVENT')
-        .map((Message message) => message.message as Event);
+    return stream.where((Message message) {
+      return message.type == 'EVENT';
+    }).map((Message message) {
+      return message.message as Event;
+    });
   }
 }
