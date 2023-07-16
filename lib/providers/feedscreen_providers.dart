@@ -12,6 +12,8 @@ final StateProvider<RelayPoolApi> relayPoolProvider =
     StateProvider<RelayPoolApi>((StateProviderRef<RelayPoolApi> ref) {
   final List<String> relaysList = <String>[
     'wss://relay.damus.io',
+    'wss://relay.plebstr.com',
+    'wss://nostr.wine',
     'wss://relay.nostr.info',
     'wss://eden.nostr.land',
     'wss://nostr-pub.wellorder.net',
