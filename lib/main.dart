@@ -21,7 +21,7 @@ class MainEntry extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'CosaNostr',
+      title: 'CosaNostr - Nostr Client by Plotsklapps',
       // Use Riverpod Providers to get the current theme and theme mode.
       theme: ref.watch(lightThemeProvider),
       darkTheme: ref.watch(darkThemeProvider),

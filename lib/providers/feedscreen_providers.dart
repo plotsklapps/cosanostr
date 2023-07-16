@@ -1,9 +1,28 @@
+import 'dart:async';
+
 import 'package:cosanostr/all_imports.dart';
 
 // isConnectedProvider holds the status of our relay connection.
 final StateProvider<bool> isConnectedProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
   return false;
+});
+
+final StateProvider<RelayPoolApi> relayPoolProvider =
+    StateProvider<RelayPoolApi>((StateProviderRef<RelayPoolApi> ref) {
+  final List<String> relaysList = <String>[
+    'wss://relay.damus.io',
+    'wss://relay.plebstr.com',
+    'wss://nostr.wine',
+    'wss://relay.nostr.info',
+    'wss://eden.nostr.land',
+    'wss://nostr-pub.wellorder.net',
+    'wss://nos.lol',
+    'wss://relay.snort.social',
+    'wss://relay.current.fyi',
+    'wss://brb.io',
+  ];
+  return RelayPoolApi(relaysList: relaysList);
 });
 
 // relayApiProvider creates an instance of RelayApi, which is defined in
@@ -29,6 +48,13 @@ final StateProvider<FlutterSecureStorage> secureStorageProvider =
 final StateProvider<Nip19> nip19Provider =
     StateProvider<Nip19>((StateProviderRef<Nip19> ref) {
   return Nip19();
+});
+
+final AutoDisposeProvider<StreamController<Event>> streamControllerProvider =
+    Provider.autoDispose<StreamController<Event>>(
+        (AutoDisposeProviderRef<StreamController<Event>> ref) {
+  // Create and return a new StreamController instance
+  return StreamController<Event>();
 });
 
 // eventsProvider is a list that will hold all the events that we'll get

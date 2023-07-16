@@ -17,14 +17,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   // providers. This is because they will soon be used in other screens as
   // well. Next step is setting up a StreamProvider to handle the stream
   // from the relay.
-  // TODO(plotsklapps): Set up StreamProvider so it can be used throughout
-  //  the app.
   late Stream<Event> stream;
-  final StreamController<Event> streamController = StreamController<Event>();
+  late StreamController<Event> streamController;
 
   @override
   void initState() {
     super.initState();
+    streamController = ref.read(streamControllerProvider);
     Future<void>.delayed(Duration.zero, () async {
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
@@ -33,7 +32,9 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   void dispose() {
+    streamController.close();
     ref.read(relayApiProvider).close();
+    ref.read(relayPoolProvider).close();
     ref.read(keyControllerProvider).dispose();
     super.dispose();
   }
@@ -72,7 +73,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       // can associate each note with its corresponding user metadata.
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
-        ref.read(relayApiProvider).sub(<Filter>[
+        ref.read(relayPoolProvider).sub(<Filter>[
           Filter(kinds: <int>[0], authors: <String>[event.pubkey])
         ]);
         // If the kind of the event is 0, the content of the event is decoded
@@ -187,25 +188,27 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               } else if (snapshot.hasError) {
                 // If snapshot.hasError is true, we display an error message.
                 return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                // If none of the above conditions are met, we display a
+                // loading indicator.
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      const Text(
+                          'SOMETHING IS WRONG... TRY TO RESTART THE APP'),
+                      const CircularProgressIndicator(),
+                      if (ref.watch(isDarkThemeProvider))
+                        Image.asset('assets/images/cosanostr_white_icon.png')
+                      else
+                        Image.asset(
+                          'assets/images/cosanostr_black_icon.png',
+                        ),
+                    ],
+                  ),
+                );
               }
-              // If none of the above conditions are met, we display a
-              // loading indicator.
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    const Text('SOMETHING IS WRONG... TRY TO RESTART THE APP'),
-                    const CircularProgressIndicator(),
-                    if (ref.watch(isDarkThemeProvider))
-                      Image.asset('assets/images/cosanostr_white_icon.png')
-                    else
-                      Image.asset(
-                        'assets/images/cosanostr_black_icon.png',
-                      ),
-                  ],
-                ),
-              );
             },
           ),
         ),
@@ -230,7 +233,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
                 if (eventApi.verifySignature(event)) {
                   try {
-                    ref.read(relayApiProvider).publish(event);
+                    ref.read(relayPoolProvider).publish(event);
                     await resubscribeStream(ref).then((_) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(
