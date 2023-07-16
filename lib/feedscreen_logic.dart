@@ -90,8 +90,8 @@ class FeedScreenLogic {
     // messages.
     final Stream<Message> stream = await ref.read(relayPoolProvider).connect();
 
-    // This sets up an event listener for relayApiProvider, which will be
-    // triggered whenever relayApiProvider emits a RelayEvent.
+    // This sets up an event listener for relayPoolProvider, which will be
+    // triggered whenever relayPoolProvider emits a RelayEvent.
     ref.read(relayPoolProvider).on((RelayEvent event) {
       // This code block checks the type of the emitted RelayEvent.
       // If it is a connect event, isConnectedProvider is set to true.
