@@ -14,7 +14,6 @@ final StateProvider<RelayPoolApi> relayPoolProvider =
     'wss://relay.damus.io',
     'wss://relay.plebstr.com',
     'wss://nostr.wine',
-    'wss://relay.nostr.info',
     'wss://eden.nostr.land',
     'wss://nostr-pub.wellorder.net',
     'wss://nos.lol',

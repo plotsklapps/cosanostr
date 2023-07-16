@@ -86,8 +86,8 @@ class FeedScreenLogic {
 
   // Connect to the relay.
   Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
-    // Establishes a connection to the relay API and returns a stream of
-    // messages.
+    // Establishes a connection to the relayPoolProvider and returns a stream
+    // of messages.
     final Stream<Message> stream = await ref.read(relayPoolProvider).connect();
 
     // This sets up an event listener for relayPoolProvider, which will be

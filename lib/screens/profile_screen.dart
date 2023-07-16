@@ -14,17 +14,28 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: <Widget>[
           Card(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Image.network(''),
-                    Text('TEST'),
-                  ],
-                ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        fit: FlexFit.loose,
+                        child: Image.asset(
+                          'assets/images/plotsklapps_stacked.png',
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      const Text('WORK IN PROGRESS...'),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

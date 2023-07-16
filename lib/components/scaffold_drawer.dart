@@ -72,12 +72,34 @@ class ScaffoldDrawer extends ConsumerWidget {
                 ? const Icon(FontAwesomeIcons.check)
                 : const Icon(FontAwesomeIcons.plus),
           ),
+          // Check if keys are already generated and display this ListTile
+          // only if they are.
+          if (ref.watch(keysExistProvider))
+            ListTile(
+              onTap: () async {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldSnackBar(
+                    context: context,
+                    content: const Text(
+                      'Coming soon!',
+                    ),
+                  ),
+                );
+              },
+              title: const Text('SHOW RELAYS'),
+              subtitle: const Text('Select connected relays'),
+              trailing: const Icon(FontAwesomeIcons.circleNodes),
+            )
+          else
+            const SizedBox(),
           ListTile(
             onTap: () async {
               // Create an alertdialog or bottomsheet with explanation
               // about the Nostr protocol. Why and how, maybe embed
               // the Youtube doc from deMarco?
               // For now:
+              Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 ScaffoldSnackBar(
                   context: context,
@@ -93,23 +115,6 @@ class ScaffoldDrawer extends ConsumerWidget {
             subtitle: const Text('About the Nostr protocol'),
             trailing: const Icon(FontAwesomeIcons.solidCircleQuestion),
           ),
-          // Check if keys are already generated and display this ListTile
-          // only if they are.
-          if (ref.watch(keysExistProvider))
-            ListTile(
-              onTap: () async {
-                Navigator.pop(context);
-                await Dialogs().deleteKeysDialog(context, ref);
-              },
-              title: const Text('DELETE YOUR KEYS'),
-              subtitle: const Text('Leave CosaNostr as your client'),
-              trailing: const Icon(
-                FontAwesomeIcons.solidTrashCan,
-                color: Colors.red,
-              ),
-            )
-          else
-            const SizedBox(),
           ListTile(
             onTap: () async {
               await Navigator.push(

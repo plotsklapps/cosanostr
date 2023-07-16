@@ -32,7 +32,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   void dispose() {
-    streamController.close();
+    unawaited(streamController.close());
     ref.read(relayApiProvider).close();
     ref.read(relayPoolProvider).close();
     ref.read(keyControllerProvider).dispose();

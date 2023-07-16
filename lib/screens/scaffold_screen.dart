@@ -16,41 +16,13 @@ class ScaffoldScreen extends ConsumerStatefulWidget {
 }
 
 class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
-  // Instantiate a PageController to have access to animations during
-  // navigation.
-  late PageController pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    // Starting index = always 0.
-    pageController =
-        PageController(initialPage: ref.read(currentPageIndexProvider));
-  }
-
-  @override
-  void dispose() {
-    // Kill the PageController.
-    pageController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // The ScaffoldAppBar and ScaffoldDrawer are custom widgets.
       appBar: const ScaffoldAppBar(),
       drawer: ScaffoldDrawer(ref: ref),
-      body: PageView(
-        controller: pageController,
-        children: const <Widget>[
-          FeedScreen(),
-          ProfileScreen(),
-          Placeholder(),
-        ],
-      ),
-      // The BottomNavigationBar is a custom widget.
-      bottomNavigationBar: ScaffoldNavBar(pageController),
+      body: const FeedScreen(),
     );
   }
 }
