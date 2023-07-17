@@ -42,15 +42,47 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
       appBar: const ScaffoldAppBar(),
       drawer: ScaffoldDrawer(ref: ref),
       body: PageView(
+        onPageChanged: (int index) {
+          ref.read(currentPageIndexProvider.notifier).state = index;
+        },
         controller: pageController,
         children: const <Widget>[
-          NewFeedScreen(),
+          FeedScreen(),
           Placeholder(),
           Placeholder(),
         ],
       ),
       // The BottomNavigationBar is a custom widget.
-      bottomNavigationBar: ScaffoldNavBar(pageController),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: ref.watch(currentPageIndexProvider),
+        onTap: (int index) async {
+          ref.read(currentPageIndexProvider.notifier).state = index;
+          // When the user taps on a BottomNavigationBarItem, the
+          // PageController is used to animate to the corresponding
+          // page.
+          await pageController.animateToPage(
+            ref.watch(currentPageIndexProvider),
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.easeInOutCubic,
+          );
+          // The currentPageIndexProvider is updated to reflect the
+          // current page.
+        },
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.house),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.searchengin),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.person),
+            label: '',
+          ),
+        ],
+      ),
     );
   }
 }

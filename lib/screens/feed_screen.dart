@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:cosanostr/all_imports.dart';
 
-class NewFeedScreen extends ConsumerStatefulWidget {
-  const NewFeedScreen({super.key});
+class FeedScreen extends ConsumerStatefulWidget {
+  const FeedScreen({super.key});
 
   @override
-  ConsumerState<NewFeedScreen> createState() {
-    return NewFeedScreenState();
+  ConsumerState<FeedScreen> createState() {
+    return FeedScreenState();
   }
 }
 
-class NewFeedScreenState extends ConsumerState<NewFeedScreen> {
+class FeedScreenState extends ConsumerState<FeedScreen> {
   late Stream<Event> _stream;
   final StreamController<Event> streamController = StreamController<Event>();
 
@@ -135,11 +135,11 @@ class NewFeedScreenState extends ConsumerState<NewFeedScreen> {
                         ),
                       );
                     });
-                  } catch (_) {
+                  } catch (error) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       ScaffoldSnackBar(
                         context: context,
-                        content: const Text('Oops! Something went wrong!'),
+                        content: Text('Oops! Something went wrong: $error'),
                       ),
                     );
                   }
