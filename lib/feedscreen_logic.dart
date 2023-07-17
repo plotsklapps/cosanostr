@@ -3,37 +3,68 @@ import 'package:cosanostr/all_imports.dart';
 class FeedScreenLogic {
   // Generate new keys and add them to secure storage.
   Future<bool> generateNewKeys(WidgetRef ref) async {
-    final String newPrivateKey = ref.watch(keyApiProvider).generatePrivateKey();
-    final String newPublicKey = ref.watch(keyApiProvider).getPublicKey(
-          newPrivateKey,
-        );
+    try {
+      // Get the [KeyApi] instance from the [keyApiProvider].
+      final KeyApi keyApi = ref.watch(keyApiProvider);
 
-    return FeedScreenLogic().addKeysToStorage(
-      ref,
-      newPrivateKey,
-      newPublicKey,
-    );
+      // Returns a [String] representing the generated private key.
+      final String newPrivateKey = keyApi.generatePrivateKey();
+
+      // Returns a [String] representing the generated public key
+      // corresponding to the given private key.
+      final String newPublicKey = keyApi.getPublicKey(
+        newPrivateKey,
+      );
+
+      Logger().i('Success! New keys generated!');
+
+      // Update the private and public key in their respective [Providers].
+      ref.read(privateKeyProvider.notifier).state = newPrivateKey;
+      ref.read(publicKeyProvider.notifier).state = newPublicKey;
+
+      // Add the keys to secure storage.
+      return addKeysToStorage(
+        ref,
+        ref.watch(privateKeyProvider),
+        ref.watch(publicKeyProvider),
+      );
+    } catch (error) {
+      Logger().e('Error generating new keys: $error');
+      // Return false if the keys were not successfully generated.
+      return false;
+    }
   }
 
   // Add keys to secure storage.
   Future<bool> addKeysToStorage(
     WidgetRef ref,
-    String privateKeyHex,
-    String publicKeyHex,
+    String privateKey,
+    String publicKey,
   ) async {
-    await Future.wait(<Future<void>>[
-      ref
-          .read(secureStorageProvider)
-          .write(key: 'privateKey', value: privateKeyHex),
-      ref
-          .read(secureStorageProvider)
-          .write(key: 'publicKey', value: publicKeyHex),
-    ]);
-    ref.read(privateKeyProvider.notifier).state = privateKeyHex;
-    ref.read(publicKeyProvider.notifier).state = publicKeyHex;
-    ref.read(keysExistProvider.notifier).state = true;
+    try {
+      // Get the [FlutterSecureStorage] instance from the
+      // [secureStorageProvider].
+      final FlutterSecureStorage secureStorage =
+          ref.watch(secureStorageProvider);
 
-    return ref.watch(keysExistProvider);
+      // Write the private and public keys to secure storage.
+      await Future.wait(<Future<void>>[
+        secureStorage.write(key: 'privateKey', value: privateKey),
+        secureStorage.write(key: 'publicKey', value: publicKey),
+      ]);
+
+      Logger().i('Success! Keys added to secure storage!');
+
+      // Update the keysExist state to true in the [keysExistProvider].
+      ref.read(keysExistProvider.notifier).state = true;
+
+      // Return true if the keys were successfully added to secure storage.
+      return ref.watch(keysExistProvider);
+    } catch (error) {
+      Logger().e('Error adding keys to secure storage: $error');
+      // Return false if the keys were not successfully added to secure storage.
+      return false;
+    }
   }
 
   // Get keys from secure storage.

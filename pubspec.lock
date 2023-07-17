@@ -57,6 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  bip32_bip44:
+    dependency: transitive
+    description:
+      name: bip32_bip44
+      sha256: "8e28e6bde00da1ed207f2c0a5361792375799196176742c0d36c71e89a5485d3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   bip340:
     dependency: transitive
     description:
@@ -153,6 +161,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  dart_nostr:
+    dependency: "direct main"
+    description:
+      name: dart_nostr
+      sha256: "1022e9200c6880d81e82805f1d5a488ae4db32cfa429c8a57d51af3060a167fa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.1"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -392,6 +416,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.3"
+  logger:
+    dependency: "direct main"
+    description:
+      name: logger
+      sha256: "7ad7215c15420a102ec687bb320a7312afd449bac63bfb1c60d9787c27b9767f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   matcher:
     dependency: transitive
     description:

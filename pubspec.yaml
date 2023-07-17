@@ -10,6 +10,7 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.2
+  dart_nostr: ^3.3.1
   firebase_analytics: ^10.4.3
   firebase_core: ^2.14.0
   flex_color_scheme: ^7.1.2
@@ -21,6 +22,7 @@ dependencies:
   flutter_secure_storage: ^8.0.0
   font_awesome_flutter: ^10.5.0
   google_fonts: ^4.0.4
+  logger: ^1.4.0
   nostr_tools: ^1.0.7
   url_launcher: ^6.1.12
 
