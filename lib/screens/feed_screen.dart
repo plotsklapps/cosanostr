@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
 
@@ -26,11 +27,10 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
   @override
   void dispose() {
-    ref.read(relayApiProvider).close();
-    ref.read(relayPoolProvider).close();
     Future<void>.delayed(Duration.zero, () async {
       await streamController.close();
     });
+    ref.read(relayPoolProvider).close();
     super.dispose();
   }
 
@@ -40,7 +40,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       final Event event = message;
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
-        ref.read(relayApiProvider).sub(<Filter>[
+        ref.read(relayPoolProvider).sub(<Filter>[
           Filter(
             kinds: <int>[0],
             authors: <String>[event.pubkey],
@@ -71,37 +71,48 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         onRefresh: () async {
           await resubscribeStream();
         },
-        child: StreamBuilder<Event>(
-          stream: streamController.stream,
-          builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: ref.watch(eventsProvider).length,
-                itemBuilder: (BuildContext context, int index) {
-                  final Event event = ref.watch(eventsProvider)[index];
-                  final Metadata? metadata =
-                      ref.watch(metaDataProvider)[event.pubkey];
-                  final Nost nost = Nost(
-                    noteId: event.id,
-                    avatarUrl: metadata?.picture ??
-                        'https://robohash.org/${event.pubkey}',
-                    name: metadata?.name ?? 'Anon',
-                    username: metadata?.displayName ??
-                        (metadata?.display_name ?? 'Anon'),
-                    time: TimeAgo.format(event.created_at),
-                    content: event.content,
-                    pubkey: event.pubkey,
-                  );
-                  return FeedScreenCard(nost: nost);
-                },
-              );
-            } else if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text('Loading....'));
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            return const CircularProgressIndicator();
-          },
+        child: ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(
+            scrollbars: false,
+            dragDevices: <PointerDeviceKind>{
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.trackpad,
+            },
+          ),
+          child: StreamBuilder<Event>(
+            stream: streamController.stream,
+            builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.builder(
+                  itemCount: ref.watch(eventsProvider).length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final Event event = ref.watch(eventsProvider)[index];
+                    final Metadata? metadata =
+                        ref.watch(metaDataProvider)[event.pubkey];
+                    final Nost nost = Nost(
+                      noteId: event.id,
+                      avatarUrl: metadata?.picture ??
+                          'https://robohash.org/${event.pubkey}',
+                      name: metadata?.name ?? 'Anon',
+                      username: metadata?.displayName ??
+                          (metadata?.display_name ?? 'Anon'),
+                      time: TimeAgo.format(event.created_at),
+                      content: event.content,
+                      pubkey: event.pubkey,
+                    );
+                    return FeedScreenCard(nost: nost);
+                  },
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: Text('Loading....'));
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              return const CircularProgressIndicator();
+            },
+          ),
         ),
       ),
       floatingActionButton: ref.watch(keysExistProvider)
@@ -126,7 +137,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
                 if (eventApi.verifySignature(event)) {
                   try {
-                    ref.read(relayApiProvider).publish(event);
+                    ref.read(relayPoolProvider).publish(event);
                     await resubscribeStream().then((_) {
                       return ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(

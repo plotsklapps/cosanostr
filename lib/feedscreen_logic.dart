@@ -63,9 +63,9 @@ class FeedScreenLogic {
 
   // Connect to the relay.
   Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
-    final Stream<Message> stream = await ref.read(relayApiProvider).connect();
+    final Stream<Message> stream = await ref.read(relayPoolProvider).connect();
 
-    ref.read(relayApiProvider).on((RelayEvent event) {
+    ref.read(relayPoolProvider).on((RelayEvent event) {
       if (event == RelayEvent.connect) {
         ref.read(isConnectedProvider.notifier).state = true;
       } else if (event == RelayEvent.error) {
@@ -75,7 +75,7 @@ class FeedScreenLogic {
       }
     });
 
-    ref.read(relayApiProvider).sub(<Filter>[
+    ref.read(relayPoolProvider).sub(<Filter>[
       Filter(
         kinds: <int>[1],
         limit: 100,

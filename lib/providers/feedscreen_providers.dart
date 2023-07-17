@@ -6,6 +6,8 @@ final StateProvider<bool> isConnectedProvider =
   return false;
 });
 
+// relayPoolProvider creates an instance of RelayPoolApi, which is defined in
+// nostr_tools. It requires a list of relay URLs as an argument.
 final StateProvider<RelayPoolApi> relayPoolProvider =
     StateProvider<RelayPoolApi>((StateProviderRef<RelayPoolApi> ref) {
   return RelayPoolApi(
