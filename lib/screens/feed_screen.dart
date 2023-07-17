@@ -30,7 +30,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
     Future<void>.delayed(Duration.zero, () async {
       await streamController.close();
     });
-    ref.read(relayPoolProvider).close();
+    ref.read(relayApiProvider).close();
     super.dispose();
   }
 
@@ -40,7 +40,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
       final Event event = message;
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
-        ref.read(relayPoolProvider).sub(<Filter>[
+        ref.read(relayApiProvider).sub(<Filter>[
           Filter(
             kinds: <int>[0],
             authors: <String>[event.pubkey],
@@ -137,7 +137,7 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
 
                 if (eventApi.verifySignature(event)) {
                   try {
-                    ref.read(relayPoolProvider).publish(event);
+                    ref.read(relayApiProvider).publish(event);
                     await resubscribeStream().then((_) {
                       return ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(

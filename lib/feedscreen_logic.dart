@@ -63,26 +63,40 @@ class FeedScreenLogic {
 
   // Connect to the relay.
   Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
-    final Stream<Message> stream = await ref.read(relayPoolProvider).connect();
+    // Connect to the relay API and get a stream of messages.
+    final Stream<Message> stream = await ref.read(relayApiProvider).connect();
 
-    ref.read(relayPoolProvider).on((RelayEvent event) {
+    // Listen for relay events and update the connection status accordingly.
+    ref.read(relayApiProvider).on((RelayEvent event) {
       if (event == RelayEvent.connect) {
+        // If the event is "connect", set the isConnected state to true.
         ref.read(isConnectedProvider.notifier).state = true;
+        print('Connected to relay: ${ref.watch(relayApiProvider).relayUrl}');
       } else if (event == RelayEvent.error) {
+        // If the event is "error", set the isConnected state to false.
         ref.read(isConnectedProvider.notifier).state = false;
+        print(
+          'Error connecting to relay: ${ref.watch(relayApiProvider).relayUrl}',
+        );
       } else if (event == RelayEvent.disconnect) {
+        // If the event is "disconnect", set the isConnected state to false.
         ref.read(isConnectedProvider.notifier).state = false;
+        print(
+          'Disconnected from relay: ${ref.watch(relayApiProvider).relayUrl}',
+        );
       }
     });
 
-    ref.read(relayPoolProvider).sub(<Filter>[
+    // Subscribe to specific filters on the relay API.
+    ref.read(relayApiProvider).sub(<Filter>[
       Filter(
         kinds: <int>[1],
-        limit: 100,
-        t: <String>['nostr'],
+        t: <String>['nost'],
+        limit: 150,
       )
     ]);
 
+    // Filter and map the messages stream to get a stream of events.
     return stream.where((Message message) {
       return message.type == 'EVENT';
     }).map((Message message) {
