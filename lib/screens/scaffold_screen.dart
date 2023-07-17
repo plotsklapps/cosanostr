@@ -53,9 +53,23 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
         ],
       ),
       // The BottomNavigationBar is a custom widget.
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: ref.watch(currentPageIndexProvider),
-        onTap: (int index) async {
+      bottomNavigationBar: NavigationBar(
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(FontAwesomeIcons.house),
+            label: 'Feed',
+          ),
+          NavigationDestination(
+            icon: Icon(FontAwesomeIcons.searchengin),
+            label: 'Search',
+          ),
+          NavigationDestination(
+            icon: Icon(FontAwesomeIcons.person),
+            label: 'Profile',
+          ),
+        ],
+        selectedIndex: ref.watch(currentPageIndexProvider),
+        onDestinationSelected: (int index) async {
           ref.read(currentPageIndexProvider.notifier).state = index;
           // When the user taps on a BottomNavigationBarItem, the
           // PageController is used to animate to the corresponding
@@ -68,20 +82,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
           // The currentPageIndexProvider is updated to reflect the
           // current page.
         },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.house),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.searchengin),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.person),
-            label: '',
-          ),
-        ],
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
       ),
     );
   }
