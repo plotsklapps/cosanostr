@@ -98,7 +98,7 @@ class KeysExistDialog extends ConsumerWidget {
         ElevatedButton(
           onPressed: () async {
             Navigator.pop(context);
-            await Dialogs().deleteKeysDialog(context, ref);
+            await showDeleteKeysDialog(context, ref);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: FlexColor.material3LightError,
