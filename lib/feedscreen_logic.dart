@@ -69,15 +69,39 @@ class FeedScreenLogic {
 
   // Get keys from secure storage.
   Future<void> getKeysFromStorage(WidgetRef ref) async {
-    final String? storedPrivateKey =
-        await ref.read(secureStorageProvider).read(key: 'privateKey');
-    final String? storedPublicKey =
-        await ref.read(secureStorageProvider).read(key: 'publicKey');
+    try {
+      // Get the [FlutterSecureStorage] instance from the
+      // [secureStorageProvider].
+      final FlutterSecureStorage secureStorage =
+          ref.read(secureStorageProvider);
 
-    if (storedPrivateKey != null && storedPublicKey != null) {
-      ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
-      ref.read(publicKeyProvider.notifier).state = storedPublicKey;
-      ref.read(keysExistProvider.notifier).state = true;
+      // Get the private and public keys from secure storage.
+      final String? storedPrivateKey = await secureStorage.read(
+        key: 'privateKey',
+      );
+      final String? storedPublicKey = await secureStorage.read(
+        key: 'publicKey',
+      );
+
+      // Update the private and public key in their respective [Providers] if
+      // they exist in secure storage. Also update the keysExist state to true
+      // in the [keysExistProvider].
+      if (storedPrivateKey != null && storedPublicKey != null) {
+        ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
+        ref.read(publicKeyProvider.notifier).state = storedPublicKey;
+        ref.read(keysExistProvider.notifier).state = true;
+
+        Logger().i('Success! Keys retrieved from secure storage!');
+      } else {
+        // If the keys do not exist in secure storage, set the keysExist state
+        // to false in the [keysExistProvider].
+        ref.read(keysExistProvider.notifier).state = false;
+
+        Logger().i('Keys do not exist in secure storage.');
+      }
+    } catch (error) {
+      Logger().e('Error getting keys from secure storage: $error');
+      // Method is void so return nothing.
     }
   }
 
