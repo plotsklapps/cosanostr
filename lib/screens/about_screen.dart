@@ -97,12 +97,7 @@ class AboutScreen extends StatelessWidget {
               // packages used.
               ElevatedButton(
                 onPressed: () async {
-                  await showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const CreditsDialog();
-                    },
-                  );
+                  await showCreditsDialog(context);
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -84,7 +84,7 @@ class KeysExistDialog extends ConsumerWidget {
               ref.read(isHexProvider.notifier).state =
                   !ref.watch(isHexProvider);
             },
-            child: const Text('NPUB'),
+            child: const Text('SHOW NPUB'),
           )
         else
           ElevatedButton(
@@ -92,7 +92,7 @@ class KeysExistDialog extends ConsumerWidget {
               ref.read(isHexProvider.notifier).state =
                   !ref.watch(isHexProvider);
             },
-            child: const Text('HEX'),
+            child: const Text('SHOW HEX'),
           ),
         const SizedBox(height: 8.0),
         ElevatedButton(
