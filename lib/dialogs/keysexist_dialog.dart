@@ -79,7 +79,7 @@ class KeysExistDialog extends ConsumerWidget {
       ),
       actions: <Widget>[
         if (ref.watch(isHexProvider))
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               ref.read(isHexProvider.notifier).state =
                   !ref.watch(isHexProvider);
@@ -87,13 +87,25 @@ class KeysExistDialog extends ConsumerWidget {
             child: const Text('NPUB'),
           )
         else
-          TextButton(
+          ElevatedButton(
             onPressed: () {
               ref.read(isHexProvider.notifier).state =
                   !ref.watch(isHexProvider);
             },
             child: const Text('HEX'),
           ),
+        const SizedBox(height: 8.0),
+        ElevatedButton(
+          onPressed: () async {
+            Navigator.pop(context);
+            await Dialogs().deleteKeysDialog(context, ref);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: FlexColor.material3LightError,
+          ),
+          child: const Text('DELETE KEYS'),
+        ),
+        const SizedBox(height: 8.0),
         ElevatedButton(
           onPressed: () {
             Navigator.pop(context);
