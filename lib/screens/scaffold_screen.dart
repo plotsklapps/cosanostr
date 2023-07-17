@@ -17,7 +17,7 @@ class ScaffoldScreen extends ConsumerStatefulWidget {
 
 class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   // Instantiate a PageController to have access to animations during
-  // navigation.
+  // navigation as well.
   late PageController pageController;
 
   @override
@@ -42,10 +42,10 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
       appBar: const ScaffoldAppBar(),
       drawer: ScaffoldDrawer(ref: ref),
       body: PageView(
+        controller: pageController,
         onPageChanged: (int index) {
           ref.read(currentPageIndexProvider.notifier).state = index;
         },
-        controller: pageController,
         children: const <Widget>[
           FeedScreen(),
           Placeholder(),
@@ -63,7 +63,7 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
           await pageController.animateToPage(
             ref.watch(currentPageIndexProvider),
             duration: const Duration(milliseconds: 1000),
-            curve: Curves.easeInOutCubic,
+            curve: Curves.bounceOut,
           );
           // The currentPageIndexProvider is updated to reflect the
           // current page.
