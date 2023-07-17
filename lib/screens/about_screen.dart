@@ -78,12 +78,7 @@ class AboutScreen extends StatelessWidget {
               // Button to show the bottomsheet for donations.
               ElevatedButton(
                 onPressed: () async {
-                  await showModalBottomSheet<void>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const DonationsDialog();
-                    },
-                  );
+                  await showDonationsDialog(context);
                 },
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
