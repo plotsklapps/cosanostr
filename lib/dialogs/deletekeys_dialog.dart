@@ -1,18 +1,18 @@
 import 'package:cosanostr/all_imports.dart';
 
-// The Dialog that is only shown to user when keys already
-// exist and the trashcan icon is clicked on the FeedScreen().
-// Takes two functions, onNoPressed to cancel and onYesPressed
-// to delete the keys from this client and go anonymous again.
+Future<void> showDeleteKeysDialog(BuildContext context, WidgetRef ref) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return const DeleteKeysDialog();
+    },
+  );
+}
+
 class DeleteKeysDialog extends ConsumerWidget {
   const DeleteKeysDialog({
     super.key,
-    required this.onNoPressed,
-    required this.onYesPressed,
   });
-
-  final void Function() onNoPressed;
-  final void Function() onYesPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,11 +36,27 @@ class DeleteKeysDialog extends ConsumerWidget {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: onNoPressed,
+          onPressed: () {
+            Navigator.pop(context);
+          },
           child: const Text('CANCEL'),
         ),
         IconButton(
-          onPressed: onYesPressed,
+          onPressed: () async {
+            final BuildContext currentContext = context;
+            await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
+              if (!ref.watch(keysExistProvider)) {
+                ScaffoldMessenger.of(currentContext).showSnackBar(
+                  ScaffoldSnackBar(
+                    context: context,
+                    content: const Text('Keys successfully deleted!'),
+                  ),
+                );
+              }
+            }).then((_) {
+              Navigator.pop(context);
+            });
+          },
           icon: const Icon(
             FontAwesomeIcons.solidTrashCan,
             color: Colors.red,

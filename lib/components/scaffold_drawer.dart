@@ -13,6 +13,7 @@ class ScaffoldDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final BuildContext currentContext = context;
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -45,8 +46,8 @@ class ScaffoldDrawer extends ConsumerWidget {
               // Check if keys are already generated and display the
               // appropriate dialog.
               if (ref.watch(keysExistProvider)) {
-                await Dialogs().keysExistDialog(
-                  context,
+                await showKeysExistDialog(
+                  currentContext,
                   ref,
                   ref
                       .watch(nip19Provider)
@@ -56,7 +57,9 @@ class ScaffoldDrawer extends ConsumerWidget {
                       .nsecEncode(ref.watch(privateKeyProvider)),
                 );
               } else {
-                await Dialogs().keysOptionDialog(context, ref);
+                await showKeysOptionsDialog(currentContext, ref).then((_) {
+                  Navigator.pop(context);
+                });
               }
             },
             // Check if keys are already generated and display the
@@ -64,17 +67,21 @@ class ScaffoldDrawer extends ConsumerWidget {
             title: ref.watch(keysExistProvider)
                 ? const Text('SHOW YOUR KEYS')
                 : const Text('GENERATE NEW KEYS'),
+            subtitle: ref.watch(keysExistProvider)
+                ? const Text('Your keys are securely stored')
+                : const Text('Join the CosaNostr client'),
             trailing: ref.watch(keysExistProvider)
                 ? const Icon(FontAwesomeIcons.check)
                 : const Icon(FontAwesomeIcons.plus),
           ),
           // Check if keys are already generated and display this ListTile
-          // only if they are.
+          // only if they are
           if (ref.watch(keysExistProvider))
             ListTile(
               onTap: () async {
-                Navigator.pop(context);
-                await Dialogs().deleteKeysDialog(context, ref);
+                await showDeleteKeysDialog(currentContext, ref).then((_) {
+                  Navigator.pop(currentContext);
+                });
               },
               title: const Text('DELETE YOUR KEYS'),
               trailing: const Icon(
@@ -84,6 +91,40 @@ class ScaffoldDrawer extends ConsumerWidget {
             )
           else
             const SizedBox(),
+          if (ref.watch(keysExistProvider))
+            ListTile(
+              onTap: () async {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldSnackBar(
+                    context: context,
+                    content: const Text('Coming soon!'),
+                  ),
+                );
+              },
+              title: const Text('SHOW RELAYS'),
+              subtitle: const Text('Select connected relays'),
+              trailing: const Icon(FontAwesomeIcons.circleNodes),
+            )
+          else
+            const SizedBox(),
+          ListTile(
+            onTap: () async {
+              //Create an alertdialog or bottomsheet with explanation about
+              // the Nostr protocol. Why and how, maybe embed the Youtube
+              // doc from deMarco? For now:
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldSnackBar(
+                  context: context,
+                  content: const Text('Coming soon!'),
+                ),
+              );
+            },
+            title: const Text('WTF IS NOSTR?'),
+            subtitle: const Text('About the Nostr protocol'),
+            trailing: const Icon(FontAwesomeIcons.solidCircleQuestion),
+          ),
           ListTile(
             onTap: () async {
               await Navigator.push(
@@ -95,17 +136,17 @@ class ScaffoldDrawer extends ConsumerWidget {
                 ),
               );
             },
-            title: const Text('ABOUT'),
-            // Check the current theme mode and display the appropriate icon.
-            // Icons are up for debate, but I found these funny.
+            title: const Text('ABOUT COSANOSTR'),
+            subtitle: const Text('Developer info'),
             trailing: const Icon(FontAwesomeIcons.circleInfo),
           ),
           ListTile(
             onTap: () async {
               Navigator.pop(context);
-              await Dialogs().settingsDialog(context, ref);
+              await showSettingsDialog(context, ref);
             },
             title: const Text('SETTINGS'),
+            subtitle: const Text('Change the app look and feel'),
             trailing: const Icon(FontAwesomeIcons.gear),
           ),
         ],

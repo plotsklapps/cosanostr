@@ -16,7 +16,7 @@ class JoinCosaNostrFAB extends ConsumerWidget {
         ],
       ),
       onPressed: () async {
-        await Dialogs().keysOptionDialog(context, ref);
+        await showKeysOptionsDialog(context, ref);
       },
     );
   }

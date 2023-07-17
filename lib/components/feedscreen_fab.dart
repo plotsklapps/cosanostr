@@ -35,20 +35,32 @@ class FeedScreenFABState extends State<FeedScreenFAB> {
       ),
       onPressed: () async {
         noteController.clear();
-        await showDialog<void>(
-          barrierDismissible: false,
+        await showModalBottomSheet<void>(
           context: context,
+          isScrollControlled: true,
           builder: (BuildContext context) {
-            return AlertDialog(
-              icon: const Icon(FontAwesomeIcons.featherPointed),
-              title: const Text('Create a Nost'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
+                  const Icon(FontAwesomeIcons.featherPointed),
+                  const SizedBox(height: 8.0),
+                  const Text(
+                    'Create a new Nost',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
                   TextFormField(
                     controller: noteController,
                     key: formKey,
-                    maxLines: 5,
+                    maxLines: 15,
                     validator: (String? value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Nost appears to be empty';

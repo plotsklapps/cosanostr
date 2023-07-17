@@ -1,5 +1,17 @@
 import 'package:cosanostr/all_imports.dart';
 
+Future<void> showSettingsDialog(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  await showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return const SettingsDialog();
+    },
+  );
+}
+
 class SettingsDialog extends ConsumerWidget {
   const SettingsDialog({super.key});
 

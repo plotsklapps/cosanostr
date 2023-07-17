@@ -1,5 +1,46 @@
 import 'package:cosanostr/all_imports.dart';
 
+// Show a dialog to user when keys don't exist. Takes in context and ref.
+// Provides choice to user to generate new keys or input a private key.
+Future<void> showKeysOptionsDialog(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  await showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return KeysOptionDialog(
+        generateNewKeyPressed: () {
+          FeedScreenLogic().generateNewKeys(ref).then((bool keysGenerated) {
+            if (keysGenerated) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldSnackBar(
+                  context: context,
+                  content: const Text('Congratulations! New keys generated!'),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldSnackBar(
+                  context: context,
+                  content: const Text('Oops! Something went wrong!'),
+                ),
+              );
+            }
+          });
+          Navigator.pop(context);
+        },
+        inputPrivateKeyPressed: () {
+          ref.read(keyControllerProvider).clear();
+          showPastePrivateKeyDialog(context, ref).then((_) {
+            Navigator.pop(context);
+          });
+        },
+      );
+    },
+  );
+}
+
 class KeysOptionDialog extends StatelessWidget {
   const KeysOptionDialog({
     super.key,

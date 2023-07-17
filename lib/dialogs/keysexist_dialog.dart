@@ -5,6 +5,27 @@ final StateProvider<bool> isHexProvider =
   return false;
 });
 
+// Show a dialog to user when keys already exists. Takes in context, ref,
+// and two Strings that are the encoded keys to display to user.
+Future<void> showKeysExistDialog(
+  BuildContext context,
+  WidgetRef ref,
+  String npubEncode,
+  String nsecEncode,
+) async {
+  await showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return KeysExistDialog(
+        npubEncode,
+        nsecEncode,
+        ref.watch(privateKeyProvider),
+        ref.watch(publicKeyProvider),
+      );
+    },
+  );
+}
+
 // The Dialog that is only shown to users when they click on the
 // 'key' icon on the FeedScreen() IF keys already exist.
 // Takes in keys as String and shows them as HEX or NPUB,

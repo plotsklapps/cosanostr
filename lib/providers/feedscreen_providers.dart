@@ -6,6 +6,19 @@ final StateProvider<bool> isConnectedProvider =
   return false;
 });
 
+final StateProvider<RelayPoolApi> relayPoolProvider =
+    StateProvider<RelayPoolApi>((StateProviderRef<RelayPoolApi> ref) {
+  return RelayPoolApi(
+    relaysList: <String>[
+      'wss://relay.damus.io',
+      'wss://nostr.wine',
+      'wss://relay.plebstr.com',
+      'wss://relay.snort.social',
+      'wss://relay.primal.net',
+    ],
+  );
+});
+
 // relayApiProvider creates an instance of RelayApi, which is defined in
 // nostr_tools. It requires the relay URL as an argument.
 final StateProvider<RelayApi> relayApiProvider =

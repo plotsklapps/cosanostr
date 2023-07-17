@@ -10,7 +10,6 @@ export 'package:cosanostr/components/scaffold_navbar.dart';
 export 'package:cosanostr/components/scaffold_snackbar.dart';
 export 'package:cosanostr/dialogs/credits_dialog.dart';
 export 'package:cosanostr/dialogs/deletekeys_dialog.dart';
-export 'package:cosanostr/dialogs/dialogs_class.dart';
 export 'package:cosanostr/dialogs/donations_dialog.dart';
 export 'package:cosanostr/dialogs/keysexist_dialog.dart';
 export 'package:cosanostr/dialogs/keysoption_dialog.dart';
