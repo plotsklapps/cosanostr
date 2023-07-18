@@ -177,7 +177,7 @@ class FeedScreenLogic {
           kinds: <int>[0, 1, 2, 3, 4, 6, 7],
           // Set a limit to the number of messages to receive, otherwise
           // the app will slow down.
-          limit: 50,
+          limit: 30,
         )
       ]);
 
