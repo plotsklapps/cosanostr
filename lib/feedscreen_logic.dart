@@ -166,8 +166,8 @@ class FeedScreenLogic {
     // Subscribe to specific filters on the relay API.
     relayApi.sub(<Filter>[
       Filter(
-        kinds: <int>[1],
-        limit: 150,
+        kinds: <int>[0, 1, 2, 3, 4, 6, 7],
+        limit: 100,
       )
     ]);
 
