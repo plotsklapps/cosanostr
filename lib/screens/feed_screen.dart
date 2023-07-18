@@ -12,13 +12,28 @@ class FeedScreen extends ConsumerStatefulWidget {
   }
 }
 
-class FeedScreenState extends ConsumerState<FeedScreen> {
-  late Stream<Event> _stream;
+// AutomaticKeepAliveClient Mixin makes sure that the state of the
+// FeedScreen is kept alive even when the user navigates to another
+// screen. This is important because the FeedScreen is the main screen
+// of the app and should not be reloaded every time the user navigates
+// back to it.
+class FeedScreenState extends ConsumerState<FeedScreen>
+    with AutomaticKeepAliveClientMixin {
+  late Stream<Event> stream;
   final StreamController<Event> streamController = StreamController<Event>();
+
+  // Override the wantKeepAlive getter to return true.
+  @override
+  bool get wantKeepAlive {
+    return true;
+  }
 
   @override
   void initState() {
     super.initState();
+
+    // Get the keys from storage, connect to the relay and start
+    // listening to the stream.
     Future<void>.delayed(Duration.zero, () async {
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
@@ -26,12 +41,8 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
+    // Close the stream and the relay pool on dispose.
     Future<void>.delayed(Duration.zero, () async {
       await streamController.close();
     });
@@ -40,9 +51,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> initStream() async {
-    _stream = await FeedScreenLogic().connectToRelay(ref);
-    _stream.listen((Event message) {
+    // First, connect to the relayPool and subscribe to the events
+    stream = await FeedScreenLogic().connectToRelay(ref);
+    // Then, listen to the stream and add the events to the
+    // eventsProvider and the metaDataProvider.
+    stream.listen((Event message) {
       final Event event = message;
+      // If the event is a note, add it to the eventsProvider
       if (event.kind == 1) {
         ref.read(eventsProvider).add(event);
         ref.read(relayPoolProvider).sub(<Filter>[
@@ -51,12 +66,14 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
             authors: <String>[event.pubkey],
           )
         ]);
+        // If the event is a metadata, add it to the metaDataProvider
       } else if (event.kind == 0) {
         final Metadata metadata = Metadata.fromJson(
           jsonDecode(event.content) as Map<String, dynamic>,
         );
         ref.read(metaDataProvider)[event.pubkey] = metadata;
       }
+      // Add the event to the streamController if it is not closed already.
       if (!streamController.isClosed) {
         streamController.add(event);
       } else {
@@ -66,20 +83,33 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   Future<void> resubscribeStream() async {
+    // Clear the eventsProvider and the metaDataProvider and resubscribe
+    // to the relayPool.
     await Future<void>.delayed(const Duration(seconds: 1), () {
       ref.read(eventsProvider).clear();
       ref.read(metaDataProvider).clear();
-      initStream(); // Reconnect and resubscribe to the filter
+    }).then((_) async {
+      await initStream();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Make sure to call super.build(context) first because it is
+    // required by the AutomaticKeepAliveClientMixin.
+    super.build(context);
+
+    Logger().i('Rebuilt FeedScreen because of a state change.');
     return Scaffold(
+      // The RefreshIndicator is used to refresh the stream and
+      // resubscribe to the relayPool.
       body: RefreshIndicator(
         onRefresh: () async {
           await resubscribeStream();
         },
+        // The ScrollConfiguration is used to disable the scrollbars
+        // and to enable scrolling with the various input devices on
+        // the web.
         child: ScrollConfiguration(
           behavior: const ScrollBehavior().copyWith(
             scrollbars: false,
@@ -90,10 +120,13 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
               PointerDeviceKind.trackpad,
             },
           ),
+          // The StreamBuilder is used to build the list of nosts from
+          // the stream.
           child: StreamBuilder<Event>(
             stream: streamController.stream,
             builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
               if (snapshot.hasData) {
+                // If the snapshot has data, build the list of nosts.
                 return ListView.builder(
                   itemCount: ref.watch(eventsProvider).length,
                   itemBuilder: (BuildContext context, int index) {
@@ -115,11 +148,57 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
                   },
                 );
               } else if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text('Loading....'));
+                // If the snapshot is loading, show a 'loading screen'.
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Image.asset(
+                        'assets/images/cosanostr_icon.png',
+                        scale: 2.0,
+                      ),
+                      const SizedBox(height: 32.0),
+                      const CircularProgressIndicator(),
+                      const SizedBox(height: 32.0),
+                      const Text(
+                        'Connecting to the relays...',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                // If the snapshot is terminated, print it to console
+                Logger().i('Connection to the relayPool closed.');
+              } else if (snapshot.connectionState == ConnectionState.none) {
+                // If the snapshot has no connection, show a 'no connection
+                // screen'.
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 100.0,
+                        width: 100.0,
+                        child: Image.asset(
+                          'assets/images/cosanostr_icon.png',
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      const Text('No connection to the relays...'),
+                    ],
+                  ),
+                );
               } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
+                // If the snapshot has an error, print it to console.
+                Logger().e('Error: ${snapshot.error}');
               }
-              return const CircularProgressIndicator();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             },
           ),
         ),

@@ -19,8 +19,6 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   // Instantiate a PageController to have access to animations during
   // navigation as well.
   late PageController pageController;
-  // Instantiate a GlobalKey to have access to the ScaffoldState.
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   @override
   void initState() {
@@ -40,19 +38,22 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
       // The ScaffoldAppBar and ScaffoldDrawer are custom widgets.
       appBar: const ScaffoldAppBar(),
       drawer: ScaffoldDrawer(context, ref),
-      body: PageView(
-        controller: pageController,
-        onPageChanged: (int index) {
-          ref.read(currentPageIndexProvider.notifier).state = index;
+      body: Builder(
+        builder: (BuildContext context) {
+          return PageView(
+            controller: pageController,
+            onPageChanged: (int index) {
+              ref.read(currentPageIndexProvider.notifier).state = index;
+            },
+            children: const <Widget>[
+              FeedScreen(),
+              ProfileScreen(),
+            ],
+          );
         },
-        children: const <Widget>[
-          FeedScreen(),
-          ProfileScreen(),
-        ],
       ),
       // The BottomNavigationBar is a custom widget.
       bottomNavigationBar: BottomNavigationBar(

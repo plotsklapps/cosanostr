@@ -4,10 +4,12 @@ class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+  ConsumerState<ProfileScreen> createState() {
+    return ProfileScreenState();
+  }
 }
 
-class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
