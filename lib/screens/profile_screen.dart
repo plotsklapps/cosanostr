@@ -23,19 +23,11 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Flexible(
-                        fit: FlexFit.loose,
-                        child: Image.asset(
-                          'assets/images/plotsklapps_stacked.png',
-                        ),
-                      ),
-                      const SizedBox(width: 16.0),
-                      const Text('WORK IN PROGRESS...'),
-                    ],
+                  Image.asset(
+                    'assets/images/plotsklapps_stacked.png',
                   ),
+                  const Text('WORK IN PROGRESS...'),
+                  const Text('Please come back later...'),
                 ],
               ),
             ),
