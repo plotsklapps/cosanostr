@@ -169,12 +169,11 @@ class FeedScreenLogic {
         Filter(
           // 0 = Metadata
           // 1 = Short Text Note
-          // 2 = Recommended Relay
           // 3 = Contacts
           // 4 = Encrypted Direct Messages
           // 6 = Repost
           // 7 = Reaction
-          kinds: <int>[0, 1, 2, 3, 4, 6, 7],
+          kinds: <int>[0, 1, 3, 4, 6, 7],
           // Set a limit to the number of messages to receive, otherwise
           // the app will slow down.
           limit: 30,
