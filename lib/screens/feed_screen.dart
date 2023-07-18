@@ -52,7 +52,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
         );
         ref.read(metaDataProvider)[event.pubkey] = metadata;
       }
-      streamController.add(event);
+      if (!streamController.isClosed) {
+        streamController.add(event);
+      } else {
+        return;
+      }
     });
   }
 
