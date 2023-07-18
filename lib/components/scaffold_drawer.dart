@@ -94,13 +94,7 @@ class ScaffoldDrawer extends ConsumerWidget {
           if (ref.watch(keysExistProvider))
             ListTile(
               onTap: () async {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  ScaffoldSnackBar(
-                    context: context,
-                    content: const Text('Coming soon!'),
-                  ),
-                );
+                await showConnectedRelaysDialog(context, ref);
               },
               title: const Text('SHOW RELAYS'),
               subtitle: const Text('Select connected relays'),

@@ -13,7 +13,6 @@ final StateProvider<RelayPoolApi> relayPoolProvider =
   return RelayPoolApi(
     relaysList: <String>[
       'wss://relay.damus.io',
-      'wss://nostr.wine',
       'wss://relay.plebstr.com',
       'wss://relay.snort.social',
       'wss://relay.primal.net',

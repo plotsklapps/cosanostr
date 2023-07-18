@@ -8,6 +8,7 @@ export 'package:cosanostr/components/scaffold_appbar.dart';
 export 'package:cosanostr/components/scaffold_drawer.dart';
 export 'package:cosanostr/components/scaffold_navbar.dart';
 export 'package:cosanostr/components/scaffold_snackbar.dart';
+export 'package:cosanostr/dialogs/connectedrelays_dialog.dart';
 export 'package:cosanostr/dialogs/credits_dialog.dart';
 export 'package:cosanostr/dialogs/deletekeys_dialog.dart';
 export 'package:cosanostr/dialogs/donations_dialog.dart';

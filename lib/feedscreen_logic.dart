@@ -138,34 +138,40 @@ class FeedScreenLogic {
   // Connect to the relay.
   Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
     // Get the [RelayApi] instance from the [relayApiProvider].
-    final RelayApi relayApi = ref.watch(relayApiProvider);
+    // final RelayApi relayApi = ref.watch(relayApiProvider);
 
     // Connect to the relay and return a [Stream] of [Message]s.
-    final Stream<Message> stream = await relayApi.connect();
+    // final Stream<Message> stream = await relayApi.connect();
+
+    // Get the [RelayPoolApi] instance from the [relayPoolProvider].
+    final RelayPoolApi relayPool = ref.watch(relayPoolProvider);
+
+    // Connect to the relayPool and return a [Stream] of [Message}s.
+    final Stream<Message> poolStream = await relayPool.connect();
 
     try {
       // Listen for relay events and update the connection status accordingly.
-      relayApi.on((RelayEvent event) {
+      relayPool.on((RelayEvent event) {
         if (event == RelayEvent.connect) {
           // If the event is "connect", set the isConnected state to true.
           ref.read(isConnectedProvider.notifier).state = true;
 
-          Logger().i('Connected to relay: ${relayApi.relayUrl}');
+          Logger().i('Connected to relay: ${relayPool.connectedRelays}');
         } else if (event == RelayEvent.error) {
           // If the event is "error", set the isConnected state to false.
           ref.read(isConnectedProvider.notifier).state = false;
 
-          Logger().e('Error connecting to relay: ${relayApi.relayUrl}');
+          Logger().e('Error connecting to relay: ${relayPool.failedRelays}');
         } else if (event == RelayEvent.disconnect) {
           // If the event is "disconnect", set the isConnected state to false.
           ref.read(isConnectedProvider.notifier).state = false;
 
-          Logger().e('Disconnected from relay: ${relayApi.relayUrl}');
+          Logger().e('Disconnected from relay: ${relayPool.failedRelays}');
         }
       });
 
       // Subscribe to specific filters on the relay API.
-      relayApi.sub(<Filter>[
+      relayPool.sub(<Filter>[
         Filter(
           // 0 = Metadata
           // 1 = Short Text Note
@@ -181,7 +187,7 @@ class FeedScreenLogic {
       ]);
 
       // Filter and map the messages stream to get a stream of events.
-      return stream.where((Message message) {
+      return poolStream.where((Message message) {
         return message.type == 'EVENT';
       }).map((Message message) {
         return message.message as Event;
