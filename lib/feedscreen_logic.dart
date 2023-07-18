@@ -143,39 +143,54 @@ class FeedScreenLogic {
     // Connect to the relay and return a [Stream] of [Message]s.
     final Stream<Message> stream = await relayApi.connect();
 
-    // Listen for relay events and update the connection status accordingly.
-    relayApi.on((RelayEvent event) {
-      if (event == RelayEvent.connect) {
-        // If the event is "connect", set the isConnected state to true.
-        ref.read(isConnectedProvider.notifier).state = true;
+    try {
+      // Listen for relay events and update the connection status accordingly.
+      relayApi.on((RelayEvent event) {
+        if (event == RelayEvent.connect) {
+          // If the event is "connect", set the isConnected state to true.
+          ref.read(isConnectedProvider.notifier).state = true;
 
-        Logger().i('Connected to relay: ${relayApi.relayUrl}');
-      } else if (event == RelayEvent.error) {
-        // If the event is "error", set the isConnected state to false.
-        ref.read(isConnectedProvider.notifier).state = false;
+          Logger().i('Connected to relay: ${relayApi.relayUrl}');
+        } else if (event == RelayEvent.error) {
+          // If the event is "error", set the isConnected state to false.
+          ref.read(isConnectedProvider.notifier).state = false;
 
-        Logger().e('Error connecting to relay: ${relayApi.relayUrl}');
-      } else if (event == RelayEvent.disconnect) {
-        // If the event is "disconnect", set the isConnected state to false.
-        ref.read(isConnectedProvider.notifier).state = false;
+          Logger().e('Error connecting to relay: ${relayApi.relayUrl}');
+        } else if (event == RelayEvent.disconnect) {
+          // If the event is "disconnect", set the isConnected state to false.
+          ref.read(isConnectedProvider.notifier).state = false;
 
-        Logger().e('Disconnected from relay: ${relayApi.relayUrl}');
-      }
-    });
+          Logger().e('Disconnected from relay: ${relayApi.relayUrl}');
+        }
+      });
 
-    // Subscribe to specific filters on the relay API.
-    relayApi.sub(<Filter>[
-      Filter(
-        kinds: <int>[0, 1, 2, 3, 4, 6, 7],
-        limit: 100,
-      )
-    ]);
+      // Subscribe to specific filters on the relay API.
+      relayApi.sub(<Filter>[
+        Filter(
+          // 0 = Metadata
+          // 1 = Short Text Note
+          // 2 = Recommended Relay
+          // 3 = Contacts
+          // 4 = Encrypted Direct Messages
+          // 6 = Repost
+          // 7 = Reaction
+          kinds: <int>[0, 1, 2, 3, 4, 6, 7],
+          // Set a limit to the number of messages to receive, otherwise
+          // the app will slow down.
+          limit: 50,
+        )
+      ]);
 
-    // Filter and map the messages stream to get a stream of events.
-    return stream.where((Message message) {
-      return message.type == 'EVENT';
-    }).map((Message message) {
-      return message.message as Event;
-    });
+      // Filter and map the messages stream to get a stream of events.
+      return stream.where((Message message) {
+        return message.type == 'EVENT';
+      }).map((Message message) {
+        return message.message as Event;
+      });
+    } catch (error) {
+      Logger().e('Error connecting to relay: $error');
+      // Return an empty stream if there is an error.
+      return const Stream<Event>.empty();
+    }
   }
 }
