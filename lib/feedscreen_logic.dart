@@ -20,6 +20,8 @@ class FeedScreenLogic {
       ref.read(privateKeyProvider.notifier).state = newPrivateKey;
       ref.read(publicKeyProvider.notifier).state = newPublicKey;
 
+      Logger().i(ref.watch(publicKeyProvider));
+
       // Add the keys to secure storage.
       return addKeysToStorage(
         ref,

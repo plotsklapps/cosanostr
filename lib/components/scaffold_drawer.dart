@@ -76,23 +76,6 @@ class ScaffoldDrawer extends ConsumerWidget {
                 ? const Icon(FontAwesomeIcons.check)
                 : const Icon(FontAwesomeIcons.plus),
           ),
-          // Check if keys are already generated and display this ListTile
-          // only if they are
-          if (ref.watch(keysExistProvider))
-            ListTile(
-              onTap: () async {
-                await showDeleteKeysDialog(currentContext, ref).then((_) {
-                  Navigator.pop(currentContext);
-                });
-              },
-              title: const Text('DELETE YOUR KEYS'),
-              trailing: const Icon(
-                FontAwesomeIcons.solidTrashCan,
-                color: Colors.red,
-              ),
-            )
-          else
-            const SizedBox(),
           if (ref.watch(keysExistProvider))
             ListTile(
               onTap: () async {

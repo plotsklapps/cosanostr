@@ -12,24 +12,21 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image.asset(
-                    'assets/images/plotsklapps_stacked.png',
-                  ),
-                  const Text('WORK IN PROGRESS...'),
-                  const Text('Please come back later...'),
-                ],
-              ),
+              padding: EdgeInsets.all(16.0),
+              child: Placeholder(),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text('Working on it!'),
             ),
           ),
         ],

@@ -46,6 +46,8 @@ class DeleteKeysDialog extends ConsumerWidget {
             final BuildContext currentContext = context;
             await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
               if (!ref.watch(keysExistProvider)) {
+                Navigator.pop(context);
+                Navigator.pop(currentContext);
                 ScaffoldMessenger.of(currentContext).showSnackBar(
                   ScaffoldSnackBar(
                     context: context,
@@ -53,8 +55,6 @@ class DeleteKeysDialog extends ConsumerWidget {
                   ),
                 );
               }
-            }).then((_) {
-              Navigator.pop(context);
             });
           },
           icon: const Icon(
