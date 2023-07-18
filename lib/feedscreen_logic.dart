@@ -61,7 +61,9 @@ class FeedScreenLogic {
       // Return true if the keys were successfully added to secure storage.
       return ref.watch(keysExistProvider);
     } catch (error) {
-      Logger().e('Error adding keys to secure storage: $error');
+      Logger().e(
+        'Error adding keys to secure storage: $error',
+      );
       // Return false if the keys were not successfully added to secure storage.
       return false;
     }
@@ -107,46 +109,64 @@ class FeedScreenLogic {
 
   // Delete keys from secure storage.
   Future<void> deleteKeysFromStorage(WidgetRef ref) async {
-    await Future.wait(<Future<void>>[
-      ref.read(secureStorageProvider).delete(key: 'privateKey'),
-      ref.read(secureStorageProvider).delete(key: 'publicKey'),
-    ]);
-    ref.read(privateKeyProvider.notifier).state = '';
-    ref.read(publicKeyProvider.notifier).state = '';
-    ref.read(keysExistProvider.notifier).state = false;
+    try {
+      // Get the [FlutterSecureStorage] instance from the
+      // [secureStorageProvider].
+      final FlutterSecureStorage secureStorage =
+          ref.read(secureStorageProvider);
+
+      // Delete the private and public keys from secure storage.
+      await Future.wait(<Future<void>>[
+        secureStorage.delete(key: 'privateKey'),
+        secureStorage.delete(key: 'publicKey'),
+      ]);
+
+      // Update the private and public key in their respective [Providers] to
+      // empty strings. Also update the keysExist state to false in the
+      // [keysExistProvider].
+      ref.read(privateKeyProvider.notifier).state = '';
+      ref.read(publicKeyProvider.notifier).state = '';
+      ref.read(keysExistProvider.notifier).state = false;
+
+      Logger().i('Success! Keys deleted from secure storage!');
+    } catch (error) {
+      Logger().e('Error deleting keys from secure storage: $error');
+      // Method is void so return nothing.
+    }
   }
 
   // Connect to the relay.
   Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
-    // Connect to the relay API and get a stream of messages.
-    final Stream<Message> stream = await ref.read(relayApiProvider).connect();
+    // Get the [RelayApi] instance from the [relayApiProvider].
+    final RelayApi relayApi = ref.watch(relayApiProvider);
+
+    // Connect to the relay and return a [Stream] of [Message]s.
+    final Stream<Message> stream = await relayApi.connect();
 
     // Listen for relay events and update the connection status accordingly.
-    ref.read(relayApiProvider).on((RelayEvent event) {
+    relayApi.on((RelayEvent event) {
       if (event == RelayEvent.connect) {
         // If the event is "connect", set the isConnected state to true.
         ref.read(isConnectedProvider.notifier).state = true;
-        print('Connected to relay: ${ref.watch(relayApiProvider).relayUrl}');
+
+        Logger().i('Connected to relay: ${relayApi.relayUrl}');
       } else if (event == RelayEvent.error) {
         // If the event is "error", set the isConnected state to false.
         ref.read(isConnectedProvider.notifier).state = false;
-        print(
-          'Error connecting to relay: ${ref.watch(relayApiProvider).relayUrl}',
-        );
+
+        Logger().e('Error connecting to relay: ${relayApi.relayUrl}');
       } else if (event == RelayEvent.disconnect) {
         // If the event is "disconnect", set the isConnected state to false.
         ref.read(isConnectedProvider.notifier).state = false;
-        print(
-          'Disconnected from relay: ${ref.watch(relayApiProvider).relayUrl}',
-        );
+
+        Logger().e('Disconnected from relay: ${relayApi.relayUrl}');
       }
     });
 
     // Subscribe to specific filters on the relay API.
-    ref.read(relayApiProvider).sub(<Filter>[
+    relayApi.sub(<Filter>[
       Filter(
         kinds: <int>[1],
-        t: <String>['nost'],
         limit: 150,
       )
     ]);
