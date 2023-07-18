@@ -34,55 +34,41 @@ class _FeedScreenCardState extends State<FeedScreenCard> {
   @override
   Widget build(BuildContext context) {
     final List<String>? imageLinks = extractImage(widget.nost.content);
-    SampleItem? selectedMenu;
     return Card(
       margin: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ListTile(
-            leading: CircleAvatar(
-              backgroundImage: FadeInImage(
-                placeholder: const AssetImage('assets/images/spinner.png'),
-                image: NetworkImage(widget.nost.avatarUrl),
-              ).image,
+            leading: GestureDetector(
+              onTap: () async {
+                await showProfileDialog(context);
+              },
+              child: CircleAvatar(
+                backgroundImage: FadeInImage(
+                  placeholder: const AssetImage('assets/images/spinner.png'),
+                  image: NetworkImage(widget.nost.avatarUrl),
+                ).image,
+              ),
             ),
             title: Text(widget.nost.name),
             subtitle: Text(
               '@${widget.nost.username.toLowerCase()} • ${widget.nost.time}',
             ),
-            trailing: PopupMenuButton<SampleItem>(
-              initialValue: selectedMenu,
-              // Callback that sets the selected popup menu item.
-              onSelected: (SampleItem item) {
-                setState(() {
-                  selectedMenu = item;
-                });
+            trailing: IconButton(
+              onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   ScaffoldSnackBar(
                     context: context,
                     content: const Text(
-                      'Work in progress...',
+                      'This feature is coming soon!',
                     ),
                   ),
                 );
               },
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<SampleItem>>[
-                  const PopupMenuItem<SampleItem>(
-                    value: SampleItem.profile,
-                    child: Text('Profile'),
-                  ),
-                  const PopupMenuItem<SampleItem>(
-                    value: SampleItem.like,
-                    child: Text('Like'),
-                  ),
-                  const PopupMenuItem<SampleItem>(
-                    value: SampleItem.respond,
-                    child: Text('Respond'),
-                  ),
-                ];
-              },
+              icon: const Icon(
+                FontAwesomeIcons.heart,
+              ),
             ),
           ),
           const Divider(),
@@ -114,6 +100,41 @@ class _FeedScreenCardState extends State<FeedScreenCard> {
             ),
         ],
       ),
+    );
+  }
+
+  Future<void> showProfileDialog(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CircleAvatar(
+                backgroundImage: FadeInImage(
+                  placeholder: const AssetImage('assets/images/spinner.png'),
+                  image: NetworkImage(widget.nost.avatarUrl),
+                ).image,
+                radius: 50.0,
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                widget.nost.name,
+                style: const TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              const Divider(),
+              SelectableText('npub: ${widget.nost.pubkey}'),
+            ],
+          ),
+        );
+      },
     );
   }
 }
