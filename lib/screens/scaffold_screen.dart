@@ -19,6 +19,8 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   // Instantiate a PageController to have access to animations during
   // navigation as well.
   late PageController pageController;
+  // Instantiate a GlobalKey to have access to the ScaffoldState.
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   @override
   void initState() {
@@ -38,9 +40,10 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       // The ScaffoldAppBar and ScaffoldDrawer are custom widgets.
       appBar: const ScaffoldAppBar(),
-      drawer: ScaffoldDrawer(ref: ref),
+      drawer: ScaffoldDrawer(context, ref),
       body: PageView(
         controller: pageController,
         onPageChanged: (int index) {
@@ -48,12 +51,41 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
         },
         children: const <Widget>[
           FeedScreen(),
-          Placeholder(),
-          Placeholder(),
+          ProfileScreen(),
         ],
       ),
       // The BottomNavigationBar is a custom widget.
-      bottomNavigationBar: ScaffoldNavigationBar(pageController),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.earthEurope),
+            label: 'Global',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.idCardClip),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: ref.watch(currentPageIndexProvider),
+        onTap: (int index) async {
+          ref.read(currentPageIndexProvider.notifier).state = index;
+          if (index == 0) {
+            await pageController.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.bounceOut,
+            );
+          } else if (index == 1) {
+            await pageController.animateToPage(
+              1,
+              duration: const Duration(milliseconds: 1000),
+              curve: Curves.bounceOut,
+            );
+          } else {
+            return;
+          }
+        },
+      ),
     );
   }
 }

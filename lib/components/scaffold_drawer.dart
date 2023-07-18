@@ -4,11 +4,13 @@ import 'package:cosanostr/all_imports.dart';
 // later on. Thinking of adding a settingsscreen and profilescreen for
 // example.
 class ScaffoldDrawer extends ConsumerWidget {
-  const ScaffoldDrawer({
+  const ScaffoldDrawer(
+    this.currentContext,
+    this.ref, {
     super.key,
-    required this.ref,
   });
 
+  final BuildContext currentContext;
   final WidgetRef ref;
 
   @override

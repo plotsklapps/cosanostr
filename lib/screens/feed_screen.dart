@@ -26,6 +26,11 @@ class FeedScreenState extends ConsumerState<FeedScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
     Future<void>.delayed(Duration.zero, () async {
       await streamController.close();
