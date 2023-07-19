@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 
 final StateProvider<bool> isUserScrollingProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
-  return true;
+  return false;
 });
 
 class FeedScreen extends ConsumerStatefulWidget {
