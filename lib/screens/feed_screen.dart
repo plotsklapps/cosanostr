@@ -2,6 +2,21 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
+import 'package:flutter/rendering.dart';
+
+final StateProvider<bool> isUserScrollingProvider =
+    StateProvider<bool>((StateProviderRef<bool> ref) {
+  return false;
+});
+
+final StateProvider<bool> showExtendedFABProvider =
+    StateProvider<bool>((StateProviderRef<bool> ref) {
+  if (ref.watch(isUserScrollingProvider)) {
+    return false;
+  } else {
+    return true;
+  }
+});
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -21,6 +36,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     with AutomaticKeepAliveClientMixin {
   late Stream<Event> stream;
   final StreamController<Event> streamController = StreamController<Event>();
+  final ScrollController scrollController = ScrollController();
 
   // Override the wantKeepAlive getter to return true.
   @override
@@ -37,6 +53,54 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     Future<void>.delayed(Duration.zero, () async {
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
+    });
+    // Add a listener to the scrollController to check if the user
+    // is scrolling or not. If the user is scrolling, set the
+    // isUserScrollingProvider to true which in turn will change the FAB to
+    // a smaller version.
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        ref.read(isUserScrollingProvider.notifier).state = true;
+      } else if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        ref.read(isUserScrollingProvider.notifier).state = true;
+      } else if (scrollController.position.userScrollDirection ==
+          ScrollDirection.idle) {
+        ref.read(isUserScrollingProvider.notifier).state = false;
+      } else {
+        ref.read(isUserScrollingProvider.notifier).state = false;
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Get the keys from storage, connect to the relay and start
+    // listening to the stream.
+    Future<void>.delayed(Duration.zero, () async {
+      await FeedScreenLogic().getKeysFromStorage(ref);
+      await initStream();
+    });
+    // Add a listener to the scrollController to check if the user
+    // is scrolling or not. If the user is scrolling, set the
+    // isUserScrollingProvider to true which in turn will change the FAB to
+    // a smaller version.
+    scrollController.addListener(() {
+      if (scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        ref.read(isUserScrollingProvider.notifier).state = true;
+      } else if (scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        ref.read(isUserScrollingProvider.notifier).state = true;
+      } else if (scrollController.position.userScrollDirection ==
+          ScrollDirection.idle) {
+        ref.read(isUserScrollingProvider.notifier).state = false;
+      } else {
+        ref.read(isUserScrollingProvider.notifier).state = false;
+      }
     });
   }
 
@@ -128,6 +192,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
               if (snapshot.hasData) {
                 // If the snapshot has data, build the list of nosts.
                 return ListView.builder(
+                  controller: scrollController,
                   itemCount: ref.watch(eventsProvider).length,
                   itemBuilder: (BuildContext context, int index) {
                     final Event event = ref.watch(eventsProvider)[index];
@@ -205,6 +270,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
       ),
       floatingActionButton: ref.watch(keysExistProvider)
           ? FeedScreenFAB(
+              ref: ref,
               publishNote: (String? nost) async {
                 ref.read(isNotePublishingProvider.notifier).state = true;
                 final EventApi eventApi = EventApi();

@@ -38,6 +38,7 @@ Future<void> showPastePrivateKeyDialog(
           return null;
         },
         onOKPressed: () {
+          final BuildContext currentContext = context;
           if (ref.watch(formKeyProvider).currentState!.validate()) {
             String privateKeyHex = ref.watch(keyControllerProvider).text.trim();
             String publicKeyHex;
@@ -62,7 +63,8 @@ Future<void> showPastePrivateKeyDialog(
                 .then((bool keysAdded) {
               if (keysAdded) {
                 ref.read(keyControllerProvider).clear();
-                ScaffoldMessenger.of(context).showSnackBar(
+                Navigator.pop(currentContext);
+                ScaffoldMessenger.of(currentContext).showSnackBar(
                   ScaffoldSnackBar(
                     context: context,
                     content: const Text(
@@ -72,8 +74,6 @@ Future<void> showPastePrivateKeyDialog(
                 );
               }
             });
-
-            Navigator.pop(context);
           } else {
             ref.watch(formKeyProvider).currentState?.dispose();
           }
