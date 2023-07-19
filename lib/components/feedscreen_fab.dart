@@ -26,7 +26,7 @@ class FeedScreenFABState extends ConsumerState<FeedScreenFAB> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      isExtended: ref.watch(isUserScrollingProvider),
+      isExtended: !ref.watch(isUserScrollingProvider),
       tooltip: 'Create a new Nost',
       label: const Row(
         mainAxisAlignment: MainAxisAlignment.center,

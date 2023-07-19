@@ -6,7 +6,7 @@ import 'package:flutter/rendering.dart';
 
 final StateProvider<bool> isUserScrollingProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
-  return false;
+  return true;
 });
 
 class FeedScreen extends ConsumerStatefulWidget {
@@ -86,6 +86,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
       await streamController.close();
     });
     ref.read(relayPoolProvider).close();
+    scrollController.dispose();
     super.dispose();
   }
 
