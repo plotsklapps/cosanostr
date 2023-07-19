@@ -77,26 +77,6 @@ class FeedScreenState extends ConsumerState<FeedScreen>
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
     });
-    // Add a listener to the scrollController to check if the user
-    // is scrolling or not. If the user is scrolling, set the
-    // isUserScrollingProvider to true which in turn will change the FAB to
-    // a smaller version. If the user is not scrolling, set the
-    // isUserScrollingProvider to false which in turn will change the FAB to
-    // the extended version.
-    scrollController.addListener(() {
-      if (scrollController.position.userScrollDirection ==
-          ScrollDirection.forward) {
-        ref.read(isUserScrollingProvider.notifier).state = true;
-      } else if (scrollController.position.userScrollDirection ==
-          ScrollDirection.reverse) {
-        ref.read(isUserScrollingProvider.notifier).state = true;
-      } else if (scrollController.position.userScrollDirection ==
-          ScrollDirection.idle) {
-        ref.read(isUserScrollingProvider.notifier).state = false;
-      } else {
-        ref.read(isUserScrollingProvider.notifier).state = false;
-      }
-    });
   }
 
   @override
