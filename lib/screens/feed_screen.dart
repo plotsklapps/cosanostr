@@ -9,15 +9,6 @@ final StateProvider<bool> isUserScrollingProvider =
   return false;
 });
 
-final StateProvider<bool> showExtendedFABProvider =
-    StateProvider<bool>((StateProviderRef<bool> ref) {
-  if (ref.watch(isUserScrollingProvider)) {
-    return false;
-  } else {
-    return true;
-  }
-});
-
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
@@ -57,7 +48,9 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     // Add a listener to the scrollController to check if the user
     // is scrolling or not. If the user is scrolling, set the
     // isUserScrollingProvider to true which in turn will change the FAB to
-    // a smaller version.
+    // a smaller version. If the user is not scrolling, set the
+    // isUserScrollingProvider to false which in turn will change the FAB to
+    // the extended version.
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {
@@ -87,7 +80,9 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     // Add a listener to the scrollController to check if the user
     // is scrolling or not. If the user is scrolling, set the
     // isUserScrollingProvider to true which in turn will change the FAB to
-    // a smaller version.
+    // a smaller version. If the user is not scrolling, set the
+    // isUserScrollingProvider to false which in turn will change the FAB to
+    // the extended version.
     scrollController.addListener(() {
       if (scrollController.position.userScrollDirection ==
           ScrollDirection.forward) {

@@ -39,10 +39,6 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      // The ScaffoldAppBar and ScaffoldDrawer are custom widgets.
-      // appBar: const ScaffoldAppBar(),
-      endDrawer: ScaffoldDrawer(context, ref),
       body: Builder(
         builder: (BuildContext context) {
           return PageView(
@@ -53,48 +49,15 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
             children: const <Widget>[
               FeedScreen(),
               ProfileScreen(),
+              MoreScreen(),
             ],
           );
         },
       ),
       // The BottomNavigationBar is a custom widget.
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.earthEurope),
-            label: 'Global',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.idCardClip),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.barsStaggered),
-            label: 'More',
-          ),
-        ],
-        currentIndex: ref.watch(currentPageIndexProvider),
-        onTap: (int index) async {
-          ref.read(currentPageIndexProvider.notifier).state = index;
-          if (index == 0) {
-            await pageController.animateToPage(
-              0,
-              duration: const Duration(milliseconds: 1000),
-              curve: Curves.bounceOut,
-            );
-          } else if (index == 1) {
-            await pageController.animateToPage(
-              1,
-              duration: const Duration(milliseconds: 1000),
-              curve: Curves.bounceOut,
-            );
-          } else if (index == 2) {
-            // Open the ScaffoldDrawer here!
-            scaffoldKey.currentState!.openEndDrawer();
-          } else {
-            return;
-          }
-        },
+      bottomNavigationBar: ScaffoldNavBar(
+        ref: ref,
+        pageController: pageController,
       ),
     );
   }

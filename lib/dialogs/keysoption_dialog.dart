@@ -11,19 +11,18 @@ Future<void> showKeysOptionsDialog(
     builder: (BuildContext context) {
       return KeysOptionDialog(
         generateNewKeyPressed: () {
-          final BuildContext currentContext = context;
           FeedScreenLogic().generateNewKeys(ref).then((bool keysGenerated) {
             if (keysGenerated) {
-              Navigator.pop(currentContext);
-              ScaffoldMessenger.of(currentContext).showSnackBar(
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
                 ScaffoldSnackBar(
                   context: context,
                   content: const Text('Congratulations! New keys generated!'),
                 ),
               );
             } else {
-              Navigator.pop(currentContext);
-              ScaffoldMessenger.of(currentContext).showSnackBar(
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
                 ScaffoldSnackBar(
                   context: context,
                   content: const Text('Oops! Something went wrong!'),

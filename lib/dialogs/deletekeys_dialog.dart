@@ -43,12 +43,10 @@ class DeleteKeysDialog extends ConsumerWidget {
         ),
         IconButton(
           onPressed: () async {
-            final BuildContext currentContext = context;
             await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
               if (!ref.watch(keysExistProvider)) {
                 Navigator.pop(context);
-                Navigator.pop(currentContext);
-                ScaffoldMessenger.of(currentContext).showSnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(
                   ScaffoldSnackBar(
                     context: context,
                     content: const Text('Keys successfully deleted!'),
