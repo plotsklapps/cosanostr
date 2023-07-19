@@ -25,11 +25,9 @@ class FeedScreenFABState extends ConsumerState<FeedScreenFAB> {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
-      isExtended: ref.watch(isUserScrollingProvider),
+    return FloatingActionButton(
       tooltip: 'Create a new Nost',
-      icon: const Icon(FontAwesomeIcons.featherPointed),
-      label: const Text('NEW'),
+      child: const Icon(FontAwesomeIcons.featherPointed),
       onPressed: () async {
         noteController.clear();
         await showModalBottomSheet<void>(

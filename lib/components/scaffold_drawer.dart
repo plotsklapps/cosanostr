@@ -47,22 +47,21 @@ class ScaffoldDrawer extends ConsumerWidget {
             onTap: () async {
               // Check if keys are already generated and display the
               // appropriate dialog.
-              if (ref.watch(keysExistProvider)) {
-                await showKeysExistDialog(
-                  currentContext,
-                  ref,
-                  ref
-                      .watch(nip19Provider)
-                      .npubEncode(ref.watch(publicKeyProvider)),
-                  ref
-                      .watch(nip19Provider)
-                      .nsecEncode(ref.watch(privateKeyProvider)),
-                );
-              } else {
-                await showKeysOptionsDialog(currentContext, ref).then((_) {
-                  Navigator.pop(context);
-                });
-              }
+              // if (ref.watch(keysExistProvider)) {
+              //   await showKeysExistDialog(
+              //     ref,
+              //     ref
+              //         .watch(nip19Provider)
+              //         .npubEncode(ref.watch(publicKeyProvider)),
+              //     ref
+              //         .watch(nip19Provider)
+              //         .nsecEncode(ref.watch(privateKeyProvider)),
+              //   );
+              // } else {
+              //   // await showKeysOptionsDialog(currentContext, ref).then((_) {
+              //   //   Navigator.pop(context);
+              //   // });
+              // }
             },
             // Check if keys are already generated and display the
             // appropriate title and icon.
