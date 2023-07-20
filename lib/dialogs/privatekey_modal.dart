@@ -128,19 +128,37 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
         TextField(
           decoration: InputDecoration(
             labelText: 'Enter NSEC or HEX',
+
+            // Do not show an errormessage until the user has pressed the
+            // submit button.
             errorText: ref.watch(nsecSubmittedProvider) ? errorText : null,
+
+            // Show a clear button to easily clear the TextField.
             suffixIcon: IconButton(
               onPressed: ref.read(keyControllerProvider).clear,
               icon: const Icon(FontAwesomeIcons.xmark),
             ),
           ),
+
+          // [TextEditingController] to store the private key from the
+          // TextField.
           controller: ref.watch(keyControllerProvider),
           keyboardType: TextInputType.text,
           autocorrect: false,
+
+          // [obscureText] is a [bool] that is used to obscure the
+          // private key input.
           obscureText: ref.watch(nsecObscuredProvider),
+
+          // [keyboardAppearance] is used to set the keyboard theme (light
+          // or dark) based on the [isDarkThemeProvider].
           keyboardAppearance: ref.watch(isDarkThemeProvider)
               ? Brightness.dark
               : Brightness.light,
+
+          // [onChanged] is called when the user types in the TextField.
+          // We use this to update the [keyControllerProvider] to store
+          // the user's input.
           onChanged: (String value) {
             ref.read(keyControllerProvider).text = value;
           },
@@ -151,6 +169,8 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
           children: <Widget>[
             IconButton(
               onPressed: () {
+                // Toggle the [nsecObscuredProvider] to show or hide the
+                // private key input.
                 ref.read(nsecObscuredProvider.notifier).state =
                     !ref.watch(nsecObscuredProvider);
               },
@@ -160,10 +180,21 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
             ),
             ElevatedButton(
               onPressed: () async {
+                // Set the [nsecSubmittedProvider] to true to show the
+                // error message if the private key is not valid.
                 ref.read(nsecSubmittedProvider.notifier).state = true;
+
+                // [String] to store the private key from the TextField.
                 String privateKey =
                     ref.watch(keyControllerProvider).text.trim();
+
+                // [String] to store the public key from the private key.
                 String publicKey;
+
+                // If there are no errors with the input, check if the user
+                // has entered a NSEC or HEX private key. If the user has
+                // entered a NSEC private key, decode it first so the public
+                // key can be generated.
                 if (errorText == null) {
                   if (privateKey.startsWith('nsec')) {
                     final Map<String, dynamic> decoded =
@@ -176,6 +207,7 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                         ref.watch(keyApiProvider).getPublicKey(privateKey);
                   }
 
+                  // Add the private key and public key to the storage.
                   await FeedScreenLogic()
                       .addKeysToStorage(
                     ref,
@@ -183,10 +215,17 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                     publicKey,
                   )
                       .then((_) {
+                    // If keys are added correctly, clear the
+                    // relevant Providers and get the keys from
+                    // the storage.
                     if (ref.watch(keysExistProvider)) {
                       ref.read(keyControllerProvider).clear();
+                      ref.read(nsecSubmittedProvider.notifier).state = false;
 
                       FeedScreenLogic().getKeysFromStorage(ref).then((_) {
+                        // When the keys are fetched correctly from storage
+                        // play the confetti animation and show a snackbar
+                        // after a delay of 2 seconds.
                         widget.confettiController.play();
                         Future<void>.delayed(const Duration(seconds: 2), () {
                           Navigator.pop(context);
@@ -196,6 +235,7 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                     }
                   });
                 } else {
+                  Logger().e('Error: $errorText');
                   Navigator.pop(context);
                   snackJoiningFailed(context);
                 }
