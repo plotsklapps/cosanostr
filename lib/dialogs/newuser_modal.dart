@@ -127,7 +127,8 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                   child: const Icon(FontAwesomeIcons.chevronRight),
                 ),
               ),
-              ElevatedButton(
+              const SizedBox(height: 16.0),
+              TextButton(
                 onPressed: () async {
                   Navigator.pop(context);
                 },
