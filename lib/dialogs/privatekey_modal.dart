@@ -11,26 +11,54 @@ final StateProvider<bool> nsecObscuredProvider = StateProvider<bool>(
   },
 );
 
-class UsePrivateKeyModal extends ConsumerWidget {
+class UsePrivateKeyModal extends ConsumerStatefulWidget {
   const UsePrivateKeyModal({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const Padding(
-      padding: EdgeInsets.all(16.0),
+  ConsumerState<UsePrivateKeyModal> createState() {
+    return UsePrivateKeyModalState();
+  }
+}
+
+class UsePrivateKeyModalState extends ConsumerState<UsePrivateKeyModal> {
+  late ConfettiController confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    confettiController = ref.read(confettiControllerProvider);
+  }
+
+  @override
+  void dispose() {
+    confettiController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
+          ConfettiWidget(
+            confettiController: confettiController,
+            blastDirectionality: BlastDirectionality.explosive,
+            numberOfParticles: 50,
+            maxBlastForce: 50,
+          ),
+          const Text(
             'Private Key',
             style: TextStyle(
               fontWeight: FontWeight.bold,
             ),
           ),
-          Divider(),
-          NSECTextField(),
+          const Divider(),
+          const SizedBox(height: 16.0),
+          const NSECTextField(),
         ],
       ),
     );
@@ -49,12 +77,6 @@ class NSECTextField extends ConsumerStatefulWidget {
 }
 
 class NSECTextFieldState extends ConsumerState<NSECTextField> {
-  @override
-  void dispose() {
-    ref.read(keyControllerProvider).dispose();
-    super.dispose();
-  }
-
   String? get errorText {
     final String privateKey = ref.watch(keyControllerProvider).text.trim();
 
@@ -102,6 +124,7 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
             ref.read(keyControllerProvider).text = value;
           },
         ),
+        const SizedBox(height: 16.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -141,20 +164,17 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                       .then((_) {
                     if (ref.watch(keysExistProvider)) {
                       ref.read(keyControllerProvider).clear();
+                      ref.watch(confettiControllerProvider).play();
                       FeedScreenLogic().getKeysFromStorage(ref);
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        ScaffoldSnackBar(
-                          context: context,
-                          content: const Text(
-                            'Congratulations! Private keys securely stored!',
-                          ),
-                        ),
-                      );
+                      Future<void>.delayed(const Duration(seconds: 2), () {
+                        Navigator.pop(context);
+                        snackJoiningSuccesful(context);
+                      });
                     }
                   });
                 } else {
-                  return;
+                  Navigator.pop(context);
+                  snackJoiningFailed(context);
                 }
               },
               child: const Text('SUBMIT'),
@@ -162,6 +182,43 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
           ],
         ),
       ],
+    );
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackJoiningFailed(
+    BuildContext context,
+  ) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'Oops, something is wrong!',
+            ),
+            Icon(FontAwesomeIcons.circleExclamation),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
+      snackJoiningSuccesful(BuildContext context) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              'You are now a proud member of CosaNostr!',
+            ),
+            Icon(FontAwesomeIcons.handshake),
+          ],
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 }

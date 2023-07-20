@@ -19,9 +19,9 @@ class NewUserModalState extends ConsumerState<NewUserModal> {
   }
 
   @override
-  void dispose() {
-    confettiController.dispose();
-    super.dispose();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    confettiController = ref.read(confettiControllerProvider);
   }
 
   @override
@@ -57,18 +57,17 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
           const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () async {
-              confettiController.play();
-
-              Future<void>.delayed(const Duration(seconds: 2), () async {
-                await FeedScreenLogic().generateNewKeys(ref).then((_) {
-                  if (ref.watch(keysExistProvider)) {
+              await FeedScreenLogic().generateNewKeys(ref).then((_) {
+                if (ref.watch(keysExistProvider)) {
+                  confettiController.play();
+                  Future<void>.delayed(const Duration(seconds: 2), () {
                     Navigator.pop(context);
-                    snackSuccessfullyJoined(context);
-                  } else {
-                    Navigator.pop(context);
-                    snackJoiningCosaNostrFailed(context);
-                  }
-                });
+                    snackJoiningSuccesful(context);
+                  });
+                } else {
+                  Navigator.pop(context);
+                  snackJoiningFailed(context);
+                }
               });
             },
             child: const Text('GENERATE NEW KEYS'),
@@ -106,8 +105,9 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
     );
   }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-      snackJoiningCosaNostrFailed(BuildContext context) {
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackJoiningFailed(
+    BuildContext context,
+  ) {
     return ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Row(
@@ -125,7 +125,7 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
   }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason>
-      snackSuccessfullyJoined(BuildContext context) {
+      snackJoiningSuccesful(BuildContext context) {
     return ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Row(

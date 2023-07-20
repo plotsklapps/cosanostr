@@ -14,7 +14,7 @@ export 'package:cosanostr/dialogs/credits_dialog.dart';
 export 'package:cosanostr/dialogs/deletekeys_dialog.dart';
 export 'package:cosanostr/dialogs/donations_dialog.dart';
 export 'package:cosanostr/dialogs/newuser_modal.dart';
-export 'package:cosanostr/dialogs/pasteprivatekey_dialog.dart';
+export 'package:cosanostr/dialogs/privatekey_modal.dart';
 export 'package:cosanostr/dialogs/settings_dialog.dart';
 export 'package:cosanostr/dialogs/userexists_modal.dart';
 export 'package:cosanostr/feedscreen_logic.dart';

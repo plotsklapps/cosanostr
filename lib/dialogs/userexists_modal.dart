@@ -51,7 +51,7 @@ class UserExistsModal extends ConsumerWidget {
           const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: <Widget>[
               ElevatedButton(
                 onPressed: () async {
                   Navigator.pop(context);
@@ -100,7 +100,7 @@ class UserExistsModal extends ConsumerWidget {
           const SizedBox(height: 8.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            children: <Widget>[
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
