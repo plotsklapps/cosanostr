@@ -28,9 +28,15 @@ class ConnectedRelaysModal extends ConsumerWidget {
                 size: 36.0,
               ),
               const Divider(),
-              const Text('Connected Relays'),
+              const Text(
+                'Connected Relays',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const Divider(),
               Text('${ref.watch(relayPoolProvider).connectedRelays}'),
+              const SizedBox(height: 16.0),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);

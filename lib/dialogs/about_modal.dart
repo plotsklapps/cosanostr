@@ -38,7 +38,6 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
               const Text(
                 StringUtils.kCosaNostrByPlotsklapps,
                 style: TextStyle(
-                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -48,7 +47,6 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
                 StringUtils.kEnjoyedMakingIt,
                 textAlign: TextAlign.center,
               ),
-              const Divider(),
 
               // Button to open plotsklapps website.
               ListTile(
@@ -102,7 +100,7 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
                   .animate()
                   .fade(delay: 1500.ms, duration: 1000.ms)
                   .move(delay: 1500.ms, duration: 1000.ms),
-              const Divider(),
+              const SizedBox(height: 16.0),
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
