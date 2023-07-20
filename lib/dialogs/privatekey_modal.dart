@@ -1,47 +1,36 @@
 import 'package:cosanostr/all_imports.dart';
 
+// [bool] to check if user pressed submit button, this will trigger the
+// error message if the private key is not valid.
 final StateProvider<bool> nsecSubmittedProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
   return false;
 });
 
+// [bool] to check if user wants to see his private key input, this is
+// used on the eye/eye-slash icon.
 final StateProvider<bool> nsecObscuredProvider = StateProvider<bool>(
   (StateProviderRef<bool> ref) {
     return true;
   },
 );
 
-class UsePrivateKeyModal extends ConsumerStatefulWidget {
-  const UsePrivateKeyModal({
+class PrivateKeyModal extends ConsumerStatefulWidget {
+  const PrivateKeyModal({
     super.key,
   });
 
   @override
-  ConsumerState<UsePrivateKeyModal> createState() {
-    return UsePrivateKeyModalState();
+  ConsumerState<PrivateKeyModal> createState() {
+    return PrivateKeyModalState();
   }
 }
 
-class UsePrivateKeyModalState extends ConsumerState<UsePrivateKeyModal> {
-  late ConfettiController confettiController;
-
-  @override
-  void initState() {
-    super.initState();
-    confettiController = ref.read(confettiControllerProvider);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    confettiController = ref.read(confettiControllerProvider);
-  }
-
-  @override
-  void dispose() {
-    confettiController.dispose();
-    super.dispose();
-  }
+class PrivateKeyModalState extends ConsumerState<PrivateKeyModal> {
+  // [ConfettiController] to play the confetti animation inside the
+  // bottom sheet when the user has entered a valid private key and
+  // successfully joined CosaNostr.
+  final ConfettiController confettiController = ConfettiController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +39,8 @@ class UsePrivateKeyModalState extends ConsumerState<UsePrivateKeyModal> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          // [ConfettiWidget] to play the confetti animation on top of the
+          // bottom sheet.
           ConfettiWidget(
             confettiController: confettiController,
             blastDirectionality: BlastDirectionality.explosive,
@@ -64,7 +55,13 @@ class UsePrivateKeyModalState extends ConsumerState<UsePrivateKeyModal> {
           ),
           const Divider(),
           const SizedBox(height: 16.0),
-          const NSECTextField(),
+          // [NSECTextField] is a custom widget that contains the
+          // TextField and the submit button. It also takes a parameter
+          // [confettiController] to play the confetti animation when the
+          // user has successfully joined CosaNostr.
+          NSECTextField(
+            confettiController: confettiController,
+          ),
         ],
       ),
     );
@@ -74,7 +71,11 @@ class UsePrivateKeyModalState extends ConsumerState<UsePrivateKeyModal> {
 class NSECTextField extends ConsumerStatefulWidget {
   const NSECTextField({
     super.key,
+    required this.confettiController,
   });
+
+  // Take the [ConfettiController] as a parameter to play the confetti
+  final ConfettiController confettiController;
 
   @override
   ConsumerState<NSECTextField> createState() {
@@ -83,17 +84,28 @@ class NSECTextField extends ConsumerStatefulWidget {
 }
 
 class NSECTextFieldState extends ConsumerState<NSECTextField> {
+  // errorText is a getter that returns a [String] if the private key
+  // is not valid. If the private key is valid, it will return null.
   String? get errorText {
+    // [String] to store the private key from the TextField. Trim the
+    // private key to remove any whitespaces.
     final String privateKey = ref.watch(keyControllerProvider).text.trim();
 
     try {
+      // Check if the private key is valid as Hex. We use the isValidPrivateKey
+      // method from [keyApiProvider] to check if the private key is valid.
       final bool isValidHexKey =
           ref.read(keyApiProvider).isValidPrivateKey(privateKey);
+
+      // Check if the private key is valid as NSEC. We use the decode method
+      // from [nip19Provider] to decode the NSEC private key.
       final bool isValidNsec = privateKey.trim().startsWith('nsec') &&
           ref.read(keyApiProvider).isValidPrivateKey(
                 ref.read(nip19Provider).decode(privateKey)['data'] as String,
               );
 
+      // If the input is not valid as Hex or NSEC, or other errors occur,
+      // return an error message.
       if (!(isValidHexKey || isValidNsec)) {
         return 'Your private key is not valid.';
       }
@@ -175,7 +187,7 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                       ref.read(keyControllerProvider).clear();
 
                       FeedScreenLogic().getKeysFromStorage(ref).then((_) {
-                        ref.read(confettiControllerProvider).play();
+                        widget.confettiController.play();
                         Future<void>.delayed(const Duration(seconds: 2), () {
                           Navigator.pop(context);
                           snackJoiningSuccesful(context);

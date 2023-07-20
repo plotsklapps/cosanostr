@@ -21,7 +21,6 @@ export 'package:cosanostr/feedscreen_logic.dart';
 export 'package:cosanostr/firebase_options.dart';
 export 'package:cosanostr/models/nost.dart';
 export 'package:cosanostr/models/timeago.dart';
-export 'package:cosanostr/providers/confetti_provider.dart';
 export 'package:cosanostr/providers/feedscreen_providers.dart';
 export 'package:cosanostr/providers/pageindex_providers.dart';
 export 'package:cosanostr/providers/theme_providers.dart';

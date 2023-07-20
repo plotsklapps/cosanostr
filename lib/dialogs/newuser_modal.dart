@@ -10,19 +10,7 @@ class NewUserModal extends ConsumerStatefulWidget {
 }
 
 class NewUserModalState extends ConsumerState<NewUserModal> {
-  late ConfettiController confettiController;
-
-  @override
-  void initState() {
-    super.initState();
-    confettiController = ref.read(confettiControllerProvider);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    confettiController = ref.read(confettiControllerProvider);
-  }
+  late ConfettiController confettiController = ConfettiController();
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +73,7 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                     padding: EdgeInsets.only(
                       bottom: MediaQuery.of(context).viewInsets.bottom,
                     ),
-                    child: const UsePrivateKeyModal(),
+                    child: const PrivateKeyModal(),
                   );
                 },
               );
