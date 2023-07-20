@@ -32,6 +32,12 @@ class UsePrivateKeyModalState extends ConsumerState<UsePrivateKeyModal> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    confettiController = ref.read(confettiControllerProvider);
+  }
+
+  @override
   void dispose() {
     confettiController.dispose();
     super.dispose();
@@ -117,9 +123,12 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
             ),
           ),
           controller: ref.watch(keyControllerProvider),
-          keyboardType: TextInputType.name,
+          keyboardType: TextInputType.text,
           autocorrect: false,
           obscureText: ref.watch(nsecObscuredProvider),
+          keyboardAppearance: ref.watch(isDarkThemeProvider)
+              ? Brightness.dark
+              : Brightness.light,
           onChanged: (String value) {
             ref.read(keyControllerProvider).text = value;
           },
@@ -164,11 +173,13 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                       .then((_) {
                     if (ref.watch(keysExistProvider)) {
                       ref.read(keyControllerProvider).clear();
-                      ref.watch(confettiControllerProvider).play();
-                      FeedScreenLogic().getKeysFromStorage(ref);
-                      Future<void>.delayed(const Duration(seconds: 2), () {
-                        Navigator.pop(context);
-                        snackJoiningSuccesful(context);
+
+                      FeedScreenLogic().getKeysFromStorage(ref).then((_) {
+                        ref.read(confettiControllerProvider).play();
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          Navigator.pop(context);
+                          snackJoiningSuccesful(context);
+                        });
                       });
                     }
                   });

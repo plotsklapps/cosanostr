@@ -75,6 +75,7 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
           const SizedBox(height: 16.0),
           ElevatedButton(
             onPressed: () async {
+              Navigator.pop(context);
               ref.read(keyControllerProvider).clear();
               await showModalBottomSheet<void>(
                 isScrollControlled: true,
@@ -87,9 +88,7 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                     child: const UsePrivateKeyModal(),
                   );
                 },
-              ).then((_) {
-                Navigator.pop(context);
-              });
+              );
             },
             child: const Text('USE YOUR PRIVATE KEY'),
           ),
