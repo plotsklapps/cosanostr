@@ -50,17 +50,33 @@ class UserExistsModal extends ConsumerWidget {
           ),
           const SizedBox(height: 16.0),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
               ElevatedButton(
                 onPressed: () async {
                   Navigator.pop(context);
-                  await showDeleteKeysDialog(context, ref);
+                  await showModalBottomSheet<void>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const DeleteKeysDialog();
+                    },
+                  );
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: FlexColor.material3LightError,
+                child: const Row(
+                  children: <Widget>[
+                    Icon(
+                      FontAwesomeIcons.solidTrashCan,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'DELETE KEYS',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
-                child: const Text('DELETE KEYS'),
               ),
               const SizedBox(width: 8.0),
               if (!ref.watch(isHexProvider))
@@ -79,7 +95,12 @@ class UserExistsModal extends ConsumerWidget {
                   },
                   child: const Text('SHOW HEX'),
                 ),
-              const SizedBox(width: 8.0),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);

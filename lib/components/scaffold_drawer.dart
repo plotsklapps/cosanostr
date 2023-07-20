@@ -15,7 +15,6 @@ class ScaffoldDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final BuildContext currentContext = context;
     return Drawer(
       child: Column(
         children: <Widget>[

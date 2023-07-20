@@ -1,14 +1,5 @@
 import 'package:cosanostr/all_imports.dart';
 
-Future<void> showDeleteKeysDialog(BuildContext context, WidgetRef ref) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return const DeleteKeysDialog();
-    },
-  );
-}
-
 class DeleteKeysDialog extends ConsumerWidget {
   const DeleteKeysDialog({
     super.key,
@@ -16,51 +7,63 @@ class DeleteKeysDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AlertDialog(
-      icon: const Icon(FontAwesomeIcons.circleExclamation),
-      title: const Text('DELETE KEYS'),
-      content: const Column(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Text(
+          const Text(
             'Are you sure you want to delete your keys?',
             textAlign: TextAlign.center,
           ),
-          Divider(),
-          Text(
+          const Divider(),
+          const Text(
             "This action is irreversible, so make sure you've stored your "
             'nsec somewhere safe.',
             textAlign: TextAlign.center,
           ),
+          const SizedBox(height: 16.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: () async {
+                  await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
+                    if (!ref.watch(keysExistProvider)) {
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        ScaffoldSnackBar(
+                          context: context,
+                          content: const Text('Keys successfully deleted!'),
+                        ),
+                      );
+                    }
+                  });
+                },
+                child: const Row(
+                  children: <Widget>[
+                    Icon(
+                      FontAwesomeIcons.solidTrashCan,
+                      color: Colors.red,
+                    ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'DELETE',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('CANCEL'),
+              ),
+            ],
+          ),
         ],
       ),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('CANCEL'),
-        ),
-        IconButton(
-          onPressed: () async {
-            await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
-              if (!ref.watch(keysExistProvider)) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  ScaffoldSnackBar(
-                    context: context,
-                    content: const Text('Keys successfully deleted!'),
-                  ),
-                );
-              }
-            });
-          },
-          icon: const Icon(
-            FontAwesomeIcons.solidTrashCan,
-            color: Colors.red,
-          ),
-        ),
-      ],
     );
   }
 }

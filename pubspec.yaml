@@ -9,6 +9,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  confetti: ^0.7.0
   cupertino_icons: ^1.0.2
   firebase_analytics: ^10.4.3
   firebase_core: ^2.14.0
