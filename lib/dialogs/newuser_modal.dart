@@ -38,6 +38,11 @@ class NewUserModalState extends ConsumerState<NewUserModal> {
                 numberOfParticles: 50,
                 maxBlastForce: 50,
               ),
+              const Icon(
+                FontAwesomeIcons.featherPointed,
+                size: 36.0,
+              ),
+              const SizedBox(height: 16.0),
               const Text(
                 'Welcome to CosaNostr!',
                 style: TextStyle(
@@ -56,44 +61,72 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                 textAlign: TextAlign.end,
               ),
               const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  await FeedScreenLogic().generateNewKeys(ref).then((_) {
-                    if (ref.watch(keysExistProvider)) {
-                      confettiController.play();
-                      Future<void>.delayed(const Duration(seconds: 2), () {
+              ListTile(
+                leading: InkWell(
+                  onTap: () async {
+                    await showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const GenerateNewKeysInfoModal();
+                      },
+                    );
+                  },
+                  child: const Icon(FontAwesomeIcons.circleInfo),
+                ),
+                title: const Text('GENERATE NEW KEYS'),
+                subtitle: const Text('Start fresh with a new identity'),
+                trailing: InkWell(
+                  onTap: () async {
+                    await FeedScreenLogic().generateNewKeys(ref).then((_) {
+                      if (ref.watch(keysExistProvider)) {
+                        confettiController.play();
+                        Future<void>.delayed(const Duration(seconds: 2), () {
+                          Navigator.pop(context);
+                          snackJoiningSuccesful(context);
+                        });
+                      } else {
                         Navigator.pop(context);
-                        snackJoiningSuccesful(context);
-                      });
-                    } else {
-                      Navigator.pop(context);
-                      snackJoiningFailed(context);
-                    }
-                  });
-                },
-                child: const Text('GENERATE NEW KEYS'),
+                        snackJoiningFailed(context);
+                      }
+                    });
+                  },
+                  child: const Icon(FontAwesomeIcons.chevronRight),
+                ),
               ),
-              const SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  ref.read(keyControllerProvider).clear();
-                  await showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        child: const PrivateKeyModal(),
-                      );
-                    },
-                  );
-                },
-                child: const Text('USE YOUR PRIVATE KEY'),
+              ListTile(
+                leading: InkWell(
+                  onTap: () async {
+                    await showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const UsePrivateKeyInfoModal();
+                      },
+                    );
+                  },
+                  child: const Icon(FontAwesomeIcons.circleInfo),
+                ),
+                title: const Text('USE YOUR PRIVATE KEY'),
+                subtitle: const Text('Use an existing NSEC or HEX'),
+                trailing: InkWell(
+                  onTap: () async {
+                    Navigator.pop(context);
+                    ref.read(keyControllerProvider).clear();
+                    await showModalBottomSheet<void>(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: const PrivateKeyModal(),
+                        );
+                      },
+                    );
+                  },
+                  child: const Icon(FontAwesomeIcons.chevronRight),
+                ),
               ),
-              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () async {
                   Navigator.pop(context);
