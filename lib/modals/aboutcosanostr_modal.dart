@@ -91,7 +91,13 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
               // packages used.
               ListTile(
                 onTap: () async {
-                  await showCreditsDialog(context);
+                  await showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const CreditsModal();
+                    },
+                  );
                 },
                 title: const Text(StringUtils.kCredits),
                 subtitle: const Text('Special thanks'),

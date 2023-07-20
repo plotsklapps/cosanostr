@@ -78,8 +78,9 @@ class UserExistsModal extends ConsumerWidget {
                   textAlign: TextAlign.center,
                 )
               else
-                SelectableText(
-                  '******** ******** ******** ******** ******** ******** ******** ********',
+                const SelectableText(
+                  '''
+******** ******** ******** ******** ******** ******** ******** ********''',
                   textAlign: TextAlign.center,
                 ),
               const SizedBox(height: 16.0),

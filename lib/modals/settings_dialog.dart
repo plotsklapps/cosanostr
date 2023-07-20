@@ -43,8 +43,8 @@ class SettingsModal extends ConsumerWidget {
                 },
                 title: const Text('MODE'),
                 subtitle: const Text('Light or Dark'),
-                // Check the current theme mode and display the appropriate icon.
-                // Icons are up for debate, but I found these funny.
+                // Check the current theme mode and display the appropriate
+                // icon. Icons are up for debate, but I found these funny.
                 trailing: ref.watch(isDarkThemeProvider)
                     ? const Icon(FontAwesomeIcons.ghost)
                     : const Icon(FontAwesomeIcons.faceFlushed),
