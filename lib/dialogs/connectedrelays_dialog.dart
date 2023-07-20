@@ -1,34 +1,46 @@
+import 'dart:ui';
+
 import 'package:cosanostr/all_imports.dart';
 
-Future<void> showConnectedRelaysDialog(
-  BuildContext context,
-  WidgetRef ref,
-) async {
-  await showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return const ConnectedRelaysDialog();
-    },
-  );
-}
-
-class ConnectedRelaysDialog extends ConsumerWidget {
-  const ConnectedRelaysDialog({super.key});
+class ConnectedRelaysModal extends ConsumerWidget {
+  const ConnectedRelaysModal({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return AlertDialog(
-      icon: const Icon(FontAwesomeIcons.circleNodes),
-      title: const Text('Connected relays'),
-      content: Text('${ref.watch(relayPoolProvider).connectedRelays}'),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ScrollConfiguration(
+        behavior: const ScrollBehavior().copyWith(
+          scrollbars: false,
+          dragDevices: <PointerDeviceKind>{
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.trackpad,
           },
-          child: const Text('OK'),
         ),
-      ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Icon(
+                FontAwesomeIcons.circleNodes,
+                size: 36.0,
+              ),
+              const Divider(),
+              const Text('Connected Relays'),
+              const Divider(),
+              Text('${ref.watch(relayPoolProvider).connectedRelays}'),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

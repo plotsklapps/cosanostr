@@ -81,89 +81,118 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
                   ? const Icon(FontAwesomeIcons.check)
                   : const Icon(FontAwesomeIcons.plus),
             ),
+            if (ref.watch(keysExistProvider))
+              ListTile(
+                onTap: () async {
+                  await showModalBottomSheet<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return const ConnectedRelaysModal();
+                      });
+                },
+                title: const Text('SHOW RELAYS'),
+                subtitle: const Text('Select connected relays'),
+                trailing: const Icon(FontAwesomeIcons.circleNodes),
+              )
+            else
+              const SizedBox(),
+            ListTile(
+              onTap: () async {
+                await showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const WtfIsNostrModal();
+                    });
+              },
+              title: const Text('WTF IS NOSTR?'),
+              subtitle: const Text('About the Nostr protocol'),
+              trailing: const Icon(FontAwesomeIcons.solidCircleQuestion),
+            ),
+            ListTile(
+              onTap: () async {
+                await showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const AboutCosaNostrModal();
+                    });
+              },
+              title: const Text('ABOUT COSANOSTR'),
+              subtitle: const Text('Developer info'),
+              trailing: const Icon(FontAwesomeIcons.circleInfo),
+            ),
+            ListTile(
+              onTap: () async {
+                await showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const SettingsModal();
+                    });
+              },
+              title: const Text('SETTINGS'),
+              subtitle: const Text('Change the app look and feel'),
+              trailing: const Icon(FontAwesomeIcons.gear),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-            // Check if keys are already generated and display the
-            // appropriate dialog.
-            // if (ref.watch(keysExistProvider)) {
-            //   await showKeysExistDialog(
-            //     ref,
-            //     ref
-            //         .watch(nip19Provider)
-            //         .npubEncode(ref.watch(publicKeyProvider)),
-            //     ref
-            //         .watch(nip19Provider)
-            //         .nsecEncode(ref.watch(privateKeyProvider)),
-            //   );
-            // } else {
-            //   await showKeysOptionsDialog(context, ref).then((_) {
-            //     Navigator.pop(context);
-            //   });
-            // }
+class SettingsModal extends ConsumerWidget {
+  const SettingsModal({super.key});
 
-            // Check if keys are already generated and display the
-            // appropriate title and icon.
-            // title: ref.watch(keysExistProvider)
-            //     ? const Text('SHOW YOUR KEYS')
-            //     : const Text('GENERATE NEW KEYS'),
-            // subtitle: ref.watch(keysExistProvider)
-            //     ? const Text('Your keys are securely stored')
-            //     : const Text('Join the CosaNostr client'),
-            // trailing: ref.watch(keysExistProvider)
-            //     ? const Icon(FontAwesomeIcons.check)
-            //     : const Icon(FontAwesomeIcons.plus),
-
-            // if (ref.watch(keysExistProvider))
-            //   ListTile(
-            //     onTap: () async {
-            //       await showConnectedRelaysDialog(context, ref);
-            //     },
-            //     title: const Text('SHOW RELAYS'),
-            //     subtitle: const Text('Select connected relays'),
-            //     trailing: const Icon(FontAwesomeIcons.circleNodes),
-            //   )
-            // else
-            //   const SizedBox(),
-            // ListTile(
-            //   onTap: () async {
-            //     //Create an alertdialog or bottomsheet with explanation about
-            //     // the Nostr protocol. Why and how, maybe embed the Youtube
-            //     // doc from deMarco? For now:
-            //     Navigator.pop(context);
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       ScaffoldSnackBar(
-            //         context: context,
-            //         content: const Text('Coming soon!'),
-            //       ),
-            //     );
-            //   },
-            //   title: const Text('WTF IS NOSTR?'),
-            //   subtitle: const Text('About the Nostr protocol'),
-            //   trailing: const Icon(FontAwesomeIcons.solidCircleQuestion),
-            // ),
-            // ListTile(
-            //   onTap: () async {
-            //     await Navigator.push(
-            //       context,
-            //       MaterialPageRoute<Widget>(
-            //         builder: (BuildContext context) {
-            //           return const AboutScreen();
-            //         },
-            //       ),
-            //     );
-            //   },
-            //   title: const Text('ABOUT COSANOSTR'),
-            //   subtitle: const Text('Developer info'),
-            //   trailing: const Icon(FontAwesomeIcons.circleInfo),
-            // ),
-            // ListTile(
-            //   onTap: () async {
-            //     Navigator.pop(context);
-            //     await showSettingsDialog(context, ref);
-            //   },
-            //   title: const Text('SETTINGS'),
-            //   subtitle: const Text('Change the app look and feel'),
-            //   trailing: const Icon(FontAwesomeIcons.gear),
-            // ),
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              onTap: () {
+                // Riverpod's way of toggling a bool (I think).
+                ref.read(isDarkThemeProvider.notifier).state =
+                    !ref.watch(isDarkThemeProvider);
+              },
+              title: const Text('MODE'),
+              // Check the current theme mode and display the appropriate icon.
+              // Icons are up for debate, but I found these funny.
+              trailing: ref.watch(isDarkThemeProvider)
+                  ? const Icon(FontAwesomeIcons.ghost)
+                  : const Icon(FontAwesomeIcons.faceFlushed),
+            ),
+            ListTile(
+              onTap: () {
+                ref.read(isThemeIndigoProvider.notifier).state =
+                    !ref.watch(isThemeIndigoProvider);
+              },
+              title: const Text('COLOR'),
+              trailing: ref.watch(isThemeIndigoProvider)
+                  ? const Icon(FontAwesomeIcons.droplet)
+                  : const Icon(FontAwesomeIcons.moneyBill),
+            ),
+            ListTile(
+              onTap: () {
+                ref.read(isFontQuestrialProvider.notifier).state =
+                    !ref.watch(isFontQuestrialProvider);
+              },
+              title: const Text('FONT'),
+              trailing: ref.watch(isFontQuestrialProvider)
+                  ? const Icon(FontAwesomeIcons.quora)
+                  : const Icon(FontAwesomeIcons.bold),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('OK'),
+            ),
           ],
         ),
       ),

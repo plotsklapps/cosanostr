@@ -77,7 +77,6 @@ class ScaffoldDrawer extends ConsumerWidget {
           if (ref.watch(keysExistProvider))
             ListTile(
               onTap: () async {
-                await showConnectedRelaysDialog(context, ref);
               },
               title: const Text('SHOW RELAYS'),
               subtitle: const Text('Select connected relays'),
@@ -108,7 +107,7 @@ class ScaffoldDrawer extends ConsumerWidget {
                 context,
                 MaterialPageRoute<Widget>(
                   builder: (BuildContext context) {
-                    return const AboutScreen();
+                    return const Placeholder();
                   },
                 ),
               );

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cosanostr/all_imports.dart';
 
 class NewUserModal extends ConsumerStatefulWidget {
@@ -10,84 +12,97 @@ class NewUserModal extends ConsumerStatefulWidget {
 }
 
 class NewUserModalState extends ConsumerState<NewUserModal> {
-  late ConfettiController confettiController = ConfettiController();
+  final ConfettiController confettiController = ConfettiController();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ConfettiWidget(
-            confettiController: confettiController,
-            blastDirectionality: BlastDirectionality.explosive,
-            numberOfParticles: 50,
-            maxBlastForce: 50,
-          ),
-          const Text(
-            'Welcome to CosaNostr!',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Divider(),
-          const Text(
-            '''
+      child: ScrollConfiguration(
+        behavior: const ScrollBehavior().copyWith(
+          scrollbars: false,
+          dragDevices: <PointerDeviceKind>{
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.trackpad,
+          },
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ConfettiWidget(
+                confettiController: confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                numberOfParticles: 50,
+                maxBlastForce: 50,
+              ),
+              const Text(
+                'Welcome to CosaNostr!',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const Divider(),
+              const Text(
+                '''
 The anonymous, open-source, free, lightweight and cross-platform Nostr client.''',
-            textAlign: TextAlign.center,
-          ),
-          const Divider(),
-          const Text(
-            'Please choose your poison:',
-            textAlign: TextAlign.end,
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () async {
-              await FeedScreenLogic().generateNewKeys(ref).then((_) {
-                if (ref.watch(keysExistProvider)) {
-                  confettiController.play();
-                  Future<void>.delayed(const Duration(seconds: 2), () {
-                    Navigator.pop(context);
-                    snackJoiningSuccesful(context);
+                textAlign: TextAlign.center,
+              ),
+              const Divider(),
+              const Text(
+                'Please choose your poison:',
+                textAlign: TextAlign.end,
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () async {
+                  await FeedScreenLogic().generateNewKeys(ref).then((_) {
+                    if (ref.watch(keysExistProvider)) {
+                      confettiController.play();
+                      Future<void>.delayed(const Duration(seconds: 2), () {
+                        Navigator.pop(context);
+                        snackJoiningSuccesful(context);
+                      });
+                    } else {
+                      Navigator.pop(context);
+                      snackJoiningFailed(context);
+                    }
                   });
-                } else {
+                },
+                child: const Text('GENERATE NEW KEYS'),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () async {
                   Navigator.pop(context);
-                  snackJoiningFailed(context);
-                }
-              });
-            },
-            child: const Text('GENERATE NEW KEYS'),
-          ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              ref.read(keyControllerProvider).clear();
-              await showModalBottomSheet<void>(
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: const PrivateKeyModal(),
+                  ref.read(keyControllerProvider).clear();
+                  await showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: const PrivateKeyModal(),
+                      );
+                    },
                   );
                 },
-              );
-            },
-            child: const Text('USE YOUR PRIVATE KEY'),
+                child: const Text('USE YOUR PRIVATE KEY'),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                },
+                child: const Text('CANCEL'),
+              ),
+            ],
           ),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
-            },
-            child: const Text('CANCEL'),
-          ),
-        ],
+        ),
       ),
     );
   }
