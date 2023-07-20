@@ -93,7 +93,7 @@ class UserExistsModal extends ConsumerWidget {
                       await showModalBottomSheet<void>(
                         context: context,
                         builder: (BuildContext context) {
-                          return const DeleteKeysDialog();
+                          return const DeleteKeysModal();
                         },
                       );
                     },

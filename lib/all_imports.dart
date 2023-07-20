@@ -14,7 +14,7 @@ export 'package:cosanostr/firebase_options.dart';
 export 'package:cosanostr/modals/aboutcosanostr_modal.dart';
 export 'package:cosanostr/modals/connectedrelays_modal.dart';
 export 'package:cosanostr/modals/credits_modal.dart';
-export 'package:cosanostr/modals/deletekeys_dialog.dart';
+export 'package:cosanostr/modals/deletekeys_modal.dart';
 export 'package:cosanostr/modals/donations_dialog.dart';
 export 'package:cosanostr/modals/generatenewkeysinfo_modal.dart';
 export 'package:cosanostr/modals/newuser_modal.dart';
