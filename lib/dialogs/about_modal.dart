@@ -18,11 +18,9 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            DrawerHeader(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Image.asset('assets/images/plotsklapps_straight.png'),
-              ),
+            const Icon(
+              FontAwesomeIcons.circleInfo,
+              size: 36.0,
             ),
             const Text(
               StringUtils.kCosaNostrByPlotsklapps,
@@ -33,88 +31,66 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
               textAlign: TextAlign.center,
             ),
             const Divider(),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                StringUtils.kEnjoyedMakingIt,
-                textAlign: TextAlign.center,
-              ),
+            const Text(
+              StringUtils.kEnjoyedMakingIt,
+              textAlign: TextAlign.center,
             ),
             const Divider(),
+
             // Button to open plotsklapps website.
-            ElevatedButton(
-              onPressed: () async {
+            ListTile(
+              onTap: () async {
                 await HttpUtils().launchWebsite();
               },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(FontAwesomeIcons.houseChimney),
-                  SizedBox(width: 16),
-                  Text(StringUtils.kWebsite),
-                ],
-              ),
+              title: const Text(StringUtils.kWebsite),
+              subtitle: const Text('Visit :plotsklapps online'),
+              trailing: const Icon(FontAwesomeIcons.houseChimney),
             )
                 .animate()
                 .fade(delay: 0.ms, duration: 1000.ms)
                 .move(delay: 0.ms, duration: 1000.ms),
-            const SizedBox(height: 8),
+
             // Button to open source code on GitHub.
-            ElevatedButton(
-              onPressed: () async {
+            ListTile(
+              onTap: () async {
                 await HttpUtils().launchSourceCode();
               },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(FontAwesomeIcons.code),
-                  SizedBox(width: 16),
-                  Text(StringUtils.kSourceCode),
-                ],
-              ),
+              title: const Text(StringUtils.kSourceCode),
+              subtitle: const Text("Check out CosaNostr's repo"),
+              trailing: const Icon(FontAwesomeIcons.code),
             )
                 .animate()
                 .fade(delay: 500.ms, duration: 1000.ms)
                 .move(delay: 500.ms, duration: 1000.ms),
-            const SizedBox(height: 8),
+
             // Button to show the bottomsheet for donations.
-            ElevatedButton(
-              onPressed: () async {
+            ListTile(
+              onTap: () async {
                 await showDonationsDialog(context);
               },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(FontAwesomeIcons.heartCircleCheck),
-                  SizedBox(width: 16),
-                  Text(StringUtils.kDonate),
-                ],
-              ),
+              title: const Text(StringUtils.kDonate),
+              subtitle: const Text('Feed the developer'),
+              trailing: const Icon(FontAwesomeIcons.heartCircleCheck),
             )
                 .animate()
                 .fade(delay: 1000.ms, duration: 1000.ms)
                 .move(delay: 1000.ms, duration: 1000.ms),
-            const SizedBox(height: 8),
+
             // Button to show the bottomsheet with app related content, like
             // packages used.
-            ElevatedButton(
-              onPressed: () async {
+            ListTile(
+              onTap: () async {
                 await showCreditsDialog(context);
               },
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(FontAwesomeIcons.circleInfo),
-                  SizedBox(width: 16),
-                  Text(StringUtils.kCredits),
-                ],
-              ),
+              title: const Text(StringUtils.kCredits),
+              subtitle: const Text('Special thanks'),
+              trailing: const Icon(FontAwesomeIcons.circleInfo),
             )
                 .animate()
                 .fade(delay: 1500.ms, duration: 1000.ms)
                 .move(delay: 1500.ms, duration: 1000.ms),
             const Divider(),
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
