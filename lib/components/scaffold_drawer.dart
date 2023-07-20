@@ -76,9 +76,7 @@ class ScaffoldDrawer extends ConsumerWidget {
           ),
           if (ref.watch(keysExistProvider))
             ListTile(
-              onTap: () async {
-                await showConnectedRelaysDialog(context, ref);
-              },
+              onTap: () async {},
               title: const Text('SHOW RELAYS'),
               subtitle: const Text('Select connected relays'),
               trailing: const Icon(FontAwesomeIcons.circleNodes),
@@ -108,7 +106,7 @@ class ScaffoldDrawer extends ConsumerWidget {
                 context,
                 MaterialPageRoute<Widget>(
                   builder: (BuildContext context) {
-                    return const AboutScreen();
+                    return const Placeholder();
                   },
                 ),
               );
@@ -120,7 +118,6 @@ class ScaffoldDrawer extends ConsumerWidget {
           ListTile(
             onTap: () async {
               Navigator.pop(context);
-              await showSettingsDialog(context, ref);
             },
             title: const Text('SETTINGS'),
             subtitle: const Text('Change the app look and feel'),

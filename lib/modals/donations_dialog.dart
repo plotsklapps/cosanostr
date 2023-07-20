@@ -2,17 +2,8 @@ import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
 
-Future<void> showDonationsDialog(BuildContext context) {
-  return showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return const DonationsDialog();
-    },
-  );
-}
-
-class DonationsDialog extends StatelessWidget {
-  const DonationsDialog({super.key});
+class DonationsModal extends StatelessWidget {
+  const DonationsModal({super.key});
 
   @override
   Widget build(BuildContext context) {

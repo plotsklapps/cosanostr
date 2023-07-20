@@ -1,7 +1,7 @@
 import 'package:cosanostr/all_imports.dart';
 
-class DeleteKeysDialog extends ConsumerWidget {
-  const DeleteKeysDialog({
+class DeleteKeysModal extends ConsumerWidget {
+  const DeleteKeysModal({
     super.key,
   });
 
