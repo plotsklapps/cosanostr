@@ -10,7 +10,7 @@ class WtfIsNostrModal extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             const Text(
               'WTF is Nostr?',
               style: TextStyle(

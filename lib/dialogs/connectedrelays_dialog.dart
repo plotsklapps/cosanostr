@@ -31,7 +31,7 @@ class ConnectedRelaysModal extends ConsumerWidget {
               const Text('Connected Relays'),
               const Divider(),
               Text('${ref.watch(relayPoolProvider).connectedRelays}'),
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },

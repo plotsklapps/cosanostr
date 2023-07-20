@@ -85,10 +85,11 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
               ListTile(
                 onTap: () async {
                   await showModalBottomSheet<void>(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const ConnectedRelaysModal();
-                      });
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const ConnectedRelaysModal();
+                    },
+                  );
                 },
                 title: const Text('SHOW RELAYS'),
                 subtitle: const Text('Select connected relays'),
@@ -99,11 +100,12 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
             ListTile(
               onTap: () async {
                 await showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const WtfIsNostrModal();
-                    });
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const WtfIsNostrModal();
+                  },
+                );
               },
               title: const Text('WTF IS NOSTR?'),
               subtitle: const Text('About the Nostr protocol'),
@@ -112,11 +114,12 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
             ListTile(
               onTap: () async {
                 await showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const AboutCosaNostrModal();
-                    });
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AboutCosaNostrModal();
+                  },
+                );
               },
               title: const Text('ABOUT COSANOSTR'),
               subtitle: const Text('Developer info'),
@@ -125,11 +128,12 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
             ListTile(
               onTap: () async {
                 await showModalBottomSheet<void>(
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return const SettingsModal();
-                    });
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const SettingsModal();
+                  },
+                );
               },
               title: const Text('SETTINGS'),
               subtitle: const Text('Change the app look and feel'),

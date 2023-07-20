@@ -4,6 +4,11 @@ import 'package:cosanostr/all_imports.dart';
 
 final StateProvider<bool> isHexProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
+  return true;
+});
+
+final StateProvider<bool> isNsecVisibleProvider =
+    StateProvider<bool>((StateProviderRef<bool> ref) {
   return false;
 });
 
@@ -17,13 +22,15 @@ class UserExistsModal extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ScrollConfiguration(
-        behavior: const ScrollBehavior()
-            .copyWith(scrollbars: false, dragDevices: <PointerDeviceKind>{
-          PointerDeviceKind.mouse,
-          PointerDeviceKind.stylus,
-          PointerDeviceKind.touch,
-          PointerDeviceKind.trackpad,
-        }),
+        behavior: const ScrollBehavior().copyWith(
+          scrollbars: false,
+          dragDevices: <PointerDeviceKind>{
+            PointerDeviceKind.mouse,
+            PointerDeviceKind.stylus,
+            PointerDeviceKind.touch,
+            PointerDeviceKind.trackpad,
+          },
+        ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -34,12 +41,18 @@ class UserExistsModal extends ConsumerWidget {
               ),
               const Divider(),
               const Text(
-                'Public Key',
+                'Your Securely Stored Keys',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const Divider(),
+              const Text(
+                'Public Key',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               SelectableText(
                 ref.watch(isHexProvider)
                     ? ref
@@ -55,20 +68,25 @@ class UserExistsModal extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Divider(),
-              SelectableText(
-                ref.watch(isHexProvider)
-                    ? ref
-                        .watch(nip19Provider)
-                        .nsecEncode(ref.watch(privateKeyProvider))
-                    : ref.watch(privateKeyProvider),
-                textAlign: TextAlign.center,
-              ),
+              if (ref.watch(isNsecVisibleProvider))
+                SelectableText(
+                  ref.watch(isHexProvider)
+                      ? ref
+                          .watch(nip19Provider)
+                          .nsecEncode(ref.watch(privateKeyProvider))
+                      : ref.watch(privateKeyProvider),
+                  textAlign: TextAlign.center,
+                )
+              else
+                SelectableText(
+                  '******** ******** ******** ******** ******** ******** ******** ********',
+                  textAlign: TextAlign.center,
+                ),
               const SizedBox(height: 16.0),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  ElevatedButton(
+                  TextButton(
                     onPressed: () async {
                       Navigator.pop(context);
                       await showModalBottomSheet<void>(
@@ -78,25 +96,16 @@ class UserExistsModal extends ConsumerWidget {
                         },
                       );
                     },
-                    child: const Row(
-                      children: <Widget>[
-                        Icon(
-                          FontAwesomeIcons.solidTrashCan,
-                          color: Colors.red,
-                        ),
-                        SizedBox(width: 8.0),
-                        Text(
-                          'DELETE KEYS',
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
-                        ),
-                      ],
+                    child: const Text(
+                      'DELETE KEYS',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8.0),
                   if (!ref.watch(isHexProvider))
-                    ElevatedButton(
+                    TextButton(
                       onPressed: () {
                         ref.read(isHexProvider.notifier).state =
                             !ref.watch(isHexProvider);
@@ -104,26 +113,30 @@ class UserExistsModal extends ConsumerWidget {
                       child: const Text('SHOW NPUB'),
                     )
                   else
-                    ElevatedButton(
+                    TextButton(
                       onPressed: () {
                         ref.read(isHexProvider.notifier).state =
                             !ref.watch(isHexProvider);
                       },
                       child: const Text('SHOW HEX'),
                     ),
+                  IconButton(
+                    onPressed: () {
+                      ref.read(isNsecVisibleProvider.notifier).state =
+                          !ref.watch(isNsecVisibleProvider);
+                    },
+                    icon: ref.watch(isNsecVisibleProvider)
+                        ? const Icon(FontAwesomeIcons.eye)
+                        : const Icon(FontAwesomeIcons.eyeSlash),
+                  ),
                 ],
               ),
               const SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('OK'),
-                  ),
-                ],
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('OK'),
               ),
             ],
           ),

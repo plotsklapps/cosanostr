@@ -36,7 +36,7 @@ Listen up, wise guy! In CosaNostr, we don't mess around with these keys. We're t
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8.0),
-              Text(
+              const Text(
                 """
 These keys keep our communications locked down tight, capisce? So when you join the family, make sure you generate those fresh keys en keep 'em safe for prying eyes. Trust me, it's the key to being a made member in the CosaNostr crew.""",
                 textAlign: TextAlign.center,
