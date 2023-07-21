@@ -26,35 +26,34 @@ class DeleteKeysModal extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              ElevatedButton(
+              TextButton(
                 onPressed: () async {
                   await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
                     if (!ref.watch(keysExistProvider)) {
                       Navigator.pop(context);
                       ScaffoldMessenger.of(context).showSnackBar(
-                        ScaffoldSnackBar(
-                          context: context,
-                          content: const Text('Keys successfully deleted!'),
+                        SnackBar(
+                          content: const Text(
+                            'Keys successfully deleted!',
+                          ),
+                          action: SnackBarAction(
+                            label: 'OK',
+                            onPressed: () {
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                          ),
                         ),
                       );
                     }
                   });
                 },
-                child: const Row(
-                  children: <Widget>[
-                    Icon(
-                      FontAwesomeIcons.solidTrashCan,
-                      color: Colors.red,
-                    ),
-                    SizedBox(width: 8.0),
-                    Text(
-                      'DELETE',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ],
+                child: const Text(
+                  'DELETE',
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
-              ElevatedButton(
+              TextButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },

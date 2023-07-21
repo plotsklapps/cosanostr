@@ -3,11 +3,6 @@ import 'dart:ui';
 
 import 'package:cosanostr/all_imports.dart';
 
-final StateProvider<bool> isUserScrollingProvider =
-    StateProvider<bool>((StateProviderRef<bool> ref) {
-  return false;
-});
-
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
@@ -26,7 +21,6 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     with AutomaticKeepAliveClientMixin {
   late Stream<Event> stream;
   final StreamController<Event> streamController = StreamController<Event>();
-  // final ScrollController scrollController = ScrollController();
 
   // Override the wantKeepAlive getter to return true.
   @override
@@ -37,33 +31,12 @@ class FeedScreenState extends ConsumerState<FeedScreen>
   @override
   void initState() {
     super.initState();
-
     // Get the keys from storage, connect to the relay and start
     // listening to the stream.
     Future<void>.delayed(Duration.zero, () async {
       await FeedScreenLogic().getKeysFromStorage(ref);
       await initStream();
     });
-    // Add a listener to the scrollController to check if the user
-    // is scrolling or not. If the user is scrolling, set the
-    // isUserScrollingProvider to true which in turn will change the FAB to
-    // a smaller version. If the user is not scrolling, set the
-    // isUserScrollingProvider to false which in turn will change the FAB to
-    // the extended version.
-    // scrollController.addListener(() {
-    //   if (scrollController.position.userScrollDirection ==
-    //       ScrollDirection.forward) {
-    //     ref.read(isUserScrollingProvider.notifier).state = true;
-    //   } else if (scrollController.position.userScrollDirection ==
-    //       ScrollDirection.reverse) {
-    //     ref.read(isUserScrollingProvider.notifier).state = true;
-    //   } else if (scrollController.position.userScrollDirection ==
-    //       ScrollDirection.idle) {
-    //     ref.read(isUserScrollingProvider.notifier).state = false;
-    //   } else {
-    //     ref.read(isUserScrollingProvider.notifier).state = false;
-    //   }
-    // });
   }
 
   @override
@@ -79,7 +52,6 @@ class FeedScreenState extends ConsumerState<FeedScreen>
       await initStream();
       await resubscribeStream();
     });
-    // ref.read(isUserScrollingProvider);
   }
 
   @override
@@ -89,7 +61,6 @@ class FeedScreenState extends ConsumerState<FeedScreen>
       await streamController.close();
     });
     ref.read(relayPoolProvider).close();
-    // scrollController.dispose();
     super.dispose();
   }
 
@@ -171,7 +142,6 @@ class FeedScreenState extends ConsumerState<FeedScreen>
               if (snapshot.hasData) {
                 // If the snapshot has data, build the list of nosts.
                 return ListView.builder(
-                  // controller: scrollController,
                   itemCount: ref.watch(eventsProvider).length,
                   itemBuilder: (BuildContext context, int index) {
                     final Event event = ref.watch(eventsProvider)[index];
