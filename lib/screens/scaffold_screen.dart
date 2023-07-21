@@ -47,8 +47,8 @@ class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
               ref.read(currentPageIndexProvider.notifier).state = index;
             },
             children: const <Widget>[
-              FeedScreen(),
               ProfileScreen(),
+              FeedScreen(),
               MoreScreen(),
             ],
           );

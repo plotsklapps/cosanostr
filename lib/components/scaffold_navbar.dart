@@ -13,21 +13,8 @@ class ScaffoldNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.earthEurope),
-          label: 'Global',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.idCardClip),
-          label: 'Profile',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(FontAwesomeIcons.barsStaggered),
-          label: 'More',
-        ),
-      ],
       currentIndex: ref.watch(currentPageIndexProvider),
+      showUnselectedLabels: false,
       onTap: (int index) async {
         ref.read(currentPageIndexProvider.notifier).state = index;
         if (index == 0) {
@@ -52,6 +39,20 @@ class ScaffoldNavBar extends StatelessWidget {
           return;
         }
       },
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(FontAwesomeIcons.idCardClip),
+          label: 'Profile',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(FontAwesomeIcons.earthEurope),
+          label: 'Global',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(FontAwesomeIcons.barsStaggered),
+          label: 'More',
+        ),
+      ],
     );
   }
 }
