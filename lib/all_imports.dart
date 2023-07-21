@@ -12,6 +12,7 @@ export 'package:cosanostr/components/scaffold_snackbar.dart';
 export 'package:cosanostr/feedscreen_logic.dart';
 export 'package:cosanostr/firebase_options.dart';
 export 'package:cosanostr/modals/aboutcosanostr_modal.dart';
+export 'package:cosanostr/modals/changelog_modal.dart';
 export 'package:cosanostr/modals/connectedrelays_modal.dart';
 export 'package:cosanostr/modals/credits_modal.dart';
 export 'package:cosanostr/modals/deletekeys_modal.dart';
