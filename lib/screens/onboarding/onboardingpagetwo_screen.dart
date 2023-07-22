@@ -1,13 +1,8 @@
 import 'package:cosanostr/all_imports.dart';
 
-final StateProvider<String> userNameProvider =
-    StateProvider<String>((StateProviderRef<String> ref) {
-  return '';
-});
-
-final StateProvider<bool> isSubmitPressed =
-    StateProvider<bool>((StateProviderRef<bool> ref) {
-  return false;
+final StateProvider<String?> userNameProvider =
+    StateProvider<String?>((StateProviderRef<String?> ref) {
+  return null;
 });
 
 class OnboardingPageTwo extends ConsumerStatefulWidget {
@@ -62,26 +57,7 @@ class OnboardingPageTwoState extends ConsumerState<OnboardingPageTwo> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   const Text(
-                    'Are you familiar with Nostr?',
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute<Widget>(
-                          builder: (BuildContext context) {
-                            return const ResponsiveLayout();
-                          },
-                        ),
-                      );
-                    },
-                    child: const Text('JUMP RIGHT IN'),
-                  ),
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    'Otherwise, tell us your name:',
+                    'What should we call you?',
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16.0),
@@ -92,33 +68,54 @@ class OnboardingPageTwoState extends ConsumerState<OnboardingPageTwo> {
                       ref.read(userNameProvider.notifier).state = userInput;
                     },
                   ),
-                  const SizedBox(height: 16.0),
-                  TextButton(
-                    onPressed: () {
-                      ref.read(isSubmitPressed.notifier).state = true;
-                      userNameTextEditingController.clear();
-                    },
-                    child: const Text('SUBMIT'),
+                  const SizedBox(height: 80.0),
+                  const Text(
+                    'Do you have a picture that you would like to use as an avatar?',
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16.0),
-                  if (ref.watch(isSubmitPressed))
-                    Column(
-                      children: <Widget>[
-                        const Text(
-                          'Good. From now on, you will be knows as:',
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(
-                          ref.watch(userNameProvider),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    )
-                  else
-                    const SizedBox(),
+                  TextButton(
+                    onPressed: () async {
+                      await showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Icon(
+                                  FontAwesomeIcons.wrench,
+                                  size: 36.0,
+                                  color: Colors.orange,
+                                ),
+                                const SizedBox(height: 16.0),
+                                const Text(
+                                  'FEATURE',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Divider(),
+                                const Text(
+                                  'Working on this feature, stay tuned!',
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 16.0),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('BACK'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: const Text('ADD PICTURE'),
+                  ),
                 ],
               ),
             ),

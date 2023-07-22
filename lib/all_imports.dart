@@ -17,6 +17,9 @@ export 'package:cosanostr/modals/connectedrelays_modal.dart';
 export 'package:cosanostr/modals/credits_modal.dart';
 export 'package:cosanostr/modals/deletekeys_modal.dart';
 export 'package:cosanostr/modals/donations_dialog.dart';
+export 'package:cosanostr/modals/explainkeypair_modal.dart';
+export 'package:cosanostr/modals/explainnostr_modal.dart';
+
 export 'package:cosanostr/modals/generatenewkeysinfo_modal.dart';
 export 'package:cosanostr/modals/newuser_modal.dart';
 export 'package:cosanostr/modals/privatekey_modal.dart';
@@ -34,6 +37,7 @@ export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/screens/more_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboarding_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboardingpageone_screen.dart';
+export 'package:cosanostr/screens/onboarding/onboardingpagethree_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboardingpagetwo_screen.dart';
 export 'package:cosanostr/screens/profile_screen.dart';
 export 'package:cosanostr/screens/scaffold_screen.dart';
