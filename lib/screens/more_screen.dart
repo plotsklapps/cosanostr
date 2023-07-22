@@ -36,9 +36,11 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
                       fit: FlexFit.tight,
                       child: ref.watch(isDarkThemeProvider)
                           ? Image.asset(
-                              'assets/images/cosanostr_white_icon.png')
+                              'assets/images/cosanostr_white_icon.png',
+                            )
                           : Image.asset(
-                              'assets/images/cosanostr_black_icon.png'),
+                              'assets/images/cosanostr_black_icon.png',
+                            ),
                     ),
                     const SizedBox(height: 8.0),
                     const Text(

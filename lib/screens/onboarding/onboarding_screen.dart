@@ -100,9 +100,47 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     },
                     child: const Text('PREVIOUS'),
                   ),
+                  const SizedBox(width: 16.0),
                   TextButton(
                     onPressed: () async {
-                      if (currentOnboardingPageIndex == 2) {
+                      if (currentOnboardingPageIndex == 1 &&
+                          ref.watch(userNameProvider) == null) {
+                        await showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Icon(
+                                    FontAwesomeIcons.bomb,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(height: 16.0),
+                                  const Text(
+                                    'ERROR',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Divider(),
+                                  const Text(
+                                    'Hey wiseguy, what are we supposed to call you?',
+                                  ),
+                                  const SizedBox(height: 16.0),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('BACK'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      } else if (currentOnboardingPageIndex == 2) {
                         return;
                       } else {
                         await pageController.animateToPage(
@@ -113,7 +151,18 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       }
                     },
                     child: const Text('NEXT'),
-                  ),
+                  )
+                      .animate(
+                        onPlay: (AnimationController controller) {
+                          controller.repeat(reverse: true);
+                        },
+                      )
+                      .fade(
+                        duration: const Duration(milliseconds: 1000),
+                      )
+                      .moveX(
+                        duration: const Duration(milliseconds: 2000),
+                      )
                 ],
               ),
             ],
@@ -143,61 +192,6 @@ class Indicator extends StatelessWidget {
         border: Border.all(color: Colors.blue),
         color: positionIndex == currentIndex ? Colors.blue : Colors.transparent,
         borderRadius: BorderRadius.circular(4),
-      ),
-    );
-  }
-}
-
-class OnboardingPageThree extends StatelessWidget {
-  const OnboardingPageThree({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          const Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'We will give you access to Nostr with a public and private key.',
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    '''
-The public key can be shared with anyone and is a way to find you within the Nostr network. The private key is yours and yours alone... do not ever, under any circumstance share it with anyone. This key is used to sign transactions and verify your identity.''',
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'We will generate keys and show them to you, we advise you to write them down and keep them safe.',
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/gangster_in_white.png',
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }

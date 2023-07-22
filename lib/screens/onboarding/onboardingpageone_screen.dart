@@ -11,25 +11,42 @@ class OnboardingPageOne extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Expanded(
+          Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 16.0),
+              padding: const EdgeInsets.only(left: 16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
+                  const Text(
                     "So you've decided to check out CosaNostr!",
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16.0),
-                  Text(
+                  const SizedBox(height: 16.0),
+                  const Text(
                     'Before we can let you join the family...',
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 16.0),
-                  Text(
+                  const SizedBox(height: 16.0),
+                  const Text(
                     "Let's get you set up!",
                     textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32.0),
+                  TextButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute<Widget>(
+                          builder: (BuildContext context) {
+                            return const FeedScreen();
+                          },
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Already familiar with Nostr? Jump right in!',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ],
               ),

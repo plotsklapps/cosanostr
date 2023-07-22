@@ -78,11 +78,12 @@ class AboutCosaNostrModalState extends State<AboutCosaNostrModal> {
               ListTile(
                 onTap: () async {
                   await showModalBottomSheet<void>(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const DonationsModal();
-                      });
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return const DonationsModal();
+                    },
+                  );
                 },
                 title: const Text(StringUtils.kDonate),
                 subtitle: const Text('Feed the developer'),
