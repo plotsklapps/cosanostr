@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:cosanostr/all_imports.dart';
 
 final StateProvider<String?> userNameProvider =
@@ -18,6 +20,7 @@ class OnboardingPageTwo extends ConsumerStatefulWidget {
 
 class OnboardingPageTwoState extends ConsumerState<OnboardingPageTwo> {
   late TextEditingController userNameTextEditingController;
+  File? image;
 
   @override
   void initState() {
@@ -29,6 +32,15 @@ class OnboardingPageTwoState extends ConsumerState<OnboardingPageTwo> {
   void dispose() {
     userNameTextEditingController.dispose();
     super.dispose();
+  }
+
+  Future<void> addPicture() async {
+    try {
+      final Future<XFile?> userPicture =
+          ImagePicker().pickImage(source: ImageSource.gallery);
+
+      final File userPictureTemp = File(userPicture.path);
+    } catch (error) {}
   }
 
   @override

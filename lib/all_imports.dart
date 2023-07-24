@@ -19,7 +19,6 @@ export 'package:cosanostr/modals/deletekeys_modal.dart';
 export 'package:cosanostr/modals/donations_dialog.dart';
 export 'package:cosanostr/modals/explainkeypair_modal.dart';
 export 'package:cosanostr/modals/explainnostr_modal.dart';
-
 export 'package:cosanostr/modals/generatenewkeysinfo_modal.dart';
 export 'package:cosanostr/modals/newuser_modal.dart';
 export 'package:cosanostr/modals/privatekey_modal.dart';
@@ -53,6 +52,7 @@ export 'package:flutter_riverpod/flutter_riverpod.dart';
 export 'package:flutter_secure_storage/flutter_secure_storage.dart';
 export 'package:font_awesome_flutter/font_awesome_flutter.dart';
 export 'package:google_fonts/google_fonts.dart';
+export 'package:image_picker/image_picker.dart';
 export 'package:logger/logger.dart';
 export 'package:nostr_tools/nostr_tools.dart';
 export 'package:url_launcher/url_launcher.dart';
