@@ -23,7 +23,7 @@ dependencies:
   font_awesome_flutter: ^10.5.0
   google_fonts: ^4.0.4
   image_picker: ^1.0.1
-  logger: ^1.4.0
+  logger: ^2.0.1
   nostr_tools: ^1.0.7
   url_launcher: ^6.1.12
 
