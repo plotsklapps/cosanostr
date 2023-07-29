@@ -25,17 +25,20 @@ class ExplainNostrModal extends StatelessWidget {
           ),
           const Divider(),
           const Text(
-            'The Nostr protocol is a decentralized network protocol for a distributed social networking system. It enables a global, decentralized and censorship-resistant social media.',
+            '''
+The Nostr protocol is a decentralized network protocol for a distributed social networking system. It enables a global, decentralized and censorship-resistant social media.''',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8.0),
           const Text(
-            'Nostr allows users to share updates, messages and other content in a distributed and tamper-proof manner and consists of two main components: clients and relays.',
+            '''
+Nostr allows users to share updates, messages and other content in a distributed and tamper-proof manner and consists of two main components: clients and relays.''',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16.0),
           const Text(
-            'Users are identified by public keys and clients fetch data from relays and publish their own content. Nostr provides an open standard upon which developers can build applications and services.',
+            '''
+Users are identified by public keys and clients fetch data from relays and publish their own content. Nostr provides an open standard upon which developers can build applications and services.''',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16.0),

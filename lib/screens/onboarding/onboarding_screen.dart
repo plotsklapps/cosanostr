@@ -126,7 +126,8 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                   ),
                                   const Divider(),
                                   const Text(
-                                    'Hey wiseguy, what are we supposed to call you?',
+                                    '''
+Hey wiseguy, what are we supposed to call you?''',
                                   ),
                                   const SizedBox(height: 16.0),
                                   TextButton(

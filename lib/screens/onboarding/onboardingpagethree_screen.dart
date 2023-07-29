@@ -31,7 +31,8 @@ class OnboardingPageThree extends ConsumerWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        'Okay, ${ref.watch(userNameProvider)}. In a few moments you will join CosaNostr with a fresh ',
+                        '''
+Okay, ${ref.watch(userNameProvider)}. In a few moments you will join CosaNostr with a fresh ''',
                         textAlign: TextAlign.center,
                       ),
                       TextButton(
@@ -55,7 +56,8 @@ class OnboardingPageThree extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16.0),
                       const Text(
-                        'CosaNostr is a Nostr client like many others. Your new keypair will work on any',
+                        '''
+CosaNostr is a Nostr client like many others. Your new keypair will work on any''',
                         textAlign: TextAlign.center,
                       ),
                       TextButton(
@@ -78,12 +80,14 @@ class OnboardingPageThree extends ConsumerWidget {
                         ),
                       ),
                       const Text(
-                        'client from now on and you will forever keep your identity and data.',
+                        '''
+client from now on and you will forever keep your identity and data.''',
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16.0),
                       const Text(
-                        'That said, if you lose your keys you will forever lose your Nostr identity and data and you will have to generate new keys.',
+                        '''
+That said, if you lose your keys you will forever lose your Nostr identity and data and you will have to generate new keys.''',
                         textAlign: TextAlign.center,
                       ),
                     ],

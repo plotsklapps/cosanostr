@@ -30,17 +30,20 @@ class ExplainKeypairModal extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           const Text(
-            'NPUB: Cryptographic key that is shared openly and is used to find you on the Nostr protocol.',
+            '''
+NPUB: Cryptographic key that is shared openly and is used to find you on the Nostr protocol.''',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16.0),
           const Text(
-            'NSEC: Secret cryptographic key that is NEVER shared openly. It is used to sign messages, decrypt encrypted data and proving ownership of the corresponding NPUB.',
+            '''
+NSEC: Secret cryptographic key that is NEVER shared openly. It is used to sign messages, decrypt encrypted data and proving ownership of the corresponding NPUB.''',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16.0),
           const Text(
-            'This keypair is used for the entire Nostr protocol. It is YOUR identity, YOUR access to data on ANY client. We highly advise you to write them down and store them carefully.',
+            '''
+This keypair is used for the entire Nostr protocol. It is YOUR identity, YOUR access to data on ANY client. We highly advise you to write them down and store them carefully.''',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16.0),
