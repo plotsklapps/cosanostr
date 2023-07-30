@@ -82,6 +82,14 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                         confettiController.play();
                         Future<void>.delayed(const Duration(seconds: 2), () {
                           Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (BuildContext context) {
+                                return const ScaffoldScreen();
+                              },
+                            ),
+                          );
                           snackJoiningSuccesful(context);
                         });
                       } else {

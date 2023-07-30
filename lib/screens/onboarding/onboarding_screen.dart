@@ -142,7 +142,12 @@ Hey wiseguy, what are we supposed to call you?''',
                           },
                         );
                       } else if (currentOnboardingPageIndex == 2) {
-                        return;
+                        await showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const NewUserModal();
+                          },
+                        );
                       } else {
                         await pageController.animateToPage(
                           currentOnboardingPageIndex + 1,

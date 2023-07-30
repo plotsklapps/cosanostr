@@ -27,7 +27,7 @@ class MainEntry extends ConsumerWidget {
       darkTheme: ref.watch(darkThemeProvider),
       themeMode: ref.watch(themeModeProvider),
       // This is a first draft for responsiveness. Will be improved later.
-      home: const OnboardingScreen(),
+      home: const SplashScreen(),
     );
   }
 }

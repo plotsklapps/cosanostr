@@ -40,6 +40,7 @@ export 'package:cosanostr/screens/onboarding/onboardingpagethree_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboardingpagetwo_screen.dart';
 export 'package:cosanostr/screens/profile_screen.dart';
 export 'package:cosanostr/screens/scaffold_screen.dart';
+export 'package:cosanostr/screens/splash_screen.dart';
 export 'package:cosanostr/theme.dart';
 export 'package:cosanostr/utils/http_utils.dart';
 export 'package:cosanostr/utils/string_utils.dart';
