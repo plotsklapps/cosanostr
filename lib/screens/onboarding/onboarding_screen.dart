@@ -142,6 +142,14 @@ Hey wiseguy, what are we supposed to call you?''',
                           },
                         );
                       } else if (currentOnboardingPageIndex == 2) {
+                        // Nothing to do here yet, just skipping to the next
+                        // page
+                        await pageController.animateToPage(
+                          currentOnboardingPageIndex + 1,
+                          duration: const Duration(seconds: 1),
+                          curve: Curves.bounceOut,
+                        );
+                      } else if (currentOnboardingPageIndex == 3) {
                         await showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {

@@ -32,7 +32,7 @@ class OnboardingPageThree extends ConsumerWidget {
                     children: <Widget>[
                       Text(
                         '''
-Okay, ${ref.watch(userNameProvider)}. In a few moments you will join CosaNostr with a fresh ''',
+If you want, you can set up your preferences here. If you already like what you see, just click next, ${ref.watch(userNameProvider)}.''',
                         textAlign: TextAlign.center,
                       ),
                       TextButton(
@@ -41,11 +41,11 @@ Okay, ${ref.watch(userNameProvider)}. In a few moments you will join CosaNostr w
                             isScrollControlled: true,
                             context: context,
                             builder: (BuildContext context) {
-                              return const ExplainKeypairModal();
+                              return const SettingsModal();
                             },
                           );
                         },
-                        child: const Text('KEYPAIR').animate(
+                        child: const Text('PREFERENCES').animate(
                           onPlay: (AnimationController controller) {
                             controller.repeat();
                           },
@@ -53,42 +53,6 @@ Okay, ${ref.watch(userNameProvider)}. In a few moments you will join CosaNostr w
                           delay: 5000.ms,
                           duration: 2000.ms,
                         ),
-                      ),
-                      const SizedBox(height: 16.0),
-                      const Text(
-                        '''
-CosaNostr is a Nostr client like many others. Your new keypair will work on any''',
-                        textAlign: TextAlign.center,
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          await showModalBottomSheet<void>(
-                            isScrollControlled: true,
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const ExplainNostrModal();
-                            },
-                          );
-                        },
-                        child: const Text('NOSTR').animate(
-                          onPlay: (AnimationController controller) {
-                            controller.repeat();
-                          },
-                        ).shake(
-                          delay: 5000.ms,
-                          duration: 2000.ms,
-                        ),
-                      ),
-                      const Text(
-                        '''
-client from now on and you will forever keep your identity and data.''',
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16.0),
-                      const Text(
-                        '''
-That said, if you lose your keys you will forever lose your Nostr identity and data and you will have to generate new keys.''',
-                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),

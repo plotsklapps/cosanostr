@@ -229,6 +229,14 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                         widget.confettiController.play();
                         Future<void>.delayed(const Duration(seconds: 2), () {
                           Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute<Widget>(
+                              builder: (BuildContext context) {
+                                return const ScaffoldScreen();
+                              },
+                            ),
+                          );
                           snackJoiningSuccesful(context);
                         });
                       });

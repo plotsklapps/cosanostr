@@ -134,7 +134,7 @@ class UserExistsModal extends ConsumerWidget {
               ),
               const SizedBox(height: 8.0),
               TextButton(
-                onPressed: () {
+                onPressed: () async {
                   Navigator.pop(context);
                 },
                 child: const Text('OK'),
