@@ -19,6 +19,19 @@ class OnboardingPageFourState extends ConsumerState<OnboardingPageFour> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'assets/images/gangster_in_white.png',
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0),
               child: ScrollConfiguration(
@@ -99,19 +112,6 @@ That said, if you lose your keys you will forever lose your Nostr identity and d
                   ),
                 ),
               ),
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'assets/images/gangster_in_white.png',
-                  ),
-                ),
-              ],
             ),
           ),
         ],
