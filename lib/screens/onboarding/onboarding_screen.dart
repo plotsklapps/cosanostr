@@ -56,6 +56,7 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     OnboardingPageOne(),
                     OnboardingPageTwo(),
                     OnboardingPageThree(),
+                    OnboardingPageFour(),
                   ],
                 ),
               ),
@@ -66,18 +67,19 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     positionIndex: 0,
                     currentIndex: currentOnboardingPageIndex,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 16.0),
                   Indicator(
                     positionIndex: 1,
                     currentIndex: currentOnboardingPageIndex,
                   ),
-                  const SizedBox(
-                    width: 10,
-                  ),
+                  const SizedBox(width: 16.0),
                   Indicator(
                     positionIndex: 2,
+                    currentIndex: currentOnboardingPageIndex,
+                  ),
+                  const SizedBox(width: 16.0),
+                  Indicator(
+                    positionIndex: 3,
                     currentIndex: currentOnboardingPageIndex,
                   ),
                 ],

@@ -35,6 +35,7 @@ export 'package:cosanostr/responsive_layout.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/screens/more_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboarding_screen.dart';
+export 'package:cosanostr/screens/onboarding/onboardingpagefour_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboardingpageone_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboardingpagethree_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboardingpagetwo_screen.dart';
