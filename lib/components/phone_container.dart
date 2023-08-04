@@ -22,7 +22,7 @@ class PhoneContainer extends StatelessWidget {
       child: Container(
         // Set the container's width and height to be 50% and 90% of the screen
         // size respectively. This will give it a nice phone-like appearance.
-        width: maxWidth * 0.5,
+        width: maxWidth * 0.9,
         height: maxHeight * 0.9,
         decoration: BoxDecoration(
           color: Colors.grey[200],

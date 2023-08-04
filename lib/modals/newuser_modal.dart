@@ -86,7 +86,7 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                             context,
                             MaterialPageRoute<void>(
                               builder: (BuildContext context) {
-                                return const ScaffoldScreen();
+                                return const ResponsiveLayout();
                               },
                             ),
                           );

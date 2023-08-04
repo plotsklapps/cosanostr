@@ -117,103 +117,107 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     return Scaffold(
       // The RefreshIndicator is used to refresh the stream and
       // resubscribe to the relayPool.
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await resubscribeStream();
-        },
-        // The ScrollConfiguration is used to disable the scrollbars
-        // and to enable scrolling with the various input devices on
-        // the web.
-        child: ScrollConfiguration(
-          behavior: const ScrollBehavior().copyWith(
-            scrollbars: false,
-            dragDevices: <PointerDeviceKind>{
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-              PointerDeviceKind.stylus,
-              PointerDeviceKind.trackpad,
-            },
-          ),
-          // The StreamBuilder is used to build the list of nosts from
-          // the stream.
-          child: StreamBuilder<Event>(
-            stream: streamController.stream,
-            builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
-              if (snapshot.hasData) {
-                // If the snapshot has data, build the list of nosts.
-                return ListView.builder(
-                  itemCount: ref.watch(eventsProvider).length,
-                  itemBuilder: (BuildContext context, int index) {
-                    final Event event = ref.watch(eventsProvider)[index];
-                    final Metadata? metadata =
-                        ref.watch(metaDataProvider)[event.pubkey];
-                    final Nost nost = Nost(
-                      noteId: event.id,
-                      avatarUrl: metadata?.picture ??
-                          'https://robohash.org/${event.pubkey}',
-                      name: metadata?.name ?? 'Anon',
-                      username: metadata?.displayName ??
-                          (metadata?.display_name ?? 'Anon'),
-                      time: TimeAgo.format(event.created_at),
-                      content: event.content,
-                      pubkey: event.pubkey,
-                    );
-                    return FeedScreenCard(nost: nost);
-                  },
-                );
-              } else if (snapshot.connectionState == ConnectionState.waiting) {
-                // If the snapshot is loading, show a 'loading screen'.
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Image.asset(
-                        'assets/images/cosanostr_icon.png',
-                        scale: 2.0,
-                      ),
-                      const SizedBox(height: 32.0),
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 32.0),
-                      const Text(
-                        'Connecting to the relays...',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else if (snapshot.connectionState == ConnectionState.done) {
-                // If the snapshot is terminated, print it to console
-                Logger().i('Connection to the relayPool closed.');
-              } else if (snapshot.connectionState == ConnectionState.none) {
-                // If the snapshot has no connection, show a 'no connection
-                // screen'.
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 100.0,
-                        width: 100.0,
-                        child: Image.asset(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await resubscribeStream();
+          },
+          // The ScrollConfiguration is used to disable the scrollbars
+          // and to enable scrolling with the various input devices on
+          // the web.
+          child: ScrollConfiguration(
+            behavior: const ScrollBehavior().copyWith(
+              scrollbars: false,
+              dragDevices: <PointerDeviceKind>{
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.stylus,
+                PointerDeviceKind.trackpad,
+              },
+            ),
+            // The StreamBuilder is used to build the list of nosts from
+            // the stream.
+            child: StreamBuilder<Event>(
+              stream: streamController.stream,
+              builder: (BuildContext context, AsyncSnapshot<Object?> snapshot) {
+                if (snapshot.hasData) {
+                  // If the snapshot has data, build the list of nosts.
+                  return ListView.builder(
+                    itemCount: ref.watch(eventsProvider).length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final Event event = ref.watch(eventsProvider)[index];
+                      final Metadata? metadata =
+                          ref.watch(metaDataProvider)[event.pubkey];
+                      final Nost nost = Nost(
+                        noteId: event.id,
+                        avatarUrl: metadata?.picture ??
+                            'https://robohash.org/${event.pubkey}',
+                        name: metadata?.name ?? 'Anon',
+                        username: metadata?.displayName ??
+                            (metadata?.display_name ?? 'Anon'),
+                        time: TimeAgo.format(event.created_at),
+                        content: event.content,
+                        pubkey: event.pubkey,
+                      );
+                      return FeedScreenCard(nost: nost);
+                    },
+                  );
+                } else if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  // If the snapshot is loading, show a 'loading screen'.
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Image.asset(
                           'assets/images/cosanostr_icon.png',
+                          scale: 2.0,
                         ),
-                      ),
-                      const SizedBox(height: 16.0),
-                      const Text('No connection to the relays...'),
-                    ],
-                  ),
+                        const SizedBox(height: 32.0),
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 32.0),
+                        const Text(
+                          'Connecting to the relays...',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  // If the snapshot is terminated, print it to console
+                  Logger().i('Connection to the relayPool closed.');
+                } else if (snapshot.connectionState == ConnectionState.none) {
+                  // If the snapshot has no connection, show a 'no connection
+                  // screen'.
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 100.0,
+                          width: 100.0,
+                          child: Image.asset(
+                            'assets/images/cosanostr_icon.png',
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        const Text('No connection to the relays...'),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  // If the snapshot has an error, print it to console.
+                  Logger().e('Error: ${snapshot.error}');
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              } else if (snapshot.hasError) {
-                // If the snapshot has an error, print it to console.
-                Logger().e('Error: ${snapshot.error}');
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
+              },
+            ),
           ),
         ),
       ),

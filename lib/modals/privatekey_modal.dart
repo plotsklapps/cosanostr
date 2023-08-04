@@ -233,7 +233,7 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                             context,
                             MaterialPageRoute<Widget>(
                               builder: (BuildContext context) {
-                                return const ScaffoldScreen();
+                                return const ResponsiveLayout();
                               },
                             ),
                           );

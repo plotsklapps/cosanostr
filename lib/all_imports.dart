@@ -32,6 +32,7 @@ export 'package:cosanostr/providers/feedscreen_providers.dart';
 export 'package:cosanostr/providers/pageindex_providers.dart';
 export 'package:cosanostr/providers/theme_providers.dart';
 export 'package:cosanostr/responsive_layout.dart';
+export 'package:cosanostr/screens/desktop/feed_screen.dart';
 export 'package:cosanostr/screens/feed_screen.dart';
 export 'package:cosanostr/screens/more_screen.dart';
 export 'package:cosanostr/screens/onboarding/onboarding_screen.dart';

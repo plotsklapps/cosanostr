@@ -11,11 +11,11 @@ class ScaffoldScreen extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<ScaffoldScreen> createState() {
-    return _ScaffoldScreenState();
+    return ScaffoldScreenState();
   }
 }
 
-class _ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
+class ScaffoldScreenState extends ConsumerState<ScaffoldScreen> {
   // Instantiate a PageController to have access to animations during
   // navigation as well.
   late PageController pageController;

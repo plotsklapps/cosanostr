@@ -12,6 +12,26 @@ class FeedScreenDesktop extends StatefulWidget {
 class FeedScreenDesktopState extends State<FeedScreenDesktop> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      body: SafeArea(
+        child: PhoneContainer(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: ProfileScreen(),
+              ),
+              Expanded(
+                flex: 2,
+                child: FeedScreen(),
+              ),
+              Expanded(
+                child: MoreScreen(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
