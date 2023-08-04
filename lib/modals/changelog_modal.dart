@@ -32,6 +32,17 @@ class ChangelogModal extends StatelessWidget {
               ),
               const Divider(),
               const Text(
+                'Version 0.0.3',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              const Text(
+                '''Sticking to the UI layout for now. Desktop version now has better use of screensize, onboarding added for new visitors to cosanostr.app. Onboarding now works as it should, but it will receive a UI overhaul soon. Still working on NIP fetching for profile and reactions.''',
+              ),
+              const SizedBox(height: 8.0),
+              const Text(
                 'Version 0.0.2',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,

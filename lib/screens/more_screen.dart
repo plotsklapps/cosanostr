@@ -64,7 +64,7 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
                             },
                           );
                         },
-                        child: const Text('Version: 0.0.2'),
+                        child: const Text('Version: 0.0.3'),
                       ),
                     ],
                   ),
