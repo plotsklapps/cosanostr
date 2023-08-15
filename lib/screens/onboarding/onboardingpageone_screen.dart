@@ -38,7 +38,7 @@ class OnboardingPageOne extends StatelessWidget {
                         context,
                         MaterialPageRoute<Widget>(
                           builder: (BuildContext context) {
-                            return const FeedScreen();
+                            return const ResponsiveLayout();
                           },
                         ),
                       );
