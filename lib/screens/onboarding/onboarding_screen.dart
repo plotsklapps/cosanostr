@@ -178,7 +178,7 @@ Hey wiseguy, what are we supposed to call you?''',
                       )
                       .moveX(
                         duration: const Duration(milliseconds: 2000),
-                      )
+                      ),
                 ],
               ),
             ],

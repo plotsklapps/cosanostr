@@ -11,10 +11,12 @@ class FeedScreenCard extends StatefulWidget {
   final Nost nost;
 
   @override
-  State<FeedScreenCard> createState() => _FeedScreenCardState();
+  State<FeedScreenCard> createState() {
+    return FeedScreenCardState();
+  }
 }
 
-class _FeedScreenCardState extends State<FeedScreenCard> {
+class FeedScreenCardState extends State<FeedScreenCard> {
   List<String>? extractImage(String text) {
     final RegExp exp = RegExp(
       r'(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png|jpeg)',

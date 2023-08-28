@@ -12,14 +12,16 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final String npub =
+        ref.watch(nip19Provider).npubEncode(ref.watch(publicKeyProvider));
+    return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Card(
+            const Card(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Placeholder(),
@@ -27,8 +29,8 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
             Card(
               child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Working on it!'),
+                padding: const EdgeInsets.all(16.0),
+                child: Text('NPUB: $npub more info will be added here!'),
               ),
             ),
           ],
