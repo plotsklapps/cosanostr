@@ -95,8 +95,8 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       } else {
                         await pageController.animateToPage(
                           currentOnboardingPageIndex - 1,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.bounceOut,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOut,
                         );
                       }
                     },
@@ -148,8 +148,8 @@ Hey wiseguy, what are we supposed to call you?''',
                         // page
                         await pageController.animateToPage(
                           currentOnboardingPageIndex + 1,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.bounceOut,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOut,
                         );
                       } else if (currentOnboardingPageIndex == 3) {
                         await showModalBottomSheet<void>(
@@ -161,8 +161,8 @@ Hey wiseguy, what are we supposed to call you?''',
                       } else {
                         await pageController.animateToPage(
                           currentOnboardingPageIndex + 1,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.bounceOut,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeOut,
                         );
                       }
                     },
