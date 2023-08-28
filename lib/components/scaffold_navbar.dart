@@ -20,20 +20,20 @@ class ScaffoldNavBar extends StatelessWidget {
         if (index == 0) {
           await pageController.animateToPage(
             0,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.bounceOut,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOut,
           );
         } else if (index == 1) {
           await pageController.animateToPage(
             1,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.bounceOut,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOut,
           );
         } else if (index == 2) {
           await pageController.animateToPage(
             2,
-            duration: const Duration(milliseconds: 1000),
-            curve: Curves.bounceOut,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOut,
           );
         } else {
           return;
