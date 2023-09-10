@@ -1,15 +1,19 @@
 import 'package:cosanostr/all_imports.dart';
 
-class FeedScreenDesktop extends StatefulWidget {
-  const FeedScreenDesktop({super.key});
+//Desktopscreen is nothing more than the three mobile
+//screens side by side within a border, made in the
+//PhoneContainer widget.
+
+class DesktopScreen extends StatefulWidget {
+  const DesktopScreen({super.key});
 
   @override
-  State<FeedScreenDesktop> createState() {
-    return FeedScreenDesktopState();
+  State<DesktopScreen> createState() {
+    return DesktopScreenState();
   }
 }
 
-class FeedScreenDesktopState extends State<FeedScreenDesktop> {
+class DesktopScreenState extends State<DesktopScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

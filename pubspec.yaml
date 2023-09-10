@@ -19,7 +19,7 @@ dependencies:
   flutter_animate: ^4.2.0
   flutter_launcher_icons: ^0.13.1
   flutter_riverpod: ^2.3.6
-  flutter_secure_storage: ^8.0.0
+  flutter_secure_storage: ^9.0.0
   font_awesome_flutter: ^10.5.0
   google_fonts: ^5.1.0
   image_picker: ^1.0.1

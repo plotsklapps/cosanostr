@@ -12,7 +12,7 @@ class ResponsiveLayout extends StatelessWidget {
         // responsiveness for bigger screens.
         if (constraints.maxWidth >= 720) {
           return const Scaffold(
-            body: FeedScreenDesktop(),
+            body: DesktopScreen(),
           );
         } else {
           // Focus is on mobile version for now.
