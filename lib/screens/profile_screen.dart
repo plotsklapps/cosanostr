@@ -15,17 +15,19 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     final String npub =
         ref.watch(nip19Provider).npubEncode(ref.watch(publicKeyProvider));
 
+    // Hardcoded the Metadata for now, but still only returning the instance
+    // of Metadata, not the info itself...
     final String profileInfo = Metadata(
       banner: 'https://i.imgur.com/2M2p9JL.png',
       lud06: '2021-07-01T00:00:00.000Z',
       lud16: '2021-07-01T00:00:00.000Z',
       website: 'https://cosanostr.art',
       picture: 'https://i.imgur.com/2M2p9JL.png',
-      display_name: 'Cosa Nostra',
-      name: 'Cosa Nostra',
-      about: 'Cosa Nostra is a decentralized social network.',
+      display_name: 'Cosa Nostr',
+      name: 'Cosa Nostr',
+      about: 'Cosa Nostr is a decentralized social network.',
       username: 'cosanostr',
-      displayName: 'Cosa Nostra',
+      displayName: 'Cosa Nostr',
       nip05: 'cosanostr',
       followingCount: 0,
       followersCount: 0,
