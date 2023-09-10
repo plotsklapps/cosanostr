@@ -47,7 +47,25 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
             const Card(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Placeholder(),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text('PROFILEBANNER', style: TextStyle(fontSize: 36.0)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.account_circle,
+                          size: 64.0,
+                        ),
+                        SizedBox(width: 16.0),
+                        Text('USERNAME'),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             Card(
