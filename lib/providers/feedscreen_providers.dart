@@ -75,11 +75,6 @@ final StateProvider<bool> keysExistProvider =
   return false;
 });
 
-final StateProvider<GlobalKey<FormFieldState<dynamic>>> formKeyProvider =
-    StateProvider<GlobalKey<FormFieldState<dynamic>>>((_) {
-  return GlobalKey<FormFieldState<dynamic>>();
-});
-
 final StateProvider<bool> isNotePublishingProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
   return false;
