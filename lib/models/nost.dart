@@ -1,3 +1,6 @@
+// A Nost is a post, but it's called a Nost because it's a post on Nost.
+// They must have the same format as the Nost API.
+
 class Nost {
   final String noteId;
   final String avatarUrl;
@@ -19,6 +22,10 @@ class Nost {
     this.imageUrl,
   });
 }
+
+// I have this class that I want to use on the Profile page, but I don't know
+// how to use it. I want to use it to display the profile of the user that
+// is logged in.
 
 class Profile {
   final String pubkey;

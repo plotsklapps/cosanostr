@@ -14,6 +14,27 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final String npub =
         ref.watch(nip19Provider).npubEncode(ref.watch(publicKeyProvider));
+
+    final String profileInfo = Metadata(
+      banner: 'https://i.imgur.com/2M2p9JL.png',
+      lud06: '2021-07-01T00:00:00.000Z',
+      lud16: '2021-07-01T00:00:00.000Z',
+      website: 'https://cosanostr.art',
+      picture: 'https://i.imgur.com/2M2p9JL.png',
+      display_name: 'Cosa Nostra',
+      name: 'Cosa Nostra',
+      about: 'Cosa Nostra is a decentralized social network.',
+      username: 'cosanostr',
+      displayName: 'Cosa Nostra',
+      nip05: 'cosanostr',
+      followingCount: 0,
+      followersCount: 0,
+      nip05valid: true,
+      zapService: 'cosanostr',
+    ).toString();
+
+    Logger().i(profileInfo);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -30,7 +51,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text('NPUB: $npub more info will be added here!'),
+                child: Text('NPUB: $npub ... more info will be added here!'),
               ),
             ),
           ],
