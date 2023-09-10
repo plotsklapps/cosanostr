@@ -51,7 +51,10 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   children: [
                     Row(
                       children: [
-                        Text('PROFILEBANNER', style: TextStyle(fontSize: 36.0)),
+                        Text(
+                          'PROFILEBANNER',
+                          style: TextStyle(fontSize: 36.0),
+                        ),
                       ],
                     ),
                     Row(
@@ -62,6 +65,18 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ),
                         SizedBox(width: 16.0),
                         Text('USERNAME'),
+                      ],
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      children: [
+                        Text('WEBSITE'),
+                      ],
+                    ),
+                    SizedBox(height: 16.0),
+                    Row(
+                      children: [
+                        Text('ABOUT'),
                       ],
                     ),
                   ],
