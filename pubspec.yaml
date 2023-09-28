@@ -21,7 +21,7 @@ dependencies:
   flutter_riverpod: ^2.3.6
   flutter_secure_storage: ^9.0.0
   font_awesome_flutter: ^10.5.0
-  google_fonts: ^5.1.0
+  google_fonts: ^6.1.0
   image_picker: ^1.0.1
   logger: ^2.0.1
   nostr_tools: ^1.0.7

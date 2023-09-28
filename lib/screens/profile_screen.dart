@@ -11,85 +11,88 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
+  void initState() {
+    super.initState();
+    // On initState, we call the getProfileData function, which will fetch the
+    // profile data from the relay.
+    getProfileData(ref.read(publicKeyProvider));
+  }
+
+  void getProfileData(String npub) async {
+    // We fetch the user's profile data from the relay
+    final Metadata? profileData = ref.read(metaDataProvider)[npub];
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // First, we fetch the npub as String
     final String npub =
         ref.watch(nip19Provider).npubEncode(ref.watch(publicKeyProvider));
 
-    // Hardcoded the Metadata for now, but still only returning the instance
-    // of Metadata, not the info itself...
-    final String profileInfo = Metadata(
-      banner: 'https://i.imgur.com/2M2p9JL.png',
-      lud06: '2021-07-01T00:00:00.000Z',
-      lud16: '2021-07-01T00:00:00.000Z',
-      website: 'https://cosanostr.art',
-      picture: 'https://i.imgur.com/2M2p9JL.png',
-      display_name: 'Cosa Nostr',
-      name: 'Cosa Nostr',
-      about: 'Cosa Nostr is a decentralized social network.',
-      username: 'cosanostr',
-      displayName: 'Cosa Nostr',
-      nip05: 'cosanostr',
-      followingCount: 0,
-      followersCount: 0,
-      nip05valid: true,
-      zapService: 'cosanostr',
-    ).toString();
+    // Then, we check if the metadataProvider contains the npub, but somehow
+    // can't get this to work yet?
+    if (ref.read(metaDataProvider).containsKey(npub)) {
+      final Metadata? metadata = ref.read(metaDataProvider)[npub];
+      Logger().i(metadata);
+    } else {
+      Logger().i('No metadata for $npub');
+    }
 
-    Logger().i(profileInfo);
-
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'PROFILEBANNER',
-                          style: TextStyle(fontSize: 36.0),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.account_circle,
-                          size: 64.0,
-                        ),
-                        SizedBox(width: 16.0),
-                        Text('USERNAME'),
-                      ],
-                    ),
-                    SizedBox(height: 16.0),
-                    Row(
-                      children: [
-                        Text('WEBSITE'),
-                      ],
-                    ),
-                    SizedBox(height: 16.0),
-                    Row(
-                      children: [
-                        Text('ABOUT'),
-                      ],
-                    ),
-                  ],
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              const Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Text(
+                            'PROFILEBANNER',
+                            style: TextStyle(fontSize: 36.0),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.account_circle,
+                            size: 64.0,
+                          ),
+                          SizedBox(width: 16.0),
+                          Text('USERNAME'),
+                        ],
+                      ),
+                      SizedBox(height: 16.0),
+                      Row(
+                        children: [
+                          Text('WEBSITE'),
+                        ],
+                      ),
+                      SizedBox(height: 16.0),
+                      Row(
+                        children: [
+                          Text('ABOUT'),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text('NPUB: $npub ... more info will be added here!'),
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text('NPUB: $npub ... more info will be added here!'),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

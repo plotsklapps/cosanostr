@@ -1,5 +1,15 @@
 import 'package:cosanostr/all_imports.dart';
 
+final StateProvider<String> privateKeyProvider =
+    StateProvider<String>((StateProviderRef<String> ref) {
+  return '';
+});
+
+final StateProvider<String> publicKeyProvider =
+    StateProvider<String>((StateProviderRef<String> ref) {
+  return '';
+});
+
 // isConnectedProvider holds the status of our relay connection.
 final StateProvider<bool> isConnectedProvider =
     StateProvider<bool>((StateProviderRef<bool> ref) {
@@ -58,16 +68,6 @@ final StateProvider<Map<String, Metadata>> metaDataProvider =
     StateProvider<Map<String, Metadata>>(
         (StateProviderRef<Map<String, Metadata>> ref) {
   return <String, Metadata>{};
-});
-
-final StateProvider<String> privateKeyProvider =
-    StateProvider<String>((StateProviderRef<String> ref) {
-  return '';
-});
-
-final StateProvider<String> publicKeyProvider =
-    StateProvider<String>((StateProviderRef<String> ref) {
-  return '';
 });
 
 final StateProvider<bool> keysExistProvider =
