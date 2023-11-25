@@ -18,7 +18,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
     getProfileData(ref.read(publicKeyProvider));
   }
 
-  void getProfileData(String npub) async {
+  Future<void> getProfileData(String npub) async {
     // We fetch the user's profile data from the relay
     final Metadata? profileData = ref.read(metaDataProvider)[npub];
   }
@@ -52,7 +52,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                   child: Column(
                     children: <Widget>[
                       Row(
-                        children: [
+                        children: <Widget>[
                           Text(
                             'PROFILEBANNER',
                             style: TextStyle(fontSize: 36.0),
@@ -60,7 +60,7 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ],
                       ),
                       Row(
-                        children: [
+                        children: <Widget>[
                           Icon(
                             Icons.account_circle,
                             size: 64.0,
@@ -71,13 +71,13 @@ class ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                       SizedBox(height: 16.0),
                       Row(
-                        children: [
+                        children: <Widget>[
                           Text('WEBSITE'),
                         ],
                       ),
                       SizedBox(height: 16.0),
                       Row(
-                        children: [
+                        children: <Widget>[
                           Text('ABOUT'),
                         ],
                       ),

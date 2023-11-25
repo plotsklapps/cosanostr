@@ -176,7 +176,7 @@ class FeedScreenLogic {
           // Set a limit to the number of messages to receive, otherwise
           // the app will slow down.
           limit: 30,
-        )
+        ),
       ]);
 
       // Filter and map the messages stream to get a stream of events.

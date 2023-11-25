@@ -90,7 +90,7 @@ class FeedScreenFABState extends ConsumerState<FeedScreenFAB> {
                             child: const Text('NOST!'),
                           ),
                         ],
-                      )
+                      ),
                   ],
                 ),
               ),

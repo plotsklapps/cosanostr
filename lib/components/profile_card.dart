@@ -40,14 +40,14 @@ class CardPicture extends StatelessWidget {
                       color: Colors.black,
                       offset: Offset(3.0, 3.0),
                       blurRadius: 2.0,
-                    )
+                    ),
                   ],
                 ),
                 child: IconButton(
                   onPressed: () {},
                   icon: const Icon(Icons.delete, color: Colors.white),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -73,7 +73,7 @@ class CardPicture extends StatelessWidget {
               Icon(
                 Icons.photo_camera,
                 color: Colors.indigo[400],
-              )
+              ),
             ],
           ),
         ),

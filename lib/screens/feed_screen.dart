@@ -78,7 +78,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
           Filter(
             kinds: <int>[0],
             authors: <String>[event.pubkey],
-          )
+          ),
         ]);
         // If the event is a metadata, add it to the metaDataProvider
       } else if (event.kind == 0) {
