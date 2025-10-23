@@ -1,32 +1,38 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logger/logger.dart';
+import 'package:nostr_tools/nostr_tools.dart';
 
 class FeedScreenLogic {
+  final KeyApi keyApi = KeyApi();
+  final Logger logger = Logger();
+  final FlutterSecureStorage flutterSecureStorage =
+      const FlutterSecureStorage();
+
   // Generate new keys and add them to secure storage.
-  Future<bool> generateNewKeys(WidgetRef ref) async {
+  Future<bool> generateNewKeys() async {
     try {
       // Returns a [String] representing the generated private key.
-      final String newPrivateKey =
-          ref.read(keyApiProvider).generatePrivateKey();
+      final String newPrivateKey = keyApi.generatePrivateKey();
 
       // Returns a [String] representing the generated public key
       // corresponding to the given private key.
-      final String newPublicKey = ref.read(keyApiProvider).getPublicKey(
-            newPrivateKey,
-          );
+      final String newPublicKey = keyApi.getPublicKey(
+        newPrivateKey,
+      );
 
       Logger().i('Success! New keys generated!');
 
       // Update the private and public key in their respective [Providers].
-      ref.read(privateKeyProvider.notifier).state = newPrivateKey;
-      ref.read(publicKeyProvider.notifier).state = newPublicKey;
+      sPrivateKey.value = newPrivateKey;
+      sPublicKey.value = newPublicKey;
 
-      Logger().i(ref.watch(publicKeyProvider));
+      Logger().i(sPublicKey.value);
 
       // Add the keys to secure storage.
       return addKeysToStorage(
-        ref,
-        ref.watch(privateKeyProvider),
-        ref.watch(publicKeyProvider),
+        sPublicKey.value,
+        sPrivateKey.value,
       );
     } catch (error) {
       Logger().e('Error generating new keys: $error');
@@ -37,30 +43,29 @@ class FeedScreenLogic {
 
   // Add keys to secure storage.
   Future<bool> addKeysToStorage(
-    WidgetRef ref,
     String privateKey,
     String publicKey,
   ) async {
     try {
       // Write the private and public keys to secure storage.
       await Future.wait(<Future<void>>[
-        ref.read(secureStorageProvider).write(
-              key: 'privateKey',
-              value: privateKey,
-            ),
-        ref.read(secureStorageProvider).write(
-              key: 'publicKey',
-              value: publicKey,
-            ),
+        flutterSecureStorage.write(
+          key: 'privateKey',
+          value: privateKey,
+        ),
+        flutterSecureStorage.write(
+          key: 'publicKey',
+          value: publicKey,
+        ),
       ]);
 
       Logger().i('Success! Keys added to secure storage!');
 
       // Update the keysExist state to true in the [keysExistProvider].
-      ref.read(keysExistProvider.notifier).state = true;
+      sKeysExist.value = true;
 
       // Return true if the keys were successfully added to secure storage.
-      return ref.watch(keysExistProvider);
+      return sKeysExist.value;
     } catch (error) {
       Logger().e(
         'Error adding keys to secure storage: $error',
@@ -71,31 +76,29 @@ class FeedScreenLogic {
   }
 
   // Get keys from secure storage.
-  Future<void> getKeysFromStorage(WidgetRef ref) async {
+  Future<void> getKeysFromStorage() async {
     try {
       // Get the private and public keys from secure storage.
-      final String? storedPrivateKey =
-          await ref.read(secureStorageProvider).read(
-                key: 'privateKey',
-              );
-      final String? storedPublicKey =
-          await ref.read(secureStorageProvider).read(
-                key: 'publicKey',
-              );
+      final String? storedPrivateKey = await flutterSecureStorage.read(
+        key: 'privateKey',
+      );
+      final String? storedPublicKey = await flutterSecureStorage.read(
+        key: 'publicKey',
+      );
 
       // Update the private and public key in their respective [Providers] if
       // they exist in secure storage. Also update the keysExist state to true
       // in the [keysExistProvider].
       if (storedPrivateKey != null && storedPublicKey != null) {
-        ref.read(privateKeyProvider.notifier).state = storedPrivateKey;
-        ref.read(publicKeyProvider.notifier).state = storedPublicKey;
-        ref.read(keysExistProvider.notifier).state = true;
+        sPrivateKey.value = storedPrivateKey;
+        sPublicKey.value = storedPublicKey;
+        sKeysExist.value = true;
 
         Logger().i('Success! Keys retrieved from secure storage!');
       } else {
         // If the keys do not exist in secure storage, set the keysExist state
         // to false in the [keysExistProvider].
-        ref.read(keysExistProvider.notifier).state = false;
+        sKeysExist.value = false;
 
         Logger().i('Keys do not exist in secure storage.');
       }
@@ -106,7 +109,7 @@ class FeedScreenLogic {
   }
 
   // Delete keys from secure storage.
-  Future<void> deleteKeysFromStorage(WidgetRef ref) async {
+  Future<void> deleteKeysFromStorage() async {
     try {
       // Delete the private and public keys from secure storage.
       await Future.wait(<Future<void>>[

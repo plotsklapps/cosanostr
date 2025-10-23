@@ -1,4 +1,6 @@
 import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/signals/theme_signals.dart';
+import 'package:signals/signals_flutter.dart';
 
 Future<void> main() async {
   // Mandatory Firebase stuff. JUST FOR ANALYTICS, nothing else.
@@ -6,12 +8,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    // ProviderScope is mandatory for Riverpod to work.
-    const ProviderScope(
-      child: MainEntry(),
-    ),
-  );
+  runApp(const MainEntry());
 }
 
 class MainEntry extends ConsumerWidget {
@@ -22,10 +19,7 @@ class MainEntry extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'CosaNostr - NOSTR Client by PLOTSKLAPPS',
-      // Use Riverpod Providers to get the current theme and theme mode.
-      theme: ref.watch(lightThemeProvider),
-      darkTheme: ref.watch(darkThemeProvider),
-      themeMode: ref.watch(themeModeProvider),
+      theme: cThemeData.watch(context),
       // This is a first draft for responsiveness. Will be improved later.
       home: const SplashScreen(),
     );

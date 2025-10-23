@@ -1,32 +1,33 @@
 import 'package:cosanostr/all_imports.dart';
+import 'package:signals/signals.dart';
+import 'package:signals/signals_flutter.dart';
 
 // [bool] to check if user pressed submit button, this will trigger the
 // error message if the private key is not valid.
-final StateProvider<bool> nsecSubmittedProvider =
-    StateProvider<bool>((StateProviderRef<bool> ref) {
-  return false;
-});
+final Signal<bool> sNsecSubmittedProvider = Signal<bool>(
+  false,
+  debugLabel: 'nsecSubmittedProvider',
+);
 
 // [bool] to check if user wants to see his private key input, this is
 // used on the eye/eye-slash icon.
-final StateProvider<bool> nsecObscuredProvider = StateProvider<bool>(
-  (StateProviderRef<bool> ref) {
-    return true;
-  },
+final Signal<bool> sNsecObscuredProvider = Signal<bool>(
+  true,
+  debugLabel: 'nsecObscuredProvider',
 );
 
-class PrivateKeyModal extends ConsumerStatefulWidget {
+class PrivateKeyModal extends StatefulWidget {
   const PrivateKeyModal({
     super.key,
   });
 
   @override
-  ConsumerState<PrivateKeyModal> createState() {
+  State<PrivateKeyModal> createState() {
     return PrivateKeyModalState();
   }
 }
 
-class PrivateKeyModalState extends ConsumerState<PrivateKeyModal> {
+class PrivateKeyModalState extends State<PrivateKeyModal> {
   // [ConfettiController] to play the confetti animation inside the
   // bottom sheet when the user has entered a valid private key and
   // successfully joined CosaNostr.
@@ -68,7 +69,7 @@ class PrivateKeyModalState extends ConsumerState<PrivateKeyModal> {
   }
 }
 
-class NSECTextField extends ConsumerStatefulWidget {
+class NSECTextField extends StatefulWidget {
   const NSECTextField({
     super.key,
     required this.confettiController,
@@ -78,31 +79,35 @@ class NSECTextField extends ConsumerStatefulWidget {
   final ConfettiController confettiController;
 
   @override
-  ConsumerState<NSECTextField> createState() {
+  State<NSECTextField> createState() {
     return NSECTextFieldState();
   }
 }
 
-class NSECTextFieldState extends ConsumerState<NSECTextField> {
+class NSECTextFieldState extends State<NSECTextField> {
+  final TextEditingController keyController = TextEditingController();
+  final KeyApi keyApi = KeyApi();
+  final Nip19 nip19 = Nip19();
+
+  @override
   // errorText is a getter that returns a [String] if the private key
   // is not valid. If the private key is valid, it will return null.
   String? get errorText {
     // [String] to store the private key from the TextField. Trim the
     // private key to remove any whitespaces.
-    final String privateKey = ref.watch(keyControllerProvider).text.trim();
+    final String privateKey = sKeyController.value.text.trim();
 
     try {
       // Check if the private key is valid as Hex. We use the isValidPrivateKey
       // method from [keyApiProvider] to check if the private key is valid.
-      final bool isValidHexKey =
-          ref.read(keyApiProvider).isValidPrivateKey(privateKey);
+      final bool isValidHexKey = keyApi.isValidPrivateKey(privateKey);
 
       // Check if the private key is valid as NSEC. We use the decode method
       // from [nip19Provider] to decode the NSEC private key.
       final bool isValidNsec = privateKey.trim().startsWith('nsec') &&
-          ref.read(keyApiProvider).isValidPrivateKey(
-                ref.read(nip19Provider).decode(privateKey)['data'] as String,
-              );
+          keyApi.isValidPrivateKey(
+            nip19.decode(privateKey)['data'] as String,
+          );
 
       // If the input is not valid as Hex or NSEC, or other errors occur,
       // return an error message.
@@ -131,24 +136,24 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
 
             // Do not show an errormessage until the user has pressed the
             // submit button.
-            errorText: ref.watch(nsecSubmittedProvider) ? errorText : null,
+            errorText: sNsecSubmittedProvider.value ? errorText : null,
 
             // Show a clear button to easily clear the TextField.
             suffixIcon: IconButton(
-              onPressed: ref.read(keyControllerProvider).clear,
+              onPressed: keyController.clear,
               icon: const Icon(FontAwesomeIcons.xmark),
             ),
           ),
 
           // [TextEditingController] to store the private key from the
           // TextField.
-          controller: ref.watch(keyControllerProvider),
+          controller: keyController,
           keyboardType: TextInputType.text,
           autocorrect: false,
 
           // [obscureText] is a [bool] that is used to obscure the
           // private key input.
-          obscureText: ref.watch(nsecObscuredProvider),
+          obscureText: sNsecObscuredProvider.value,
 
           // [keyboardAppearance] is used to set the keyboard theme (light
           // or dark) based on the [isDarkThemeProvider].
@@ -160,7 +165,7 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
           // We use this to update the [keyControllerProvider] to store
           // the user's input.
           onChanged: (String value) {
-            ref.read(keyControllerProvider).text = value;
+            keyController.text = value;
           },
         ),
         const SizedBox(height: 16.0),
@@ -171,10 +176,10 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
               onPressed: () {
                 // Toggle the [nsecObscuredProvider] to show or hide the
                 // private key input.
-                ref.read(nsecObscuredProvider.notifier).state =
-                    !ref.watch(nsecObscuredProvider);
+                sNsecObscuredProvider.value =
+                    !sNsecObscuredProvider.watch(context);
               },
-              icon: ref.watch(nsecObscuredProvider)
+              icon: sNsecObscuredProvider.watch(context)
                   ? const Icon(FontAwesomeIcons.eyeSlash)
                   : const Icon(FontAwesomeIcons.eye),
             ),
@@ -182,11 +187,10 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
               onPressed: () async {
                 // Set the [nsecSubmittedProvider] to true to show the
                 // error message if the private key is not valid.
-                ref.read(nsecSubmittedProvider.notifier).state = true;
+                sNsecSubmittedProvider.value = true;
 
                 // [String] to store the private key from the TextField.
-                String privateKey =
-                    ref.watch(keyControllerProvider).text.trim();
+                String privateKey = keyController.text.trim();
 
                 // [String] to store the public key from the private key.
                 String publicKey;
@@ -198,13 +202,11 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                 if (errorText == null) {
                   if (privateKey.startsWith('nsec')) {
                     final Map<String, dynamic> decoded =
-                        ref.watch(nip19Provider).decode(privateKey);
+                        nip19.decode(privateKey);
                     privateKey = decoded['data'] as String;
-                    publicKey =
-                        ref.watch(keyApiProvider).getPublicKey(privateKey);
+                    publicKey = keyApi.getPublicKey(privateKey);
                   } else {
-                    publicKey =
-                        ref.watch(keyApiProvider).getPublicKey(privateKey);
+                    publicKey = keyApi.getPublicKey(privateKey);
                   }
 
                   // Add the private key and public key to the storage.
@@ -218,9 +220,9 @@ class NSECTextFieldState extends ConsumerState<NSECTextField> {
                     // If keys are added correctly, clear the
                     // relevant Providers and get the keys from
                     // the storage.
-                    if (ref.watch(keysExistProvider)) {
-                      ref.read(keyControllerProvider).clear();
-                      ref.read(nsecSubmittedProvider.notifier).state = false;
+                    if (sKeysExist.watch(context)) {
+                      keyController.clear();
+                      sNsecSubmittedProvider.value = false;
 
                       FeedScreenLogic().getKeysFromStorage(ref).then((_) {
                         // When the keys are fetched correctly from storage
