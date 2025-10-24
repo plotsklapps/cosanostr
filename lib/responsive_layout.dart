@@ -1,4 +1,6 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/screens/desktop/desktop_screen.dart';
+import 'package:cosanostr/screens/scaffold_screen.dart';
+import 'package:flutter/material.dart';
 
 class ResponsiveLayout extends StatelessWidget {
   const ResponsiveLayout({super.key});

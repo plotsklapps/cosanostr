@@ -1,12 +1,18 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/feedscreen_logic.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:signals/signals_flutter.dart';
 
-class DeleteKeysModal extends ConsumerWidget {
+class DeleteKeysModal extends StatelessWidget {
   const DeleteKeysModal({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final FeedScreenLogic feedScreenLogic = FeedScreenLogic();
+    final bool keysExist = sKeysExist.watch(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -28,23 +34,25 @@ class DeleteKeysModal extends ConsumerWidget {
             children: <Widget>[
               TextButton(
                 onPressed: () async {
-                  await FeedScreenLogic().deleteKeysFromStorage(ref).then((_) {
-                    if (!ref.watch(keysExistProvider)) {
-                      Navigator.pop(context);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text(
-                            'Keys successfully deleted!',
+                  await feedScreenLogic.deleteKeysFromStorage().then((_) {
+                    if (!keysExist) {
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: const Text(
+                              'Keys successfully deleted!',
+                            ),
+                            action: SnackBarAction(
+                              label: 'OK',
+                              onPressed: () {
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
+                              },
+                            ),
                           ),
-                          action: SnackBarAction(
-                            label: 'OK',
-                            onPressed: () {
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
-                            },
-                          ),
-                        ),
-                      );
+                        );
+                      }
                     }
                   });
                 },

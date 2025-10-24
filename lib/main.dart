@@ -1,5 +1,8 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/firebase_options.dart';
+import 'package:cosanostr/screens/splash_screen.dart';
 import 'package:cosanostr/signals/theme_signals.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 
 Future<void> main() async {
@@ -11,11 +14,11 @@ Future<void> main() async {
   runApp(const MainEntry());
 }
 
-class MainEntry extends ConsumerWidget {
+class MainEntry extends StatelessWidget {
   const MainEntry({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'CosaNostr - NOSTR Client by PLOTSKLAPPS',

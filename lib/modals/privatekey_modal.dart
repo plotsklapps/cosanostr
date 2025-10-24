@@ -1,5 +1,12 @@
-import 'package:cosanostr/all_imports.dart';
-import 'package:signals/signals.dart';
+import 'package:confetti/confetti.dart';
+import 'package:cosanostr/feedscreen_logic.dart';
+import 'package:cosanostr/responsive_layout.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:cosanostr/signals/theme_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logger/logger.dart';
+import 'package:nostr_tools/nostr_tools.dart';
 import 'package:signals/signals_flutter.dart';
 
 // [bool] to check if user pressed submit button, this will trigger the
@@ -86,8 +93,10 @@ class NSECTextField extends StatefulWidget {
 
 class NSECTextFieldState extends State<NSECTextField> {
   final TextEditingController keyController = TextEditingController();
+  final FeedScreenLogic feedScreenLogic = FeedScreenLogic();
   final KeyApi keyApi = KeyApi();
   final Nip19 nip19 = Nip19();
+  final Logger logger = Logger();
 
   @override
   // errorText is a getter that returns a [String] if the private key
@@ -95,7 +104,7 @@ class NSECTextFieldState extends State<NSECTextField> {
   String? get errorText {
     // [String] to store the private key from the TextField. Trim the
     // private key to remove any whitespaces.
-    final String privateKey = sKeyController.value.text.trim();
+    final String privateKey = keyController.value.text.trim();
 
     try {
       // Check if the private key is valid as Hex. We use the isValidPrivateKey
@@ -115,10 +124,10 @@ class NSECTextFieldState extends State<NSECTextField> {
         return 'Your private key is not valid.';
       }
     } on ChecksumVerificationException catch (error) {
-      Logger().e('ChecksumVerificationException: error.message');
+      logger.e('ChecksumVerificationException: error.message');
       return error.message;
     } catch (error) {
-      Logger().e(error);
+      logger.e(error);
       return 'Error: $error';
     }
     return null;
@@ -126,6 +135,8 @@ class NSECTextFieldState extends State<NSECTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final bool keysExist = sKeysExist.watch(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
@@ -157,7 +168,7 @@ class NSECTextFieldState extends State<NSECTextField> {
 
           // [keyboardAppearance] is used to set the keyboard theme (light
           // or dark) based on the [isDarkThemeProvider].
-          keyboardAppearance: ref.watch(isDarkThemeProvider)
+          keyboardAppearance: sThemeMode.value == ThemeMode.light
               ? Brightness.dark
               : Brightness.light,
 
@@ -210,36 +221,40 @@ class NSECTextFieldState extends State<NSECTextField> {
                   }
 
                   // Add the private key and public key to the storage.
-                  await FeedScreenLogic()
+                  await feedScreenLogic
                       .addKeysToStorage(
-                    ref,
                     privateKey,
                     publicKey,
                   )
-                      .then((_) {
+                      .then((_) async {
                     // If keys are added correctly, clear the
                     // relevant Providers and get the keys from
                     // the storage.
-                    if (sKeysExist.watch(context)) {
+                    if (keysExist) {
                       keyController.clear();
                       sNsecSubmittedProvider.value = false;
 
-                      FeedScreenLogic().getKeysFromStorage(ref).then((_) {
+                      await FeedScreenLogic().getKeysFromStorage().then((_) {
                         // When the keys are fetched correctly from storage
                         // play the confetti animation and show a snackbar
                         // after a delay of 2 seconds.
                         widget.confettiController.play();
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<Widget>(
-                              builder: (BuildContext context) {
-                                return const ResponsiveLayout();
-                              },
-                            ),
-                          );
-                          snackJoiningSuccesful(context);
+                        Future<void>.delayed(const Duration(seconds: 2),
+                            () async {
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute<Widget>(
+                                builder: (BuildContext context) {
+                                  return const ResponsiveLayout();
+                                },
+                              ),
+                            );
+                            if (context.mounted) {
+                              snackJoiningSuccesful(context);
+                            }
+                          }
                         });
                       });
                     }

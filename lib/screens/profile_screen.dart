@@ -1,41 +1,47 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:nostr_tools/nostr_tools.dart';
+import 'package:signals/signals_flutter.dart';
 
-class ProfileScreen extends ConsumerStatefulWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  ConsumerState<ProfileScreen> createState() {
+  State<ProfileScreen> createState() {
     return ProfileScreenState();
   }
 }
 
-class ProfileScreenState extends ConsumerState<ProfileScreen> {
+class ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
     // On initState, we call the getProfileData function, which will fetch the
     // profile data from the relay.
-    getProfileData(ref.read(publicKeyProvider));
+    getProfileData(sPublicKey.value);
   }
 
   Future<void> getProfileData(String npub) async {
     // We fetch the user's profile data from the relay
-    final Metadata? profileData = ref.read(metaDataProvider)[npub];
+    final Metadata? profileData = sMetaDataMap.value[npub];
   }
 
   @override
   Widget build(BuildContext context) {
+    final Nip19 nip19 = Nip19();
+    final Logger logger = Logger();
+
     // First, we fetch the npub as String
-    final String npub =
-        ref.watch(nip19Provider).npubEncode(ref.watch(publicKeyProvider));
+    final String npub = nip19.npubEncode(sPublicKey.watch(context));
 
     // Then, we check if the metadataProvider contains the npub, but somehow
     // can't get this to work yet?
-    if (ref.read(metaDataProvider).containsKey(npub)) {
-      final Metadata? metadata = ref.read(metaDataProvider)[npub];
-      Logger().i(metadata);
+    if (sMetaDataMap.value.containsKey(npub)) {
+      final Metadata? metadata = sMetaDataMap.value[npub];
+      logger.i(metadata);
     } else {
-      Logger().i('No metadata for $npub');
+      logger.i('No metadata for $npub');
     }
 
     return SafeArea(

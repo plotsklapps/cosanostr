@@ -1,19 +1,32 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/modals/aboutcosanostr_modal.dart';
+import 'package:cosanostr/modals/changelog_modal.dart';
+import 'package:cosanostr/modals/connectedrelays_modal.dart';
+import 'package:cosanostr/modals/newuser_modal.dart';
+import 'package:cosanostr/modals/settings_dialog.dart';
+import 'package:cosanostr/modals/userexists_modal.dart';
+import 'package:cosanostr/modals/wtfisnostr_dialog.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:cosanostr/signals/theme_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:signals/signals_flutter.dart';
 
-class MoreScreen extends ConsumerStatefulWidget {
+class MoreScreen extends StatefulWidget {
   const MoreScreen({super.key});
 
   @override
-  ConsumerState<MoreScreen> createState() {
+  State<MoreScreen> createState() {
     return MoreScreenState();
   }
 }
 
-class MoreScreenState extends ConsumerState<MoreScreen> {
+class MoreScreenState extends State<MoreScreen> {
   @override
   Widget build(BuildContext context) {
+    final bool keysExist = sKeysExist.watch(context);
+
     return Scaffold(
       body: ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(
@@ -36,7 +49,7 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
                     children: <Widget>[
                       Flexible(
                         fit: FlexFit.tight,
-                        child: ref.watch(isDarkThemeProvider)
+                        child: sThemeMode.value == ThemeMode.light
                             ? Image.asset(
                                 'assets/images/cosanostr_white_icon.png',
                               )
@@ -71,7 +84,7 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
                 ),
                 ListTile(
                   onTap: () async {
-                    if (ref.watch(keysExistProvider)) {
+                    if (keysExist) {
                       await showModalBottomSheet<void>(
                         isScrollControlled: true,
                         context: context,
@@ -89,17 +102,17 @@ class MoreScreenState extends ConsumerState<MoreScreen> {
                       );
                     }
                   },
-                  title: ref.watch(keysExistProvider)
+                  title: keysExist
                       ? const Text('SHOW YOUR KEYS')
                       : const Text('GENERATE NEW KEYS'),
-                  subtitle: ref.watch(keysExistProvider)
+                  subtitle: keysExist
                       ? const Text('Your keys are securely stored')
                       : const Text('Join the CosaNostr client'),
-                  trailing: ref.watch(keysExistProvider)
+                  trailing: keysExist
                       ? const Icon(FontAwesomeIcons.check)
                       : const Icon(FontAwesomeIcons.plus),
                 ),
-                if (ref.watch(keysExistProvider))
+                if (keysExist)
                   ListTile(
                     onTap: () async {
                       await showModalBottomSheet<void>(

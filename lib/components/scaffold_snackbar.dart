@@ -1,4 +1,4 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:flutter/material.dart';
 
 class ScaffoldSnackBar extends SnackBar {
   const ScaffoldSnackBar({

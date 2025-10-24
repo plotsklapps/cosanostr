@@ -1,6 +1,9 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/utils/http_utils.dart';
+import 'package:cosanostr/utils/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class DonationsModal extends StatelessWidget {
   const DonationsModal({super.key});

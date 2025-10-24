@@ -1,20 +1,25 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/components/scaffold_snackbar.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:cosanostr/signals/theme_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:signals/signals_flutter.dart';
 
 // Reason to make this a custom widget is to be able to add new features
 // later on. Thinking of adding a settingsscreen and profilescreen for
 // example.
-class ScaffoldDrawer extends ConsumerWidget {
+class ScaffoldDrawer extends StatelessWidget {
   const ScaffoldDrawer(
-    this.currentContext,
-    this.ref, {
+    this.currentContext, {
     super.key,
   });
 
   final BuildContext currentContext;
-  final WidgetRef ref;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final bool keysExist = sKeysExist.watch(context);
+
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -24,7 +29,7 @@ class ScaffoldDrawer extends ConsumerWidget {
               children: <Widget>[
                 Flexible(
                   fit: FlexFit.tight,
-                  child: ref.watch(isDarkThemeProvider)
+                  child: sThemeMode.value == ThemeMode.light
                       ? Image.asset('assets/images/cosanostr_white_icon.png')
                       : Image.asset('assets/images/cosanostr_black_icon.png'),
                 ),
@@ -64,17 +69,17 @@ class ScaffoldDrawer extends ConsumerWidget {
             },
             // Check if keys are already generated and display the
             // appropriate title and icon.
-            title: ref.watch(keysExistProvider)
+            title: keysExist
                 ? const Text('SHOW YOUR KEYS')
                 : const Text('GENERATE NEW KEYS'),
-            subtitle: ref.watch(keysExistProvider)
+            subtitle: keysExist
                 ? const Text('Your keys are securely stored')
                 : const Text('Join the CosaNostr client'),
-            trailing: ref.watch(keysExistProvider)
+            trailing: keysExist
                 ? const Icon(FontAwesomeIcons.check)
                 : const Icon(FontAwesomeIcons.plus),
           ),
-          if (ref.watch(keysExistProvider))
+          if (keysExist)
             ListTile(
               onTap: () async {},
               title: const Text('SHOW RELAYS'),

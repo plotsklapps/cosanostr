@@ -1,17 +1,22 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/modals/explainkeypair_modal.dart';
+import 'package:cosanostr/modals/explainnostr_modal.dart';
+import 'package:cosanostr/screens/onboarding/onboardingpagetwo_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:signals/signals_flutter.dart';
 
-class OnboardingPageFour extends ConsumerStatefulWidget {
+class OnboardingPageFour extends StatefulWidget {
   const OnboardingPageFour({super.key});
 
   @override
-  ConsumerState<OnboardingPageFour> createState() {
+  State<OnboardingPageFour> createState() {
     return OnboardingPageFourState();
   }
 }
 
-class OnboardingPageFourState extends ConsumerState<OnboardingPageFour> {
+class OnboardingPageFourState extends State<OnboardingPageFour> {
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -50,7 +55,7 @@ class OnboardingPageFourState extends ConsumerState<OnboardingPageFour> {
                     children: <Widget>[
                       Text(
                         '''
-Okay, ${ref.watch(userNameProvider)}. In a few moments you will join CosaNostr with a fresh ''',
+Okay, ${sUserName.watch(context)}. In a few moments you will join CosaNostr with a fresh ''',
                         textAlign: TextAlign.center,
                       ),
                       TextButton(

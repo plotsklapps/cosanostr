@@ -1,22 +1,24 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:signals/signals.dart';
 
-final StateProvider<String?> userNameProvider =
-    StateProvider<String?>((StateProviderRef<String?> ref) {
-  return null;
-});
+final Signal<String> sUserName = Signal<String>(
+  '',
+  debugLabel: 'sUserName',
+);
 
-class OnboardingPageTwo extends ConsumerStatefulWidget {
+class OnboardingPageTwo extends StatefulWidget {
   const OnboardingPageTwo({
     super.key,
   });
 
   @override
-  ConsumerState<OnboardingPageTwo> createState() {
+  State<OnboardingPageTwo> createState() {
     return OnboardingPageTwoState();
   }
 }
 
-class OnboardingPageTwoState extends ConsumerState<OnboardingPageTwo> {
+class OnboardingPageTwoState extends State<OnboardingPageTwo> {
   late TextEditingController userNameTextEditingController;
 
   @override
@@ -65,7 +67,7 @@ class OnboardingPageTwoState extends ConsumerState<OnboardingPageTwo> {
                     controller: userNameTextEditingController,
                     textAlign: TextAlign.center,
                     onChanged: (String userInput) {
-                      ref.read(userNameProvider.notifier).state = userInput;
+                      sUserName.value = userInput;
                     },
                   ),
                   const SizedBox(height: 80.0),

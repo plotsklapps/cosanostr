@@ -1,8 +1,16 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/modals/newuser_modal.dart';
+import 'package:cosanostr/screens/onboarding/onboardingpagefour_screen.dart';
+import 'package:cosanostr/screens/onboarding/onboardingpageone_screen.dart';
+import 'package:cosanostr/screens/onboarding/onboardingpagethree_screen.dart';
+import 'package:cosanostr/screens/onboarding/onboardingpagetwo_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:signals/signals_flutter.dart';
 
-class OnboardingScreen extends ConsumerStatefulWidget {
+class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
@@ -11,7 +19,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
   }
 }
 
-class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
+class OnboardingScreenState extends State<OnboardingScreen> {
   late PageController pageController;
   int currentOnboardingPageIndex = 0;
 
@@ -29,6 +37,7 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String username = sUserName.watch(context);
     return Scaffold(
       body: ScrollConfiguration(
         behavior: const ScrollBehavior().copyWith(
@@ -106,7 +115,7 @@ class OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   TextButton(
                     onPressed: () async {
                       if (currentOnboardingPageIndex == 1 &&
-                          ref.watch(userNameProvider) == null) {
+                          username.isNotEmpty) {
                         await showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {

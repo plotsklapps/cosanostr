@@ -1,21 +1,33 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:confetti/confetti.dart';
+import 'package:cosanostr/feedscreen_logic.dart';
+import 'package:cosanostr/modals/generatenewkeysinfo_modal.dart';
+import 'package:cosanostr/modals/privatekey_modal.dart';
+import 'package:cosanostr/modals/useprivatekeyinfo_modal.dart';
+import 'package:cosanostr/responsive_layout.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:signals/signals_flutter.dart';
 
-class NewUserModal extends ConsumerStatefulWidget {
+class NewUserModal extends StatefulWidget {
   const NewUserModal({super.key});
 
   @override
-  ConsumerState<NewUserModal> createState() {
+  State<NewUserModal> createState() {
     return NewUserModalState();
   }
 }
 
-class NewUserModalState extends ConsumerState<NewUserModal> {
+class NewUserModalState extends State<NewUserModal> {
   final ConfettiController confettiController = ConfettiController();
 
   @override
   Widget build(BuildContext context) {
+    final FeedScreenLogic feedScreenLogic = FeedScreenLogic();
+    final bool keysExist = sKeysExist.watch(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ScrollConfiguration(
@@ -77,24 +89,31 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                 subtitle: const Text('Start fresh with a new identity'),
                 trailing: InkWell(
                   onTap: () async {
-                    await FeedScreenLogic().generateNewKeys(ref).then((_) {
-                      if (ref.watch(keysExistProvider)) {
+                    await feedScreenLogic.generateNewKeys().then((_) {
+                      if (keysExist) {
                         confettiController.play();
-                        Future<void>.delayed(const Duration(seconds: 2), () {
-                          Navigator.pop(context);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) {
-                                return const ResponsiveLayout();
-                              },
-                            ),
-                          );
-                          snackJoiningSuccesful(context);
+                        Future<void>.delayed(const Duration(seconds: 2),
+                            () async {
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) {
+                                  return const ResponsiveLayout();
+                                },
+                              ),
+                            );
+                            if (context.mounted) {
+                              snackJoiningSuccesful(context);
+                            }
+                          }
                         });
                       } else {
-                        Navigator.pop(context);
-                        snackJoiningFailed(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          snackJoiningFailed(context);
+                        }
                       }
                     });
                   },
@@ -118,7 +137,6 @@ The anonymous, open-source, free, lightweight and cross-platform Nostr client.''
                 trailing: InkWell(
                   onTap: () async {
                     Navigator.pop(context);
-                    ref.read(keyControllerProvider).clear();
                     await showModalBottomSheet<void>(
                       isScrollControlled: true,
                       context: context,

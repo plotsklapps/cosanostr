@@ -1,4 +1,7 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/components/scaffold_snackbar.dart';
+import 'package:cosanostr/models/nost.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 enum SampleItem { profile, like, respond }
 

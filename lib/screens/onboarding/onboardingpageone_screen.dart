@@ -1,4 +1,5 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/responsive_layout.dart';
+import 'package:flutter/material.dart';
 
 class OnboardingPageOne extends StatelessWidget {
   const OnboardingPageOne({

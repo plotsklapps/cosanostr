@@ -1,4 +1,4 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HttpUtils {
   static final Uri plotsklappsWebsiteURL =

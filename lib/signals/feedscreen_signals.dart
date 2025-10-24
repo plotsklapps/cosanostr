@@ -1,4 +1,4 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:nostr_tools/nostr_tools.dart';
 import 'package:signals/signals.dart';
 
 final Signal<String> sPrivateKey = Signal<String>(
@@ -16,7 +16,7 @@ final Signal<bool> sConnected = Signal<bool>(
   debugLabel: 'sConnected',
 );
 
-final Signal<RelayPoolApi> sRelayPool = Signal<RelayPoolApi>(
+final Signal<RelayPoolApi> sRelayPoolApi = Signal<RelayPoolApi>(
   RelayPoolApi(
     relaysList: <String>[
       'wss://relay.damus.io',
@@ -52,12 +52,4 @@ final Signal<bool> sKeysExist = Signal<bool>(
 final Signal<bool> sNotePublishing = Signal<bool>(
   false,
   debugLabel: 'sNotePublishing',
-);
-
-// sKeyController provides a TextEditingController for the
-// private key input field.
-final Signal<TextEditingController> sKeyController =
-    Signal<TextEditingController>(
-  TextEditingController(text: ''),
-  debugLabel: 'sKeyController',
 );

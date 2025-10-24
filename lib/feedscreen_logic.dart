@@ -113,16 +113,16 @@ class FeedScreenLogic {
     try {
       // Delete the private and public keys from secure storage.
       await Future.wait(<Future<void>>[
-        ref.read(secureStorageProvider).delete(key: 'privateKey'),
-        ref.read(secureStorageProvider).delete(key: 'publicKey'),
+        flutterSecureStorage.delete(key: 'privateKey'),
+        flutterSecureStorage.delete(key: 'publicKey'),
       ]);
 
       // Update the private and public key in their respective [Providers] to
       // empty strings. Also update the keysExist state to false in the
       // [keysExistProvider].
-      ref.read(privateKeyProvider.notifier).state = '';
-      ref.read(publicKeyProvider.notifier).state = '';
-      ref.read(keysExistProvider.notifier).state = false;
+      sPrivateKey.value = '';
+      sPublicKey.value = '';
+      sKeysExist.value = false;
 
       Logger().i('Success! Keys deleted from secure storage!');
     } catch (error) {
@@ -132,7 +132,7 @@ class FeedScreenLogic {
   }
 
   // Connect to the relay.
-  Future<Stream<Event>> connectToRelay(WidgetRef ref) async {
+  Future<Stream<Event>> connectToRelay() async {
     // Get the [RelayApi] instance from the [relayApiProvider].
     // final RelayApi relayApi = ref.watch(relayApiProvider);
 
@@ -140,7 +140,7 @@ class FeedScreenLogic {
     // final Stream<Message> stream = await relayApi.connect();
 
     // Get the [RelayPoolApi] instance from the [relayPoolProvider].
-    final RelayPoolApi relayPool = ref.watch(relayPoolProvider);
+    final RelayPoolApi relayPool = sRelayPoolApi.value;
 
     // Connect to the relayPool and return a [Stream] of [Message}s.
     final Stream<Message> poolStream = await relayPool.connect();
@@ -150,17 +150,17 @@ class FeedScreenLogic {
       relayPool.on((RelayEvent event) {
         if (event == RelayEvent.connect) {
           // If the event is "connect", set the isConnected state to true.
-          ref.read(isConnectedProvider.notifier).state = true;
+          sConnected.value = true;
 
           Logger().i('Connected to relay: ${relayPool.connectedRelays}');
         } else if (event == RelayEvent.error) {
           // If the event is "error", set the isConnected state to false.
-          ref.read(isConnectedProvider.notifier).state = false;
+          sConnected.value = false;
 
           Logger().e('Error connecting to relay: ${relayPool.failedRelays}');
         } else if (event == RelayEvent.disconnect) {
           // If the event is "disconnect", set the isConnected state to false.
-          ref.read(isConnectedProvider.notifier).state = false;
+          sConnected.value = false;
 
           Logger().e('Disconnected from relay: ${relayPool.failedRelays}');
         }

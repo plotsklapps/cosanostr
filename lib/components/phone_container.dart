@@ -1,4 +1,4 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:flutter/material.dart';
 
 // To achieve some form of responsiveness, I figured the app would look nice
 // appearing as a phone on larger screens. I've created a PhoneContainer widget

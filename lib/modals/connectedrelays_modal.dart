@@ -1,12 +1,17 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nostr_tools/src/api/relay_pool_api.dart';
+import 'package:signals/signals_flutter.dart';
 
-class ConnectedRelaysModal extends ConsumerWidget {
+class ConnectedRelaysModal extends StatelessWidget {
   const ConnectedRelaysModal({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final RelayPoolApi relayPool = sRelayPoolApi.watch(context);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ScrollConfiguration(
@@ -35,7 +40,7 @@ class ConnectedRelaysModal extends ConsumerWidget {
                 ),
               ),
               const Divider(),
-              Text('${ref.watch(relayPoolProvider).connectedRelays}'),
+              Text('${relayPool.connectedRelays}'),
               const SizedBox(height: 16.0),
               TextButton(
                 onPressed: () {

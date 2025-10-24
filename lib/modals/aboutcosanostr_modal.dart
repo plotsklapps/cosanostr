@@ -1,6 +1,12 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/modals/credits_modal.dart';
+import 'package:cosanostr/modals/donations_dialog.dart';
+import 'package:cosanostr/utils/http_utils.dart';
+import 'package:cosanostr/utils/string_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AboutCosaNostrModal extends StatefulWidget {
   const AboutCosaNostrModal({super.key});

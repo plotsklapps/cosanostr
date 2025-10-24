@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:flutter/material.dart';
 
 class CardPicture extends StatelessWidget {
   const CardPicture({super.key, required this.onTap, this.imagePath});

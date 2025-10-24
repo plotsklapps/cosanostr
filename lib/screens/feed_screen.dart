@@ -1,13 +1,24 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/components/feedscreen_card.dart';
+import 'package:cosanostr/components/feedscreen_fab.dart';
+import 'package:cosanostr/components/scaffold_snackbar.dart';
+import 'package:cosanostr/feedscreen_logic.dart';
+import 'package:cosanostr/models/nost.dart';
+import 'package:cosanostr/models/timeago.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+import 'package:nostr_tools/nostr_tools.dart';
+import 'package:signals/signals_flutter.dart';
 
-class FeedScreen extends ConsumerStatefulWidget {
+class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  ConsumerState<FeedScreen> createState() {
+  State<FeedScreen> createState() {
     return FeedScreenState();
   }
 }
@@ -17,7 +28,7 @@ class FeedScreen extends ConsumerStatefulWidget {
 // screen. This is important because the FeedScreen is the main screen
 // of the app and should not be reloaded every time the user navigates
 // back to it.
-class FeedScreenState extends ConsumerState<FeedScreen>
+class FeedScreenState extends State<FeedScreen>
     with AutomaticKeepAliveClientMixin {
   late Stream<Event> stream;
   final StreamController<Event> streamController = StreamController<Event>();
@@ -34,7 +45,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     // Get the keys from storage, connect to the relay and start
     // listening to the stream.
     Future<void>.delayed(Duration.zero, () async {
-      await FeedScreenLogic().getKeysFromStorage(ref);
+      await FeedScreenLogic().getKeysFromStorage();
       await initStream();
     });
   }
@@ -48,7 +59,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     // Get the keys from storage, connect to the relay and start
     // listening to the stream.
     Future<void>.delayed(Duration.zero, () async {
-      await FeedScreenLogic().getKeysFromStorage(ref);
+      await FeedScreenLogic().getKeysFromStorage();
       await initStream();
       await resubscribeStream();
     });
@@ -60,21 +71,22 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     Future<void>.delayed(Duration.zero, () async {
       await streamController.close();
     });
-    ref.read(relayPoolProvider).close();
+    sRelayPoolApi.value.close();
     super.dispose();
   }
 
   Future<void> initStream() async {
+    final RelayPoolApi relayPool = sRelayPoolApi.watch(context);
     // First, connect to the relayPool and subscribe to the events
-    stream = await FeedScreenLogic().connectToRelay(ref);
+    stream = await FeedScreenLogic().connectToRelay();
     // Then, listen to the stream and add the events to the
     // eventsProvider and the metaDataProvider.
     stream.listen((Event message) {
       final Event event = message;
       // If the event is a note, add it to the eventsProvider
       if (event.kind == 1) {
-        ref.read(eventsProvider).add(event);
-        ref.read(relayPoolProvider).sub(<Filter>[
+        sEventsList.value.add(event);
+        relayPool.sub(<Filter>[
           Filter(
             kinds: <int>[0],
             authors: <String>[event.pubkey],
@@ -85,7 +97,7 @@ class FeedScreenState extends ConsumerState<FeedScreen>
         final Metadata metadata = Metadata.fromJson(
           jsonDecode(event.content) as Map<String, dynamic>,
         );
-        ref.read(metaDataProvider)[event.pubkey] = metadata;
+        sMetaDataMap.value[event.pubkey] = metadata;
       }
       // Add the event to the streamController if it is not closed already.
       if (!streamController.isClosed) {
@@ -100,8 +112,8 @@ class FeedScreenState extends ConsumerState<FeedScreen>
     // Clear the eventsProvider and the metaDataProvider and resubscribe
     // to the relayPool.
     await Future<void>.delayed(const Duration(seconds: 1), () {
-      ref.read(eventsProvider).clear();
-      ref.read(metaDataProvider).clear();
+      sEventsList.value.clear();
+      sMetaDataMap.value.clear();
     }).then((_) async {
       await initStream();
     });
@@ -109,11 +121,17 @@ class FeedScreenState extends ConsumerState<FeedScreen>
 
   @override
   Widget build(BuildContext context) {
+    final List<Event> eventsList = sEventsList.watch(context);
+    final Map<String, Metadata> metaDataMap = sMetaDataMap.watch(context);
+    final Logger logger = Logger();
+    final bool notePublishing = sNotePublishing.watch(context);
+    final String privateKey = sPrivateKey.watch(context);
+
     // Make sure to call super.build(context) first because it is
     // required by the AutomaticKeepAliveClientMixin.
     super.build(context);
 
-    Logger().i('Rebuilt FeedScreen because of a state change.');
+    logger.i('Rebuilt FeedScreen because of a state change.');
     return Scaffold(
       // The RefreshIndicator is used to refresh the stream and
       // resubscribe to the relayPool.
@@ -144,11 +162,10 @@ class FeedScreenState extends ConsumerState<FeedScreen>
                 if (snapshot.hasData) {
                   // If the snapshot has data, build the list of nosts.
                   return ListView.builder(
-                    itemCount: ref.watch(eventsProvider).length,
+                    itemCount: eventsList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      final Event event = ref.watch(eventsProvider)[index];
-                      final Metadata? metadata =
-                          ref.watch(metaDataProvider)[event.pubkey];
+                      final Event event = eventsList[index];
+                      final Metadata? metadata = metaDataMap[event.pubkey];
                       final Nost nost = Nost(
                         noteId: event.id,
                         avatarUrl: metadata?.picture ??
@@ -221,11 +238,10 @@ class FeedScreenState extends ConsumerState<FeedScreen>
           ),
         ),
       ),
-      floatingActionButton: ref.watch(keysExistProvider)
+      floatingActionButton: sKeysExist.value
           ? FeedScreenFAB(
-              ref: ref,
               publishNote: (String? nost) async {
-                ref.read(isNotePublishingProvider.notifier).state = true;
+                sNotePublishing.value = true;
                 final EventApi eventApi = EventApi();
                 final Event event = eventApi.finishEvent(
                   Event(
@@ -239,12 +255,12 @@ class FeedScreenState extends ConsumerState<FeedScreen>
                     content: nost!,
                     created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
                   ),
-                  ref.watch(privateKeyProvider),
+                  sPrivateKey.value,
                 );
 
                 if (eventApi.verifySignature(event)) {
                   try {
-                    ref.read(relayPoolProvider).publish(event);
+                    eventApi.signEvent(event, privateKey);
                     await resubscribeStream().then((_) {
                       return ScaffoldMessenger.of(context).showSnackBar(
                         ScaffoldSnackBar(
@@ -262,12 +278,12 @@ class FeedScreenState extends ConsumerState<FeedScreen>
                     );
                   }
                 }
-                ref.read(isNotePublishingProvider.notifier).state = false;
+                sNotePublishing.value = false;
                 if (mounted) {
                   Navigator.pop(context);
                 }
               },
-              isNotePublishing: ref.watch(isNotePublishingProvider),
+              isNotePublishing: notePublishing,
             )
           : Container(),
     );

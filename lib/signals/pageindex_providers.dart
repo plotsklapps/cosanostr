@@ -1,6 +1,6 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:signals/signals.dart';
 
-final StateProvider<int> currentPageIndexProvider =
-    StateProvider<int>((StateProviderRef<int> ref) {
-  return 1;
-});
+final Signal<int> sCurrentPageIndex = Signal<int>(
+  1,
+  debugLabel: 'sCurrentPageIndex',
+);

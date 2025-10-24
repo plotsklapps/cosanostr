@@ -1,14 +1,18 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/modals/settings_dialog.dart';
+import 'package:cosanostr/screens/onboarding/onboardingpagetwo_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:signals/signals_flutter.dart';
 
-class OnboardingPageThree extends ConsumerWidget {
+class OnboardingPageThree extends StatelessWidget {
   const OnboardingPageThree({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -32,7 +36,7 @@ class OnboardingPageThree extends ConsumerWidget {
                     children: <Widget>[
                       Text(
                         '''
-If you want, you can set up your preferences here. If you already like what you see, just click next, ${ref.watch(userNameProvider)}.''',
+If you want, you can set up your preferences here. If you already like what you see, just click next, ${sUserName.watch(context)}.''',
                         textAlign: TextAlign.center,
                       ),
                       TextButton(

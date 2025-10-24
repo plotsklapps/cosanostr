@@ -1,4 +1,6 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:signals/signals.dart';
 
 final Signal<ThemeMode> sThemeMode = Signal<ThemeMode>(

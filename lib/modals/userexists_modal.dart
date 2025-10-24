@@ -1,24 +1,35 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/modals/deletekeys_modal.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:nostr_tools/nostr_tools.dart';
+import 'package:signals/signals_flutter.dart';
 
-final StateProvider<bool> isHexProvider =
-    StateProvider<bool>((StateProviderRef<bool> ref) {
-  return true;
-});
+final Signal<bool> sHex = Signal<bool>(
+  true,
+  debugLabel: 'sHex',
+);
 
-final StateProvider<bool> isNsecVisibleProvider =
-    StateProvider<bool>((StateProviderRef<bool> ref) {
-  return false;
-});
+final Signal<bool> sNsecVisible = Signal<bool>(
+  false,
+  debugLabel: 'sNsecVisible',
+);
 
-class UserExistsModal extends ConsumerWidget {
+class UserExistsModal extends StatelessWidget {
   const UserExistsModal({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final Nip19 nip19 = Nip19();
+    final String publicKey = sPublicKey.watch(context);
+    final String privateKey = sPrivateKey.watch(context);
+    final bool nsecVisible = sNsecVisible.watch(context);
+    final bool hex = sHex.watch(context);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ScrollConfiguration(
@@ -54,11 +65,7 @@ class UserExistsModal extends ConsumerWidget {
                 ),
               ),
               SelectableText(
-                ref.watch(isHexProvider)
-                    ? ref
-                        .watch(nip19Provider)
-                        .npubEncode(ref.watch(publicKeyProvider))
-                    : ref.watch(publicKeyProvider),
+                sHex.value ? nip19.npubEncode(publicKey) : publicKey,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16.0),
@@ -68,13 +75,9 @@ class UserExistsModal extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (ref.watch(isNsecVisibleProvider))
+              if (nsecVisible)
                 SelectableText(
-                  ref.watch(isHexProvider)
-                      ? ref
-                          .watch(nip19Provider)
-                          .nsecEncode(ref.watch(privateKeyProvider))
-                      : ref.watch(privateKeyProvider),
+                  hex ? nip19.nsecEncode(privateKey) : privateKey,
                   textAlign: TextAlign.center,
                 )
               else
@@ -105,28 +108,25 @@ class UserExistsModal extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 8.0),
-                  if (!ref.watch(isHexProvider))
+                  if (hex)
                     TextButton(
                       onPressed: () {
-                        ref.read(isHexProvider.notifier).state =
-                            !ref.watch(isHexProvider);
+                        sHex.value = !sHex.value;
                       },
                       child: const Text('SHOW NPUB'),
                     )
                   else
                     TextButton(
                       onPressed: () {
-                        ref.read(isHexProvider.notifier).state =
-                            !ref.watch(isHexProvider);
+                        sHex.value = !sHex.value;
                       },
                       child: const Text('SHOW HEX'),
                     ),
                   IconButton(
                     onPressed: () {
-                      ref.read(isNsecVisibleProvider.notifier).state =
-                          !ref.watch(isNsecVisibleProvider);
+                      sNsecVisible.value = !sNsecVisible.value;
                     },
-                    icon: ref.watch(isNsecVisibleProvider)
+                    icon: nsecVisible
                         ? const Icon(FontAwesomeIcons.eye)
                         : const Icon(FontAwesomeIcons.eyeSlash),
                   ),

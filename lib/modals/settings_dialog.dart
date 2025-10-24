@@ -1,12 +1,14 @@
 import 'dart:ui';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/signals/theme_signals.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class SettingsModal extends ConsumerWidget {
+class SettingsModal extends StatelessWidget {
   const SettingsModal({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ScrollConfiguration(
@@ -37,39 +39,35 @@ class SettingsModal extends ConsumerWidget {
               const Divider(),
               ListTile(
                 onTap: () {
-                  // Riverpod's way of toggling a bool (I think).
-                  ref.read(isDarkThemeProvider.notifier).state =
-                      !ref.watch(isDarkThemeProvider);
+                  if (sThemeMode.value == ThemeMode.light) {
+                    sThemeMode.value = ThemeMode.dark;
+                  } else {
+                    sThemeMode.value = ThemeMode.light;
+                  }
                 },
                 title: const Text('MODE'),
                 subtitle: const Text('Light or Dark'),
                 // Check the current theme mode and display the appropriate
                 // icon. Icons are up for debate, but I found these funny.
-                trailing: ref.watch(isDarkThemeProvider)
+                trailing: sThemeMode.value == ThemeMode.light
                     ? const Icon(FontAwesomeIcons.ghost)
                     : const Icon(FontAwesomeIcons.faceFlushed),
               ),
               ListTile(
                 onTap: () {
-                  ref.read(isThemeIndigoProvider.notifier).state =
-                      !ref.watch(isThemeIndigoProvider);
+                  // Doesn't work for now.
                 },
                 title: const Text('COLOR'),
                 subtitle: const Text('Indigo Nights or Green Money'),
-                trailing: ref.watch(isThemeIndigoProvider)
-                    ? const Icon(FontAwesomeIcons.droplet)
-                    : const Icon(FontAwesomeIcons.moneyBill),
+                trailing: const Icon(FontAwesomeIcons.moneyBill),
               ),
               ListTile(
                 onTap: () {
-                  ref.read(isFontQuestrialProvider.notifier).state =
-                      !ref.watch(isFontQuestrialProvider);
+                  // Doesn't work for now.
                 },
                 title: const Text('FONT'),
                 subtitle: const Text('Questrial or Barlow'),
-                trailing: ref.watch(isFontQuestrialProvider)
-                    ? const Icon(FontAwesomeIcons.quora)
-                    : const Icon(FontAwesomeIcons.bold),
+                trailing: const Icon(FontAwesomeIcons.bold),
               ),
               const SizedBox(height: 16.0),
               TextButton(

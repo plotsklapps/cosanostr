@@ -1,22 +1,25 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/signals/pageindex_providers.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:signals/signals_flutter.dart';
 
 class ScaffoldNavBar extends StatelessWidget {
   const ScaffoldNavBar({
     super.key,
-    required this.ref,
     required this.pageController,
   });
 
-  final WidgetRef ref;
   final PageController pageController;
 
   @override
   Widget build(BuildContext context) {
+    final int currentPage = sCurrentPageIndex.watch(context);
+
     return BottomNavigationBar(
-      currentIndex: ref.watch(currentPageIndexProvider),
+      currentIndex: currentPage,
       showUnselectedLabels: false,
       onTap: (int index) async {
-        ref.read(currentPageIndexProvider.notifier).state = index;
+        sCurrentPageIndex.value = index;
         if (index == 0) {
           await pageController.animateToPage(
             0,

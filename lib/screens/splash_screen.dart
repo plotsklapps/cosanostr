@@ -1,26 +1,30 @@
 import 'dart:async';
 
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/feedscreen_logic.dart';
+import 'package:cosanostr/responsive_layout.dart';
+import 'package:cosanostr/screens/onboarding/onboarding_screen.dart';
+import 'package:cosanostr/signals/feedscreen_signals.dart';
+import 'package:flutter/material.dart';
 
-class SplashScreen extends ConsumerStatefulWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  ConsumerState<SplashScreen> createState() {
+  State<SplashScreen> createState() {
     return SplashScreenState();
   }
 }
 
-class SplashScreenState extends ConsumerState<SplashScreen> {
+class SplashScreenState extends State<SplashScreen> {
   late Timer timer;
 
   @override
-  void initState() {
+  Future<void> initState() async {
     super.initState();
-    Future<void>.delayed(Duration.zero, () async {
-      await FeedScreenLogic().getKeysFromStorage(ref);
+    await Future<void>.delayed(Duration.zero, () async {
+      await FeedScreenLogic().getKeysFromStorage();
     }).then((_) async {
-      if (ref.watch(keysExistProvider)) {
+      if (sKeysExist.value && mounted) {
         await Navigator.push(
           context,
           MaterialPageRoute<Widget>(
@@ -30,14 +34,16 @@ class SplashScreenState extends ConsumerState<SplashScreen> {
           ),
         );
       } else {
-        await Navigator.push(
-          context,
-          MaterialPageRoute<Widget>(
-            builder: (BuildContext context) {
-              return const OnboardingScreen();
-            },
-          ),
-        );
+        if (mounted) {
+          await Navigator.push(
+            context,
+            MaterialPageRoute<Widget>(
+              builder: (BuildContext context) {
+                return const OnboardingScreen();
+              },
+            ),
+          );
+        }
       }
     });
   }

@@ -1,4 +1,8 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:cosanostr/components/phone_container.dart';
+import 'package:cosanostr/screens/feed_screen.dart';
+import 'package:cosanostr/screens/more_screen.dart';
+import 'package:cosanostr/screens/profile_screen.dart';
+import 'package:flutter/material.dart';
 
 //Desktopscreen is nothing more than the three mobile
 //screens side by side within a border, made in the

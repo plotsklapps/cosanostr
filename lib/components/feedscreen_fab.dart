@@ -1,24 +1,23 @@
-import 'package:cosanostr/all_imports.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class FeedScreenFAB extends ConsumerStatefulWidget {
+class FeedScreenFAB extends StatefulWidget {
   const FeedScreenFAB({
     super.key,
     required this.publishNote,
     required this.isNotePublishing,
-    required this.ref,
   });
 
-  final WidgetRef ref;
   final void Function(String?) publishNote;
   final bool isNotePublishing;
 
   @override
-  ConsumerState<FeedScreenFAB> createState() {
+  State<FeedScreenFAB> createState() {
     return FeedScreenFABState();
   }
 }
 
-class FeedScreenFABState extends ConsumerState<FeedScreenFAB> {
+class FeedScreenFABState extends State<FeedScreenFAB> {
   final TextEditingController noteController = TextEditingController();
   final GlobalKey<FormFieldState<dynamic>> formKey =
       GlobalKey<FormFieldState<dynamic>>();
